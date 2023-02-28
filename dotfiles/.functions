@@ -1,0 +1,14 @@
+# Kubernetes devops scripts
+function use_common_cluster {
+  gcloud beta compute ssh common-tooling-bastion \
+    --tunnel-through-iap \
+    --project=sia-devops \
+    --zone=europe-west1-b \
+    -- -4 -L8888:localhost:8888 -N -q -f &
+  export HTTPS_PROXY=localhost:8888
+}
+
+function disable_common_cluster {
+  unset HTTPS_PROXY
+  netstat -lnpt | grep 8888 | awk '{print $7}' | grep -o '[0-9]\+' | sort -u | xargs sudo kill
+}
