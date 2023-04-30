@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+function hide() {
+    polybar-msg cmd hide | bspc config top_padding 5
+}
+
+function unhide() {
+    polybar-msg cmd show
+}
+
+case $1 in
+	-h | --hide | hide)
+		hide
+		exit;;
+	-u | --unhide | unhide)
+		unhide
+		exit;;
+	*) # Invalid option
+		echo "Error: Invalid option"
+		exit;;
+esac

@@ -1,20 +1,18 @@
-#!/usr/bin/env bash
+# Env variables for polybar style
+export polybar_height=2%
+export polybar_radius=6
 
-# Add this script to your wm startup file.
+# Env variable for polybar widgets
+export NETWORK_INTERFACE=$(ip route | grep '^default' | awk '{print $5}' | head -n1)
+export BATTERY='BAT1'
 
-DIR="$HOME/.config/polybar"
+# Env variable for scripts
+export UPDATES_SCRIPT=/home/fapont/.config/scripts/updates
 
-# Terminate already running bar instances
 killall -q polybar
-
-# Wait until the processes have been shut down
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-
-# Launch the bar
-
-polybar -q pam1 -c "$DIR"/config.ini &
-polybar -q pam2 -c "$DIR"/config.ini &
-polybar -q pam3 -c "$DIR"/config.ini &
-polybar -q pam4 -c "$DIR"/config.ini &
-polybar -q pam5 -c "$DIR"/config.ini &
-polybar -q pam6 -c "$DIR"/config.ini &
+polybar -q topLeft1 &
+polybar -q topLeft1 &
+polybar -q topLeft2 &
+polybar -q middle &
+polybar -q topright1 &
+polybar -q topright2 &
