@@ -2,6 +2,9 @@
 # #                                 BSPWM CONTROL                              #
 # ##############################################################################
 
+### TMP
+super + i
+  bash $HOME/.config/rofi/scripts/screenshot.sh
 ###############
 ### General ###
 ###############
@@ -9,6 +12,13 @@
 # Quit/restart bspwm
 super + shift + {q,r}
 	bspc {quit,wm -r}
+
+# Expand/Contract bspwm windows
+super + e : {Left,Down,Up,Right}
+    bspwm_resize expand {west,south,north,east} 50
+
+super + shift + e : {Left,Down,Up,Right}
+    bspwm_resize contract {west,south,north,east} 50
 
 # Close and kill
 super + {_,shift + }a
@@ -26,8 +36,8 @@ super + y
 super + g
 	bspc node -s biggest.window
 
-super + d
-	dmenu_run
+# super + d
+# 	dmenu_run
 
 super + ugrave
 	alacritty -e ranger
@@ -79,32 +89,29 @@ super + s
 super + shift + s
 	eww close-all
 
+# lockscreen
+super + l
+    betterlockscreen -l dim --pixel
+
 # ##############################################################################
 # #                                 CONTROL KEYS                               #
 # ##############################################################################
 
-# Raise/lower volume.
-XF86Audio{Raise,Lower}Volume
-	amixer -q set Master 5%{+,-}
+# Mute/Unmute microphone
+XF86AudioMicMute
+	amixer set Capture toggle
+
+# Increase/descrease volume
+{XF86AudioLowerVolume, XF86AudioRaiseVolume}
+  volume {--dec,--inc}
 
 # Mute/unmute volume.
 XF86AudioMute
-	sh $HOME/.config/sxhkd/scripts/audioToggle.sh
+  volume --toggle
 
-# Raise/lower brightness.
+# Inrease/decrease brightness.
 XF86MonBrightness{Up,Down}
-	brightnessctl set 5%{+,-}
-
-# Raise/lower brightness to maximum or minimum.
-super + XF86MonBrightness{Up,Down}
-    brightnessctl set {100%,30%}
-
-# Screenshot; Save to local storage.
-{super,ctrl} + Print
-	DATE=$(date '+%b%d-%H-%M:%S.png'); \
-	maim -us "$HOME/Pictures/Screenshots/$DATE"; \
-	sh $HOME/.local/bin/{viewscr,upldscr} $HOME/Pictures/Screenshots/$DATE
-
+	brightness {up,down}
 
 
 # ##############################################################################
@@ -117,24 +124,17 @@ super + Return
 	alacritty
 
 # Program launcher
-# super + d
-# 	$HOME/.config/rofi/scripts/launcher.sh
+super + d
+	$HOME/.config/rofi/scripts/launcher.sh
 
 # Make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd; notify-send "Restart sxhkd"
 
 
-# Program launcher
-Super_L
-    ;bash $HOME/.config/polybar/scripts2/hide_bar unhide
-
-@Super_L
-	;bash $HOME/.config/polybar/scripts2/hide_bar hide
-
 # Toggle control center.
-super + shift + {d,c}
-	sh $HOME/.config/eww/scripts/openControlCenter.sh
+# super + shift + {d,c}
+#	sh $HOME/.config/eww/scripts/openControlCenter.sh
 
 #
 # state/flags

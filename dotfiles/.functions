@@ -1,3 +1,7 @@
+######################
+#### Work scripts ####
+######################
+
 # Kubernetes devops scripts
 function use_common_cluster {
   gcloud beta compute ssh common-tooling-bastion \
@@ -12,3 +16,19 @@ function disable_common_cluster {
   unset HTTPS_PROXY
   netstat -lnpt | grep 8888 | awk '{print $7}' | grep -o '[0-9]\+' | sort -u | xargs sudo kill
 }
+
+
+###############
+#### Utils ####
+###############
+
+function reload_gtk_theme() {
+  theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+  gsettings set org.gnome.desktop.interface gtk-theme ''
+  sleep 1
+  gsettings set org.gnome.desktop.interface gtk-theme $theme
+}
+
+connect_synology() {
+    TERM=xterm;ssh Fabrice@192.168.1.27
+  }

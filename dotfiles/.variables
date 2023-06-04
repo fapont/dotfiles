@@ -1,1 +1,11 @@
-export KUBE_EDITOR='code --wait'
+########################
+#### Work variables ####
+########################
+
+# Gitlab
+export GITLAB_TOKEN=<token>
+export PIP_EXTRA_INDEX_URL=https://__token__:$GITLAB_TOKEN@git.sia-partners.com/api/v4/groups/444/-/packages/pypi/simple
+export GITLAB_URL=https://git.sia-partners.com/
+
+# Stratumn
+export SU_PASSWORD="adminpass" # local admin pass
