@@ -13,16 +13,16 @@ scrolling:
 
 font:
   normal:
-    family: JetBrains Mono Nerd Font
+    family: terminal-font
     style: Medium
   bold:
-    family: JetBrains Mono Nerd Font
+    family: terminal-font
     style: Bold
   italic:
-    family: JetBrains Mono Nerd Font
+    family: terminal-font
     style: MediumItalic
   bold_italic:
-    family: JetBrains Mono Nerd Font
+    family: terminal-font
     style: BoldItalic
   size: 7.0
 draw_bold_text_with_bright_colors: true
