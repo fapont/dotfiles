@@ -9,3 +9,9 @@ export GITLAB_URL=https://git.sia-partners.com/
 
 # Stratumn
 export SU_PASSWORD="adminpass" # local admin pass
+
+#########################
+#### Other variables ####
+#########################
+
+export OPENAI_API_KEY=<api_key>

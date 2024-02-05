@@ -7,5 +7,10 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias brave='brave-browser'
-alias python=python3
-
+alias python="python3"
+alias ktx="kubectx"
+alias kns="kubens"
+alias dcu="docker compose up"
+alias dcd="docker compose down"
+alias dcl="docker compose logs"
+alias dcr="docker compose restart"

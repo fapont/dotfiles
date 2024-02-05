@@ -1,0 +1,23 @@
+#/bin/bash
+
+MAIN_MONITOR='eDP-1'
+SIA_MONITOR='DP-2-1'
+
+# Update monitor detection
+xrandr --auto
+
+monitors=($(xrandr -q | grep -w connected | awk '{ print $1 }'))
+
+# If there is only one monitor, exit
+if [ ${#monitors[@]} -eq 1 ]; then
+    xrandr --output $MAIN_MONITOR --mode 1920x1080 --primary
+    exit 0
+fi
+
+# If there are two monitors, set the main monitor to the laptop screen
+# and the second one on top of it
+if [ ${#monitors[@]} -eq 2 ]; then
+    xrandr --output $MAIN_MONITOR --mode 1920x1080 --primary
+    xrandr --output $SIA_MONITOR --mode 1920x1080 --above $MAIN_MONITOR
+    exit 0
+fi

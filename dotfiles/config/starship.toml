@@ -24,8 +24,7 @@ $scala\
 $terraform\
 $vagrant\
 $conda\
-$aws\
-$gcloud\
+$aws
 $env_var\
 $custom\
 $sudo\
@@ -39,64 +38,72 @@ $character"""
 
 
 [character]
-success_symbol = '[](bold green)'
-error_symbol = '[](bold red)'
-
-[kubernetes]
-disabled = false
-style = 'purple'
+    success_symbol = '[](bold green)'
+    error_symbol   = '[](bold red)'
 
 # Configure if and how the time is shown
 [time]
-disabled = false
-time_format = "%T"
-format = "  [$time ](bold blue)"
+    disabled    = false
+    time_format = "%T"
+    format      = "  [$time ](bold blue)"
 
 [sudo]
-disabled = false
+    disabled = false
 
 [aws]
-symbol = " "
+    symbol = " "
+
+[battery]
+    charging_symbol    = '󱊤 '
+    discharging_symbol = '󱊡 '
 
 [conda]
-symbol = " "
+    symbol = " "
 
 [docker_context]
-symbol = " "
+    symbol = " "
 
 [elixir]
-symbol = " "
+    symbol = " "
 
 [fossil_branch]
-symbol = " "
+    symbol = " "
 
 [git_branch]
-symbol = " "
+    symbol = " "
 
 [golang]
-symbol = " "
+    symbol = " "
+
+[helm]
+    symbol = "󱃾 "
 
 [hg_branch]
-symbol = " "
+    symbol = " "
 
 [hostname]
-ssh_symbol = " "
+    ssh_symbol = " "
 
 [java]
-symbol = " "
+    symbol = " "
+
+[kubernetes]
+    symbol   = "󱃾 "
+    disabled = false
+    style    = 'purple'
 
 [nodejs]
-symbol = " "
+    symbol = " "
 
 [package]
-symbol = " "
-disabled = true
+    symbol   = " "
+    disabled = true
 
 [python]
-symbol = " "
+    symbol = " "
 
 [rust]
-symbol = " "
+    symbol = " "
 
 [scala]
-symbol = " "
+    symbol = " "

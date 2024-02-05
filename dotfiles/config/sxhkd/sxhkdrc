@@ -51,7 +51,7 @@ super + {_,shift + }{Left,Down,Up,Right}
 	bspc node -{f,s} {west,south,north,east}
 
 # focus or send to the given desktop (azerty keyboard)
-super + {_,shift + }{ampersand,eacute,quotedbl,apostrophe,parenleft,section,egrave,exclam,ccedilla}
+super + {_,shift + }{ampersand,eacute,quotedbl,apostrophe,parenleft,section,egrave,exclam,ccedilla,agrave}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
 
@@ -91,7 +91,7 @@ super + shift + s
 
 # lockscreen
 super + l
-    betterlockscreen -l dim --pixel
+    betterlockscreen -l dim
 
 # ##############################################################################
 # #                                 CONTROL KEYS                               #
@@ -176,6 +176,9 @@ super + ctrl + shift + space
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+super + alt + {Left,Down,Up,Right}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 # contract a window by moving one of its side inward
 super + alt + shift + {h,j,k,l}
