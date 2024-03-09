@@ -1,0 +1,139 @@
+palette = "catppuccin_macchiato"
+
+# Customizing the prompt
+format = """
+$username\
+$hostname\
+$kubernetes\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$docker_context\
+$package\
+$cmake\
+$deno\
+$golang\
+$helm\
+$java\
+$nodejs\
+$python\
+$rust\
+$scala\
+$terraform\
+$vagrant\
+$conda\
+$aws
+$env_var\
+$custom\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$battery\
+$time\
+$status\
+$character"""
+
+
+[character]
+    success_symbol = '[](bold green)'
+    error_symbol   = '[](bold red)'
+
+# Configure if and how the time is shown
+[time]
+    disabled    = false
+    time_format = "%T"
+    format      = "  [$time ](bold blue)"
+
+[sudo]
+    disabled = false
+
+[aws]
+    symbol = " "
+
+[battery]
+    charging_symbol    = '󱊤 '
+    discharging_symbol = '󱊡 '
+
+[conda]
+    symbol = " "
+
+[docker_context]
+    symbol = " "
+
+[elixir]
+    symbol = " "
+
+[fossil_branch]
+    symbol = " "
+
+[git_branch]
+    symbol = " "
+
+[golang]
+    symbol = " "
+
+[helm]
+    symbol = "󱃾 "
+
+[hg_branch]
+    symbol = " "
+
+[hostname]
+    ssh_symbol = " "
+
+[java]
+    symbol = " "
+
+[kubernetes]
+    symbol   = "󱃾 "
+    disabled = false
+    style    = 'purple'
+
+[nodejs]
+    symbol = " "
+
+[package]
+    symbol   = " "
+    disabled = true
+
+[python]
+    symbol = " "
+
+[rust]
+    symbol = " "
+
+[scala]
+    symbol = " "
+
+[palettes.catppuccin_macchiato]
+rosewater = "#f4dbd6"
+flamingo = "#f0c6c6"
+pink = "#f5bde6"
+mauve = "#c6a0f6"
+red = "#ed8796"
+maroon = "#ee99a0"
+peach = "#f5a97f"
+yellow = "#eed49f"
+green = "#a6da95"
+teal = "#8bd5ca"
+sky = "#91d7e3"
+sapphire = "#7dc4e4"
+blue = "#8aadf4"
+lavender = "#b7bdf8"
+text = "#cad3f5"
+subtext1 = "#b8c0e0"
+subtext0 = "#a5adcb"
+overlay2 = "#939ab7"
+overlay1 = "#8087a2"
+overlay0 = "#6e738d"
+surface2 = "#5b6078"
+surface1 = "#494d64"
+surface0 = "#363a4f"
+base = "#24273a"
+mantle = "#1e2030"
+crust = "#181926"

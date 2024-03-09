@@ -1,0 +1,54 @@
+#!/bin/sh
+
+get_volume() {
+	echo "`pamixer --get-volume-human | sed 's/%//'`"
+}
+
+send_notification() {
+	volume=$(get_volume)
+	dunstify -a "changevolume" -u low -r 1000 -h int:value:"$volume" -i "volume" "Volume" "Currently at $volume%" -t 2000
+}
+
+inc_volume() {
+	[[ `pamixer --get-mute` == true ]] && pamixer -u
+	pamixer --allow-boost --set-limit 150 -i 5
+    send_notification
+}
+
+dec_volume() {
+	[[ `pamixer --get-mute` == true ]] && pamixer -u
+	pamixer --allow-boost --set-limit 150 -d 5
+    send_notification
+}
+
+toggle_mute() {
+	if [[ `pamixer --get-mute` == false ]]; then
+		pamixer --toggle-mute && notify-send "Mute volume"
+	else
+		pamixer --toggle-mute
+	fi
+}
+
+toggle_mute_mic() {
+	if [[ `pamixer --default-source --get-mute` == false ]]; then
+		pamixer --default-source --toggle-mute && notify-send "Mute microphone"
+	else
+		pamixer --default-source --toggle-mute
+	fi
+}
+
+if [[ -x `which pamixer` ]]; then
+	if [[ "$1" == "get" ]]; then
+		get_volume
+	elif [[ "$1" == "up" ]]; then
+		inc_volume
+	elif [[ "$1" == "down" ]]; then
+		dec_volume
+	elif [[ "$1" == "mute" ]]; then
+		toggle_mute
+	elif [[ "$1" == "mute_mic" ]]; then
+		toggle_mute_mic
+	else
+		echo $(get_volume)%
+	fi
+fi

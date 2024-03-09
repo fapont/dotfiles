@@ -1,0 +1,77 @@
+#!/bin/bash
+
+MODE=$(pkexec tlp-stat -p | grep "EPP" | awk '{print $3}')
+DEFAULT_BAT_MODE="balance_power"
+DEFAULT_AC_MODE="balance_performance"
+CONF_FILE="/etc/tlp.conf"
+
+reload() {
+    pkexec tlp start
+}
+
+switch_performance_mode() {
+    if [ ! -z "$1" ]; then
+        if [[ "$1" == "default" ]]; then
+            pkexec sed -i "s/^.*CPU_ENERGY_PERF_POLICY_ON_BAT.*$/CPU_ENERGY_PERF_POLICY_ON_BAT=$DEFAULT_BAT_MODE/" $CONF_FILE
+            pkexec sed -i "s/^.*CPU_ENERGY_PERF_POLICY_ON_AC.*$/CPU_ENERGY_PERF_POLICY_ON_AC=$DEFAULT_AC_MODE/" $CONF_FILE
+        else
+            pkexec sed -i "s/^.*CPU_ENERGY_PERF_POLICY_ON_BAT.*$/CPU_ENERGY_PERF_POLICY_ON_BAT=$1/" $CONF_FILE
+            pkexec sed -i "s/^.*CPU_ENERGY_PERF_POLICY_ON_AC.*$/CPU_ENERGY_PERF_POLICY_ON_AC=$1/" $CONF_FILE
+        fi
+    fi
+    reload
+}
+
+toggle() {
+    # switch between 3 modes
+    if [[ $MODE == 'performance' ]]; then
+        switch_performance_mode "power" # save mode
+        dunstify --appname=Power --urgency=normal "Power mode" "Battery saving mode activated."
+    elif [[ $MODE == 'power' ]]; then
+        switch_performance_mode "default" # default mode
+        dunstify --appname=Power --urgency=normal "Power mode" "Default power mode activated."
+    else
+        switch_performance_mode "performance" # power mode
+        dunstify --appname=Power --urgency=normal "Power mode" "Performance mode activated."
+    fi
+}
+
+icon() {
+    if [[ $MODE == 'performance' ]]; then
+        echo "󰈸"
+    elif [[ $MODE == 'power' ]]; then
+        echo "󰌪"    
+    else
+        echo "󰸊"
+    fi
+}
+
+status() {
+    if [[ $MODE == 'performance' ]]; then
+        echo "Performance"
+    elif [[ $MODE == 'power' ]]; then
+        echo "Battery saving"
+    else
+        echo "Default power"
+    fi
+}
+
+class() {
+    if [[ $MODE == 'performance' ]]; then
+        echo "performance"
+    elif [[ $MODE == 'power' ]]; then
+        echo "power"    
+    else
+        echo "default"
+    fi
+}
+
+if [[ $1 == "--toggle" ]]; then
+    toggle
+elif [[ $1 == "--icon" ]]; then
+    icon
+elif [[ $1 == "--class" ]]; then
+    class
+elif [[ $1 == "--status" ]]; then
+    status
+fi

@@ -1,0 +1,348 @@
+* {
+    transition: 200ms ease-in-out;
+}
+
+.system-menu {
+    border: 5px solid $bg-alt;
+    border-radius: 20px;
+    box-shadow: inset 0 0 8 1px #11111b;
+    background-color: $bg;
+}
+
+.wifi-label,
+.bluetooth-label,
+.airplane-label,
+.gammastep-label,
+.power-saver-label,
+.dnd-label {
+    font-size: 10px;
+    padding: 10px 0px 0px 10px;
+}
+
+.wifi-buttons-box,
+.bluetooth-buttons-box,
+.airplane-buttons-box,
+.gammastep-buttons-box,
+.power-saver-buttons-box,
+.dnd-buttons-box {
+    margin: 10px 15px 0px 15px;
+    border-radius: 100px;
+}
+
+.wifi-button,
+.bluetooth-button,
+.airplane-button,
+.gammastep-button,
+.power-saver-button,
+.dnd-button {
+    font-size: 15px;
+    padding: 7px 13px 7px 13px;
+}
+
+.wifi-arrow-btn,
+.bluetooth-arrow-btn,
+.airplane-arrow-btn,
+.gammastep-arrow-btn,
+.power-saver-arrow-btn,
+.dnd-arrow-btn {
+    padding: 13px 16px 13px 14px;
+}
+
+.power-saver-button-default {
+    border-radius: 100px 0px 0px 100px;
+    background-color: $blue;
+}
+
+.power-saver-button-default:hover {
+    background-color: $cyan;
+}
+
+.power-saver-button-performance {
+    background-color: $red;
+    border-radius: 100px 0px 0px 100px;
+}
+
+.power-saver-button-performance:hover {
+    background-color: $yellow;
+}
+
+.power-saver-button-power {
+    background-color: $green;
+    border-radius: 100px 0px 0px 100px;
+}
+
+.power-saver-button-power:hover {
+    background-color: $red;
+}
+
+
+.wifi-button-on,
+.bluetooth-button-on,
+.airplane-button-on,
+.gammastep-button-on,
+.power-saver-button-on,
+.dnd-button-on {
+    background-color: $blue;
+    border-radius: 100px 0px 0px 100px;
+}
+
+.wifi-button-off, 
+.bluetooth-button-off,
+.airplane-button-off,
+.gammastep-button-off,
+.power-saver-button-off,
+.dnd-button-off {
+    background-color: $bg-alt;
+    border-radius: 100px 0px 0px 100px;
+}
+
+
+.wifi-arrow-btn-on,
+.bluetooth-arrow-btn-on,
+.airplane-arrow-btn-on,
+.gammastep-arrow-btn-on,
+.power-saver-arrow-btn-on,
+.dnd-arrow-btn-on {
+    background-color: $blue;
+    border-radius: 0px 100px 100px 0px;
+}
+
+.wifi-arrow-btn-off,
+.bluetooth-arrow-btn-off,
+.airplane-arrow-btn-off,
+.gammastep-arrow-btn-off,
+.power-saver-arrow-btn-off,
+.dnd-arrow-btn-off {
+    background-color: $bg-alt;
+    border-radius: 0px 100px 100px 0px;
+}
+
+.wifi-button-off:hover,
+.wifi-arrow-btn-off:hover,
+.bluetooth-button-off:hover,
+.bluetooth-arrow-btn-off:hover,
+.airplane-button-off:hover,
+.airplane-arrow-btn-off:hover,
+.gammastep-button-off:hover,
+.gammastep-arrow-btn-off:hover,
+.power-saver-button-off:hover,
+.power-saver-arrow-btn-off:hover,
+.dnd-button-off:hover,
+.dnd-arrow-btn-off:hover {
+    background-color: $gray-alt;
+}
+
+.wifi-button-on:hover,
+.wifi-arrow-btn-on:hover,
+.bluetooth-button-on:hover,
+.bluetooth-arrow-btn-on:hover,
+.airplane-button-on:hover,
+.airplane-arrow-btn-on:hover,
+.gammastep-button-on:hover,
+.gammastep-arrow-btn-on:hover,
+.power-saver-button-on:hover,
+.power-saver-arrow-btn-on:hover,
+.dnd-button-on:hover,
+.dnd-arrow-btn-on:hover {
+    background-color: $cyan;
+}
+
+
+
+.seperator {
+    font-size: 2px;
+}
+
+.first-row-system {
+    margin-left: 13px;
+    padding: 20px;
+}
+
+.second-row-system {
+    margin-left: 13px;
+    padding: 10px 20px 20px 20px;
+}
+
+.sliders {
+    background-color: $bg-alt;
+    margin: 10px 20px 25px 20px;
+    padding: 20px 5px 20px 30px;
+    border-radius: 15px;
+}
+
+.volume-slider-icon {
+    color: $green;
+    font-size: 24px;
+    font-weight: 600;
+    text-shadow: 0px 0px 4px #000000;
+}
+
+.brightness-slider-icon {
+    color: $yellow;
+    font-size: 24px;
+    text-shadow: 0px 0px 4px #000000;
+}
+
+.volume-slider {
+    margin-left: 25px;
+}
+
+slider {
+    background: transparent;
+}
+
+.volume-slider trough {
+    background-color: $gray-alt;
+    border-radius: 15px;
+}
+
+.volume-slider highlight {
+    padding: 0.2em;
+    background-color: $green;
+    border-radius: 15px;
+}
+
+
+.brightness-slider {
+    margin-left: 25px;
+}
+
+.brightness-slider trough {
+    background-color: $gray-alt;
+    border-radius: 15px;
+}
+
+.brightness-slider highlight {
+    padding: 0.2em;
+    background-color: $yellow;
+    border-radius: 15px;
+}
+
+.volume-slider-button {
+    font-size: 16px;
+    margin: 0px 20px 0px 21px;
+    background-color: $gray-alt;
+    padding: 6px 7px 6px 6px;
+    border-radius: 100%;
+
+}
+
+.brightness-slider-button {
+    font-size: 16px;
+    margin: 0px 20px 0px 19px;
+    background-color: $gray-alt;
+    padding: 6px 7px 6px 6px;
+    border-radius: 100%;
+    color: $fg;
+
+}
+
+.brightness-slider-button:hover, .volume-slider-button:hover {
+    background-color: $gray;
+}
+
+.music-player-container {
+    background-color: $bg-alt;
+    margin: 0px 20px 20px 20px;
+    border-radius: 15px;
+}
+
+.music-player-album {
+    background-size: contain;
+    background-color: $bg;
+    min-width: 80px;
+    min-height: 80px;
+    margin: 25px 15px 15px 25px;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    background-position: center;
+}
+
+.music-player-info {
+    margin: 20px 0px 0px 0px;
+}
+
+.music-player-name-box {
+    background-color: $bg;
+    border-radius: 30px;
+    color: $purple;
+}
+
+.music-player-name-icon {
+    font-size: 14px;
+    padding: 3px 6px 3px 6px;
+    border-radius: 100%;
+    font-weight: 900;
+    margin: 5px 0px 5px 5px;
+}
+
+.music-player-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 2px 15px 0px 0px;
+}
+
+.music-player-title {
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0px 0px 0px 5px;
+}
+
+.music-player-artist {
+    font-size: 16px;
+    margin: 10px 0px 0px 5px;
+}
+
+.player-buttons-box {
+    font-size: 20px;
+    margin: 10px 0px 20px 0px;
+
+}
+
+.player-prev:hover,
+.player-pp:hover,
+.player-next:hover {
+    color: $red;
+}
+
+.battery-box {
+    margin: 0px 20px 20px 25px;
+}
+
+.battery-icon {
+    font-family: "Phosphor";
+    font-size: 30px;
+}
+
+.battery-icon-charging {
+    color: $green;
+}
+
+.battery-icon-discharging {
+    color: $fg;
+}
+
+.battery-text {
+    font-size: 20px;
+    margin: 4px 10px 0px 10px;
+}
+
+.side-options-box {
+    margin: 0px 25px 20px 20px;
+
+}
+
+.power-button,
+.exit-button,
+.settings-button {
+    background-color: $bg-alt;
+    padding: 9px 10px 9px 10px;
+    border-radius: 100%;
+}
+
+.power-button:hover,
+.exit-button:hover,
+.settings-button:hover {
+    background-color: $gray-alt;
+    color: $blue;
+}

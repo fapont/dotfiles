@@ -1,0 +1,109 @@
+{
+
+    // Workspaces
+    "hyprland/workspaces" : {
+        "on-click": "activate",
+        "active-only": false,
+        "all-outputs": true,
+        "format": "{}",
+        "format-icons": {
+			"urgent": "",
+			"active": "",
+			"default": ""
+        },
+        "persistent-workspaces": {
+             "*": 5
+        }       
+    },
+
+    "clock": {
+        "timezone": "Europe/Paris",
+        "format": "󰅐 {:%H:%M}",
+        "tooltip": false
+    },
+
+    "battery": {
+        "states": {
+            "warning": 25,
+            "critical": 10
+        },
+        "format": "{icon} {capacity}%",
+        "interval": 30,
+        "full-at": 97,
+        "format-icons": {
+            "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+            "plugged": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+            "critical": ["󰂃"],
+            "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        }
+    },
+
+    "pulseaudio#sound": {
+        "scroll-step": 5,
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-muted": "󰖁",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", " ", " "]
+        },
+        // "on-click": "pavucontrol", TODO
+        "on-click-right": "pavucontrol" 
+    },
+
+    "pulseaudio#microphone": {
+        "scroll-step": 5,
+        "format": "{format_source}",
+        "format-source": " {volume}%",
+        "format-source-muted": "",
+        // "on-click": "pavucontrol", TODO
+        "on-click-right": "pavucontrol"
+    },
+
+    "bluetooth": {
+        "format": "",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "interval": 10,
+        "on-click": "blueman-manager"
+    },
+
+    "cpu": {
+        "interval": 5,
+        "format": "󰍛 {usage}%",
+        "on-click": "alacritty -e htop"
+    },
+
+    "memory": {
+        "format": " {}% ",
+        "on-click": "alacritty -e htop"
+    },
+
+    "disk": {
+        "interval": 30,
+        "format": "󰆼 {percentage_used}%",
+        "path": "/"
+        // TODO command
+    },
+
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "  {bandwidthUpOctets}",
+        "format-ethernet": " {ipaddr}",
+        "format-disconnected": "󰖪",
+        "tooltip-format": " {ifname} via {gwaddr}",
+        "tooltip-format-wifi": "   {essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "  {ifname} ({ipaddr}/{cidr})",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 50,
+        "interval": 5,
+        "on-click": "alacritty -e nmtui"
+    }
+}

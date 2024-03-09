@@ -1,0 +1,82 @@
+#!/bin/bash
+
+check_status() {
+    bluetoothctl show | grep "Powered: yes" | wc -c
+}
+
+check_if_connected() {
+    bluetoothctl info | grep 'Connected: yes' | wc -c
+}
+
+toggle() {
+    STATUS="$(bluetoothctl show | grep Powered | awk '{print $2}')"
+    if [ $STATUS == "yes" ]; then
+        bluetoothctl power off
+        dunstify --icon=bluetooth-disabled --appname=Bluetooth --urgency=normal "Bluetooth" "Bluetooth has been turned off."
+    else
+        bluetoothctl power on
+        dunstify --icon=bluetooth --appname=Bluetooth --urgency=normal "Bluetooth" "Bluetooth has been turned on."
+    fi
+}
+
+icon() {
+    if [ $(check_status) -eq 0 ]; then
+        echo "󰂲"
+    else
+        if [ $(check_if_connected) -eq 0 ]; then
+            echo "󰂯"
+        else
+            echo "󰂱"
+        fi
+    fi
+}
+
+class() {
+    if [ $(check_status) -eq 0 ]; then
+        echo "off"
+    else
+        if [ $(check_if_connected) -eq 0 ]; then
+            echo "connected"
+        else
+            echo "on"
+        fi
+    fi
+}
+
+status() {
+    if [ $(check_status) -eq 0 ]; then
+        echo "Bluetooth"
+    else
+        if [ $(check_if_connected) -eq 0 ]; then
+            echo "Bluetooth"
+        else
+            DEVICE=$(echo info | bluetoothctl | grep 'Alias:' | awk -F:  '{ print $2 }')
+            echo "$DEVICE"
+        fi
+    fi
+}
+
+battery() {
+    if [ $(check_status) -eq 0 ]; then
+        echo "Currently Off"
+    else
+        if [ $(check_if_connected) -eq 0 ]; then
+            echo "Not Connected"
+        else
+            BATTERY=$(upower -i /org/freedesktop/UPower/devices/headset_dev_33_33_55_33_90_D0 | grep percentage | cut -b 26-28)
+            echo "Battery Level: $BATTERY"
+        fi
+    fi
+}
+
+if [[ $1 == "--status" ]]; then
+    status
+elif [[ $1 == "--icon" ]]; then
+    icon
+elif [[ $1 == "--toggle" ]]; then
+    toggle
+elif [[ $1 == "--class" ]]; then
+    class
+elif [[ $1 == "--battery" ]]; then
+    battery
+fi

@@ -1,0 +1,152 @@
+;; variables
+(defpoll wifi-icon :interval "1s" "scripts/wifi --icon")
+(defpoll wifi-status :interval "1s" "scripts/wifi --status")
+(defpoll wifi-class :interval "1s" "scripts/wifi --class")
+(defpoll bluetooth-icon :interval "1s" "scripts/bluetooth --icon")
+(defpoll bluetooth-status :interval "1s" "scripts/bluetooth --status")
+(defpoll bluetooth-tooltip :interval "1s" "scripts/bluetooth --battery")
+(defpoll bluetooth-class :interval "1s" "scripts/bluetooth --class")
+(defpoll airplane-icon :interval "1s" "scripts/airplane --icon")
+(defpoll airplane-status :interval "1s" "scripts/airplane --status")
+(defpoll airplane-class :interval "1s" "scripts/airplane --class")
+
+(defpoll gammastep-icon :interval "1s" "zsh scripts/gammastep --icon")
+(defpoll gammastep-status :interval "1s" "zsh scripts/gammastep --status")
+(defpoll gammastep-class :interval "1s" "zsh scripts/gammastep --class")
+(defpoll power-saver-icon :interval "1s" "scripts/power-saver --icon")
+(defpoll power-saver-status :interval "1s" "scripts/power-saver --status")
+(defpoll power-saver-class :interval "1s" "scripts/power-saver --class")
+(defpoll dnd-icon :interval "1s" "scripts/dnd --icon")
+(defpoll dnd-status :interval "1s" "scripts/dnd --status")
+(defpoll dnd-class :interval "1s" "scripts/dnd --class")
+
+
+(defpoll player-name :interval "1s" "scripts/music-art --player-name")
+(defpoll player-art :interval "1s" "scripts/music-art --art")
+(defpoll player-title :interval "1s" "scripts/music-info --status")
+(defpoll player-artist :interval "1s" "scripts/music-artist")
+(defpoll player-icon :interval "1s" "scripts/music-info --icon")
+(defpoll battery-icon :interval "1s" "scripts/battery -i")
+(defpoll battery-level :interval "1s" "scripts/battery -l")
+(defpoll battery-class :interval "1s" "scripts/battery -c")
+
+;; for sliders
+(defpoll volume-slider-value :interval "500ms" "scripts/volume-slider --value")
+(defpoll volume :interval "1s" "scripts/volume --get")
+; (deflisten brightness "scripts/brightness --subscribe")
+(defpoll brightness :interval "1s" "scripts/brightness --get")
+
+;; widgets
+(defwidget system-menu []
+  (box :class "system-menu-box" :space-evenly "false" :orientation "v"
+    ; First row system
+    (box :class "first-row-system" :space-evenly "false"
+      (box :class "wifi-box" :space-evenly "false" :orientation "v"
+        (box :class "wifi-buttons-box" :space-evenly "false"
+          (button :class "wifi-button  ${wifi-class == "on" ? "wifi-button-on" : "wifi-button-off"}" :onclick "scripts/wifi --toggle" "${wifi-icon}")
+          (label :class "seperator" :text "|")
+          (button :class "wifi-arrow-btn ${wifi-class == "on" ? "wifi-arrow-btn-on" : "wifi-arrow-btn-off"}" :onclick "eww close system-menu && scripts/launchApps --network" "")
+        )
+        (label :class "wifi-label" :tooltip "Wi-Fi: ${wifi-status}" :text "${wifi-status}" :limit-width 15)
+      )
+      (box :class "bluetooth-box" :space-evenly "false" :orientation "v"
+        (box :class "bluetooth-buttons-box" :space-evenly "false"
+          (button :class "bluetooth-button  ${bluetooth-class == "on" ? "bluetooth-button-on" : "bluetooth-button-off"}" :onclick "scripts/bluetooth --toggle" "${bluetooth-icon}")
+          (label :class "seperator" :text "|")
+          (button :class "bluetooth-arrow-btn ${bluetooth-class == "on" ? "bluetooth-arrow-btn-on" : "bluetooth-arrow-btn-off"}" :onclick "eww close system-menu && scripts/launchApps --bluetooth" "")
+        )
+        (label :class "bluetooth-label" :tooltip "${bluetooth-tooltip}" :text "${bluetooth-status}" :limit-width 15)
+      )
+      (box :class "airplane-box" :space-evenly "false" :orientation "v"
+        (box :class "airplane-buttons-box" :space-evenly "false"
+          (button :class "airplane-button  ${airplane-class == "on" ? "airplane-button-on" : "airplane-button-off"}" :onclick "scripts/airplane --toggle" "${airplane-icon}")
+          (label :class "seperator" :text "|")
+          (button :class "airplane-arrow-btn ${airplane-class == "on" ? "airplane-arrow-btn-on" : "airplane-arrow-btn-off"}" :text "")
+        )
+        (label :class "airplane-label" :text "Airplane" :limit-width 15)
+      )
+    )
+    ; Second row system
+    (box :class "second-row-system" :space-evenly "false"
+      (box :class "gammastep-box" :space-evenly "false" :orientation "v"
+        (box :class "gammastep-buttons-box" :space-evenly "false"
+          (button :class "gammastep-button  ${gammastep-class == "on" ? "gammastep-button-on" : "gammastep-button-off"}" :onclick "zsh scripts/gammastep --toggle" "${gammastep-icon}")
+          (label :class "seperator" :text "|")
+          (label :class "gammastep-arrow-btn ${gammastep-class == "on" ? "gammastep-arrow-btn-on" : "gammastep-arrow-btn-off"}" :text "")
+        )
+        (label :class "gammastep-label" :text "Night Light" :limit-width 15)
+      )
+      (box :class "power-saver-box" :space-evenly "false" :orientation "v"
+        (box :class "power-saver-buttons-box" :space-evenly "false"
+          (button :class "power-saver-button  ${power-saver-class == "default" ? "power-saver-button-default" : "${power-saver-class == "performance" ? "power-saver-button-performance" : "power-saver-button-power"}"}" :onclick "pkexec scripts/power-saver --toggle" "${power-saver-icon}")
+          (label :class "seperator" :text "|")
+          (label :class "power-saver-arrow-btn ${power-saver-class == "On" ? "power-saver-arrow-btn-on" : "power-saver-arrow-btn-off"}" :text "")
+        )
+        (label :class "power-saver-label" :text "Battery Saver" :limit-width 15)
+      )
+      (box :class "dnd-box" :space-evenly "false" :orientation "v"
+        (box :class "dnd-buttons-box" :space-evenly "false"
+          (button :class "dnd-button  ${dnd-class == "on" ? "dnd-button-on" : "dnd-button-off"}" :onclick "scripts/dnd --toggle" "${dnd-icon}")
+          (label :class "seperator" :text "|")
+          (button :class "dnd-arrow-btn ${dnd-class == "on" ? "dnd-arrow-btn-on" : "dnd-arrow-btn-off"}" :onclick "eww open notifications && eww close system-menu" "")
+        )
+        (label :class "dnd-label" :text "Peace mode" :limit-width 15)
+      )
+    )
+
+    (box :class "sliders" :space-evenly "false" :orientation "v" :spacing 15
+      (box :orientation "h" :class "volume-slider-stuff" :space-evenly "false"
+        (button :onclick "scripts/volumes --toggle" :class "volume-slider-icon" {volume.icon})
+        (scale :class "volume-slider"
+          :value {volume.level}
+          :orientation "h"
+          :width 298
+          :marks true
+          :max 100
+          :min 0
+        :onchange "scripts/volume --set {}")
+        (button :onclick "eww close system-menu && scripts/launchApps --volume" :class "volume-slider-button" "")
+      )
+
+      (box :orientation "h" :class "brightness-slider-stuff" :space-evenly "false"
+        (button :class "brightness-slider-icon" {brightness.icon})
+        (scale :class "brightness-slider"
+          :orientation "h"
+          :max 100
+          :min 0
+          :value {brightness.level}
+          :width 300
+          :marks true
+        :onchange "scripts/brightness --set {}")
+        (button :class "brightness-slider-button" :text "")
+      )
+    )
+
+    (box :class "music-player-container" :orientation "v" :space-evenly "false"
+      (box :class "music-player-box" :space-evenly "false"
+        (box :class "music-player-album" :space-evenly "false" :style "background-image: url('${player-art}');")
+        (box :class "music-player-info-box" :space-evenly "true" :orientation "v"
+          (box :class "music-player-info" :space-evenly "false" :halign "start" :orientation "v"
+            (box :class "music-player-name-box" :space-evenly "false"
+              (label :class "music-player-name-icon" :text player-icon)
+              (label :class "music-player-name" :text "${player-name == "" ? "No player found" : player-name}")))
+          (box :class "music-player-info-more-box" :orientation "v" :space-evenly "false"
+            (label :class "music-player-title" :halign "start" :limit-width 20 :text player-title)
+            (label :class "music-player-artist" :halign "start" :limit-width 20 :text player-artist))))
+      (box :class "player-buttons-box" :space-evenly "true"
+        (button :class "player-prev" :onclick "playerctl previous" "劣")
+        (button :class "player-pp" :onclick "playerctl play-pause" "${player-icon}")
+        (button :class "player-next" :onclick "playerctl next" "烈")))
+    (box :class "bottom-row" :space-evenly "true"
+      (box :class "battery-box" :space-evenly "false"
+        (label :class "battery-icon ${battery-class == "" ? "battery-icon-charging" : "battery-icon-discharging"}" :text battery-icon)
+        (label :class "battery-text" :text battery-level))
+      (box :class "side-options-box" :space-evenly "false" :halign "end" :spacing 30
+        (button :class "power-button" :onclick "poweroff" "")
+        (button :class "settings-button" :onclick "scripts/launchApps --settings" "")
+        (button :class "exit-button" :onclick "scripts/launchApps --powermenu" "")))))
+
+;; windows
+(defwindow system-menu :stacking "fg" :focusable "false" :monitor 0 
+  :geometry (geometry :x "2%" :y "2%" :width "15%" :height "30%" :anchor "right top")
+  (system-menu))

@@ -1,0 +1,60 @@
+[global]
+    ### General ###
+    origin = top-right
+    notification_limit = 10
+    indicate_hidden = yes
+    sort = yes
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+    sticky_history = yes
+    history_length = 20
+    mouse_left_click = do_action
+    mouse_middle_click = close_all
+    mouse_right_click = close_current
+    enable_recursive_icon_lookup = true
+    word_wrap = yes
+    force_xwayland = false
+
+    ### Format ###
+    notification_height = 0
+    separator_height = 1
+    padding = 8
+    horizontal_padding = 8
+    frame_width = 1
+    frame_color = "#8AADF4"
+    line_height = 0
+    corner_radius = 8
+    progress_bar_corner_radius = 8
+    separator_color = frame
+
+    ### Text ###
+    font = JetBrains Mono Nerd Font 9
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    icon_position = left
+    max_icon_size = 32
+    icon_corner_radius = 5
+    icon_theme = "Adwaita"
+
+    # icon_path = /usr/share/icons/candy-icons/apps/scalable:/usr/share/icons/candy-icons/devices/scalable/
+[urgency_low]
+    background = "#24273A"
+    foreground = "#CAD3F5"
+    timeout = 3
+
+[urgency_normal]
+    background = "#24273A"
+    foreground = "#CAD3F5"
+    timeout = 5
+
+[urgency_critical]
+    background = "#24273A"
+    foreground = "#CAD3F5"
+    frame_color = "#F5A97F"
+    timeout = 10
+
+[experimental]
+    per_monitor_dpi = true

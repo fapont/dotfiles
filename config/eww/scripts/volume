@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function set() {
+    pamixer --set-volume "$1"
+}
+
+function get() {
+    muted=$(pamixer --get-mute)
+    level=$(pamixer --get-volume)
+    if [[ $muted == 'true' ]]; then
+        icon=󰖁
+    elif [ $level -le 33 ]; then
+        icon=󰕿
+    elif [ $level -le 66 ]; then
+        icon=󰖀
+    else
+        icon=󰕾
+    fi
+    echo "{\"icon\": \"$icon\", \"level\": $level, \"muted\": \"$muted\"}"
+}
+
+function toggle() {
+    muted=$(pamixer --get-mute)
+
+    if [ $muted == "true" ]; then
+        pamixer -t
+        notify-send --icon=volume-level-high --urgency=normal "Volume has been turned on." "Sound is now on, you will hear farts!"
+    else
+        pamixer -t
+        notify-send --icon=volume-level-muted --urgency=normal "Volume is muted." "Volume has been muted, your PC has been shut up!"
+    fi
+}
+
+
+
+
+if [ "$1" == "--set" ]; then
+    set "$2"
+elif [ "$1" == "--get" ]; then
+    get
+elif [ "$1" == "--toggle" ]; then
+    toggle
+fi

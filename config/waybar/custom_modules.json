@@ -1,0 +1,31 @@
+{  
+    "custom/settings": {
+        "format": "󰒓",
+        "tooltip": false
+        // "exec": "~/dotfiles/scripts/updates.sh", TODO
+    },
+    "custom/quit": {
+        "format": "󰗼",
+        "tooltip": false,
+        "on-click": "hyprctl dispatch exit"
+    },
+    "custom/lock": {
+        "format": "󰍁",
+        "tooltip": false,
+        "on-click": "swaylock"
+    },
+    "custom/reboot": {
+        "format": "󰜉",
+        "tooltip": false,
+        "on-click": "reboot"
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "shutdown now"
+    },
+    "custom/separator": {
+        "format": "|",
+        "tooltip": false
+    }
+}

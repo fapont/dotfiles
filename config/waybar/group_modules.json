@@ -1,0 +1,79 @@
+{
+    "group/media": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "media",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "pulseaudio#sound",
+            "bluetooth",
+            "pulseaudio#microphone"
+        ]
+    },
+
+    "group/settings": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "settings",
+            "transition-left-to-right": false
+        },
+        "modules" : [
+            "custom/settings",
+            "cpu",
+            "memory",
+            "disk"
+        ]
+    },
+
+    "group/power": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "power",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "custom/power",
+            "custom/quit",
+            "custom/lock",
+            "custom/reboot"
+        ]
+    },
+
+    "group/top-left": {
+        "orientation": "inherit",
+        "modules": [
+            "hyprland/workspaces"
+        ]
+    },
+
+    "group/top-middle": {
+        "orientation": "inherit",
+        "modules": [
+            "clock"
+        ]
+    },
+
+    "group/top-right-1": {
+        "orientation": "inherit",
+        "modules": [
+            "group/media",
+            "custom/separator",
+            "battery",
+            "custom/separator",
+            "network"
+        ]
+    },
+
+    "group/top-right-2": {
+        "orientation": "inherit",
+        "modules": [
+            "group/settings",
+            "custom/separator",
+            "group/power"
+        ]
+    }
+}

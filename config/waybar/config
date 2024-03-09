@@ -1,0 +1,25 @@
+{
+    "layer": "top",
+    "margin-bottom": 0,
+    "spacing": 4,
+    "start_hidden": false,
+
+    "include": [
+        "$HOME/.config/waybar/modules.json",
+        "$HOME/.config/waybar/custom_modules.json",
+        "$HOME/.config/waybar/group_modules.json"
+    ],
+
+    "modules-left": [
+        "group/top-left"
+    ],
+
+    "modules-center": [
+        "group/top-middle"
+    ],
+
+    "modules-right": [
+        "group/top-right-1",
+        "group/top-right-2"
+    ]
+}

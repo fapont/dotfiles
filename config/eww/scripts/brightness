@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function set() {
+    brillo -S "$1"
+}
+
+function get() {
+    level=$(brillo -G | xargs printf "%.0f")
+    if [ $level -le 50 ]; then
+        icon=󰃞
+    else
+        icon=󰃠
+    fi
+    echo "{\"icon\": \"$icon\", \"level\": $level}"
+}
+
+if [ "$1" == "--set" ]; then
+    set "$2"
+elif [ "$1" == "--get" ]; then
+    get
+fi
