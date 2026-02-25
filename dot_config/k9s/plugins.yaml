@@ -1,0 +1,34 @@
+plugins:
+  jqlogs:
+    shortCut: Ctrl-J
+    confirm: false
+    description: "Logs (jq)"
+    scopes:
+      - pod
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl logs -f $NAME -n $NAMESPACE --context $CONTEXT |jq -SR '. as $line | try (fromjson | .message) catch $line'"
+  jqlogsd:
+    shortCut: Ctrl-J
+    confirm: false
+    description: "Logs (jq)"
+    scopes:
+      - deployment
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl logs -f deployment/$NAME -n $NAMESPACE --context $CONTEXT |jq -SR '. as $line | try (fromjson | .message) catch $line'"
+  jqlogsc:
+    shortCut: Ctrl-J
+    confirm: false
+    description: "Logs (jq)"
+    scopes:
+      - container
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl logs -f pod/$POD -c $NAME -n $NAMESPACE --context $CONTEXT |jq -SR '. as $line | try (fromjson | .message) catch $line'"
