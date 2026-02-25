@@ -1,0 +1,34 @@
+[tools]
+jq = "latest"
+yq = "latest"
+# fzf = "latest" # fix fzf-tmux before using mise
+bat = "latest"
+eza = "latest"
+fd = "latest"
+zoxide = "latest"
+ripgrep = "latest"
+github-cli = "latest"
+neovim = "latest"
+lazygit = "latest"
+starship = "latest"
+usage = "latest"
+# btop = "latest" # Not working on MacOS, use brew
+chezmoi = "latest"
+# tmux = "latest" # Install with brew because tmux is run as initial-command in ghossty which required tools to be sourced in zprofile
+
+[shell_alias]
+cat    = 'bat'
+vim    = 'nvim'
+ls     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+la     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'
+python = 'python3'
+
+[settings]
+experimental        = true
+
+[env]
+XDG_DATA_HOME="{{env.HOME}}/.local/share"
+XDG_CONFIG_HOME="{{env.HOME}}/.config"
+XDG_STATE_HOME="{{env.HOME}}/.local/state"
+XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
+ZSH="{{env.XDG_CONFIG_HOME}}/oh-my-zsh" # Used by oh-my-zsh

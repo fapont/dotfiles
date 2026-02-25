@@ -1,0 +1,19 @@
+packages:
+  darwin:
+    brews:
+      - "git"
+      - "reattach-to-user-namespace"
+      - "btop"
+      - "tree"
+      - "tmux"
+      - "felixkratz/formulae/borders"
+      - "urlview"
+      - "extract_url"
+    casks:
+      - "nikitabobko/tap/aerospace"
+      - "font-jetbrains-mono-nerd-font"
+      - "ghostty"
+      - "raycast"
+      - "stats"
+      - "brave-browser"
+      - "zed"
