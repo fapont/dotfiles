@@ -1,0 +1,39 @@
+[tools]
+argocd      = 'latest'
+pre-commit  = 'latest'
+aws-cli     = { version = "latest", symlink_bins = true }
+aws-vault   = 'latest'
+gcloud      = 'latest'
+kubectl     = 'latest'
+kubectx     = 'latest'
+kubens      = 'latest'
+kubeconform = 'latest'
+minikube    = 'latest'
+k9s         = 'latest'
+helm        = 'latest'
+copier      = 'latest'
+just        = 'latest'
+trivy       = 'latest'
+rclone      = 'latest'
+ggshield    = 'latest'
+git-lfs     = 'latest'
+docker-cli = "latest"
+lima = 'latest'
+colima = 'latest'
+"github:docker/compose" = { version = "latest", asset_pattern = "docker-compose-darwin-aarch64", bin = "docker-compose", postinstall = """
+mkdir -p ~/.docker/cli-plugins
+ln -sf "$(mise which docker-compose)" ~/.docker/cli-plugins/docker-compose
+""" }
+"github:docker/buildx" = { version = "latest", asset_pattern = "buildx-v*.darwin-arm64", bin = "docker-buildx", postinstall = """
+mkdir -p ~/.docker/cli-plugins
+ln -sf "$(mise which docker-buildx)" ~/.docker/cli-plugins/docker-buildx
+""" }
+
+[shell_alias]
+ktx    = 'kubectx'
+kns    = 'kubens'
+dcu    = 'docker compose up'
+dcd    = 'docker compose down'
+dcl    = 'docker compose logs'
+dcr    = 'docker compose restart'
+main   = 'git switch main && git pull'
