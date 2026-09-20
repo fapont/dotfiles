@@ -1,0 +1,64 @@
+[bootstrap.packages]
+"brew:git"          = { version = "latest", os = "macos" }
+"brew:tree"         = { version = "latest", os = "macos" }
+"brew:urlview"      = { version = "latest", os = "macos" }
+"brew:extract_url"  = { version = "latest", os = "macos" }
+"brew:container"    = { version = "latest", os = "macos" }
+"brew:felixkratz/formulae/borders" = { version = "latest", os = "macos" }
+"brew-cask:ghostty"         = { version = "latest", os = "macos" }
+"brew-cask:raycast"         = { version = "latest", os = "macos" }
+"brew-cask:stats"           = { version = "latest", os = "macos" }
+"brew-cask:brave-browser"   = { version = "latest", os = "macos" }
+"brew-cask:zed"             = { version = "latest", os = "macos" }
+"brew-cask:cmux"            = { version = "latest", os = "macos" }
+"brew-cask:linearmouse"     = { version = "latest", os = "macos" }
+"brew-cask:keepingyouawake" = { version = "latest", os = "macos" }
+"brew-cask:alt-tab"         = { version = "latest", os = "macos" }
+"brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
+"brew-cask:bitwarden"       = { version = "latest", os = "macos" }
+
+# aerospace's cask can't be evaluated by mise; installed from GitHub instead.
+# Bump version+sha256 by hand on a new release ({{version}} isn't in `artifact`).
+[bootstrap.packages."macos-app:aerospace"]
+version = "0.21.3-Beta"
+url = "https://github.com/nikitabobko/AeroSpace/releases/download/v{{version}}/AeroSpace-v{{version}}.zip"
+sha256 = "bdbd3fedb3a41bdd3987d241dd5cc1d8b74a56fdbc0d76a98e6925c5cfef4ce4"
+artifact = "AeroSpace-v0.21.3-Beta/AeroSpace.app"
+os = "macos/arm64"
+
+[bootstrap.macos.dock]
+autohide = true
+tilesize = 36
+orientation = "bottom"
+show_recents = false
+magnification = false
+
+[bootstrap.macos.finder]
+show_all_files = true
+show_pathbar = true
+show_status_bar = true
+preferred_view_style = "list"
+sort_folders_first = true
+show_extensions_warning = false
+save_new_documents_to_cloud = false
+
+[bootstrap.macos.keyboard]
+key_repeat = 2
+initial_key_repeat = 15
+press_and_hold = true
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+three_finger_drag = true
+
+[bootstrap.macos.defaults]
+NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, AppleShowAllExtensions = true, NSWindowResizeTime = 0.001, NSAutomaticCapitalizationEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleShowScrollBars = "Always" }
+"com.apple.screencapture" = { location = "~/Desktop/Screenshots", type = "png", "disable-shadow" = true }
+"com.apple.dock" = { "expose-animation-duration" = 0.1, launchanim = false }
+"com.apple.controlcenter" = { BatteryShowPercentage = false }
+"com.apple.finder" = { DisableAllAnimations = true }
+"com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
+"com.apple.WindowManager" = { StandardHideWidgets = true }
+
+[bootstrap.hooks.post-defaults]
+run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"

@@ -1,0 +1,77 @@
+# Run `mise bootstrap` from a checkout. Everything else lives in
+# mise/config.toml + mise/conf.d/*.toml, symlinked into ~/.config/mise.
+
+[bootstrap.repos]
+"~/.config/oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git" }
+"~/.config/oh-my-zsh/custom/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
+"~/.config/oh-my-zsh/custom/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
+
+[dotfiles]
+"~/.config/mise/config.toml"              = { source = "mise/config.toml", mode = "symlink" }
+"~/.config/mise/conf.d/tools.toml"        = { source = "mise/conf.d/tools.toml", mode = "symlink" }
+"~/.config/mise/conf.d/shell.toml"        = { source = "mise/conf.d/shell.toml", mode = "symlink" }
+"~/.config/mise/conf.d/history.toml"      = { source = "mise/conf.d/history.toml", mode = "symlink" }
+"~/.config/mise/conf.d/agents.toml"       = { source = "mise/conf.d/agents.toml", mode = "symlink" }
+"~/.config/mise/conf.d/work.toml"         = { source = "mise/conf.d/work.toml", mode = "symlink" }
+"~/.config/mise/conf.d/macos.toml"        = { source = "mise/conf.d/macos.toml", mode = "symlink" }
+"~/.config/fnox/config.toml"               = { source = "fnox/config.toml", mode = "symlink" }
+"~/.config/ghostty/config"                = { source = "config/ghostty/config", mode = "symlink" }
+"~/.config/karabiner/karabiner.json"      = { source = "config/karabiner/karabiner.json", mode = "symlink" }
+"~/.config/btop"                          = { source = "config/btop", mode = "symlink" }
+"~/.config/k9s"                           = { source = "config/k9s", mode = "symlink" }
+"~/.config/bat"                           = { source = "config/bat", mode = "symlink" }
+"~/.config/nvim"                          = { source = "nvim", mode = "symlink" }
+"~/.config/starship.toml"                 = { source = "config/starship.toml", mode = "symlink" }
+"~/.config/aerospace"                     = { source = "config/aerospace", mode = "symlink" }
+"~/.config/colima"                        = { source = "config/colima", mode = "symlink" }
+"~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
+"~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
+"~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
+"~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
+
+[bootstrap.services.mise-history]
+builtin = "history-watch"
+
+# Self-hosted Bitwarden server, not a secret.
+[bootstrap.hooks.post-tools]
+run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw config server https://vault.fapont.xyz"
+
+# Closes the global-config chicken-and-egg (history.toml needs the symlink first).
+[tasks.bootstrap]
+run = "mise bootstrap --only dotfiles --yes"
+
+# Restores the fnox age key from Bitwarden. No-op if already present.
+[tasks.restore-secrets]
+run = '''
+set -euo pipefail
+if [ -f ~/.ssh/id_ed25519_age ]; then
+  echo "~/.ssh/id_ed25519_age already present, nothing to restore"
+  exit 0
+fi
+BW_SESSION=$(bw unlock --raw)
+mkdir -p ~/.ssh
+item=$(bw get item "fnox age" --session "$BW_SESSION")
+echo "$item" | jq -r '.sshKey.privateKey' > ~/.ssh/id_ed25519_age
+chmod 600 ~/.ssh/id_ed25519_age
+echo "$item" | jq -r '.sshKey.publicKey' > ~/.ssh/id_ed25519_age.pub
+chmod 644 ~/.ssh/id_ed25519_age.pub
+echo "Restored ~/.ssh/id_ed25519_age(.pub)"
+'''
+
+# Per-machine git SSH key, registered with GitHub. Idempotent.
+[tasks.setup-github-ssh]
+run = '''
+set -euo pipefail
+if ! gh ssh-key list >/dev/null 2>&1; then
+  gh auth refresh -h github.com -s admin:public_key
+fi
+if [ ! -f ~/.ssh/id_ed25519_github ]; then
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "fabrice.pont@doctolib.com"
+fi
+pubkey=$(awk '{print $1, $2}' ~/.ssh/id_ed25519_github.pub)
+if ! gh ssh-key list | grep -qF "$pubkey"; then
+  gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName)"
+fi
+gh config set git_protocol ssh
+echo "Git SSH ready: ~/.ssh/id_ed25519_github"
+'''

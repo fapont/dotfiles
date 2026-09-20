@@ -1,0 +1,9 @@
+[user]
+	name = Fabrice Pont
+	email = fabrice.pont@doctolib.com
+
+[init]
+	defaultBranch = main
+
+[includeIf "gitdir:~/Perso/"]
+	path = ~/.gitconfig-perso
