@@ -20,6 +20,7 @@
 "~/.config/btop"                          = { source = "config/btop", mode = "symlink" }
 "~/.config/k9s"                           = { source = "config/k9s", mode = "symlink" }
 "~/.config/bat"                           = { source = "config/bat", mode = "symlink" }
+"~/.config/tealdeer"                       = { source = "config/tealdeer", mode = "symlink" }
 "~/.config/nvim"                          = { source = "nvim", mode = "symlink" }
 "~/.config/starship.toml"                 = { source = "config/starship.toml", mode = "symlink" }
 "~/.config/aerospace"                     = { source = "config/aerospace", mode = "symlink" }

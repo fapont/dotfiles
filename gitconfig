@@ -7,3 +7,16 @@
 
 [includeIf "gitdir:~/Perso/"]
 	path = ~/.gitconfig-perso
+
+# delta as the diff pager: https://dandavison.github.io/delta/configuration.html
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+
+# equivalent of `git lfs install`, done declaratively here instead
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
