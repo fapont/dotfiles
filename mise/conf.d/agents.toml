@@ -1,6 +1,3 @@
-# Outils IA / agentique en ligne de commande. Un seul aujourd'hui, mais
-# pensé pour en accueillir d'autres (codex, opencode, etc.) sans renommer le
-# fichier -- d'où "agents" plutôt que "claude".
 [tools]
 "aqua:anthropics/claude-code" = "latest"
 

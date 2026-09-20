@@ -1,13 +1,7 @@
-# Bootstrap recipe for this machine. Run `mise bootstrap` from a checkout of
-# this repo (or `mise bootstrap --adopt fapont/dotfiles` on a fresh Mac) to
-# converge everything below.
-#
-# This file stays thin on purpose: cross-platform orchestration only (git
-# repos to clone, where dotfiles land). Everything else -- tool versions,
-# shell config, AI agent tooling, macOS-specific packages/defaults, dotfile
-# history -- lives in mise/config.toml + mise/conf.d/*.toml, which this file
-# symlinks into ~/.config/mise so mise picks them up on every future run
-# regardless of cwd. See mise.jdx.dev/bootstrap.html for the full phase order.
+# Run `mise bootstrap` from a checkout, or `mise bootstrap --adopt
+# fapont/dotfiles` on a fresh Mac. Everything besides repos/dotfiles here
+# lives in mise/config.toml + mise/conf.d/*.toml (symlinked into
+# ~/.config/mise so it's picked up regardless of cwd).
 
 [bootstrap.repos]
 "~/.config/oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git" }
@@ -33,15 +27,15 @@
 "~/.config/colima"                        = { source = "config/colima", mode = "symlink" }
 "~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
 "~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
-# Copiés (pas symlinkés) : gh/other tools appendent des lignes locales
-# (credential helper, etc.) après le bootstrap initial -- on ne veut pas que
-# ça pollue le repo. Le contenu de base (identité) reste versionné ici.
+# copy, not symlink: gh and friends append machine-local lines after bootstrap
 "~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
 "~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
 
-# "Dotfiles that save themselves" (voir mise/conf.d/history.toml) : watcher
-# service qui checkpoint automatiquement les fichiers trackés. Générique
-# (LaunchAgent sur macOS, unité systemd --user sur Linux), donc ici plutôt
-# que dans macos.toml.
 [bootstrap.services.mise-history]
 builtin = "history-watch"
+
+# ~/.config/mise/conf.d/history.toml only becomes "global" once the dotfiles
+# phase above has symlinked it there -- re-running just that phase here
+# closes the loop in a single `mise bootstrap`, instead of asking for two.
+[tasks.bootstrap]
+run = "mise bootstrap --only dotfiles --yes"

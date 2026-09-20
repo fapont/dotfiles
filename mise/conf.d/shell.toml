@@ -10,6 +10,5 @@ python = 'python3'
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
 XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
-# gcloud embarque son propre bootstrapping Python et ignore le python système
-# (3.9 sur macOS, non supporté) -- on le pointe vers le python géré par mise.
+# gcloud's bundled Python doesn't support macOS's system Python (3.9)
 CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"

@@ -1,5 +1,3 @@
-# CLI génériques, multi-plateformes (macOS/Linux) -- les outils spécifiques à
-# une plateforme ou à un contexte vivent dans les autres fichiers de conf.d/.
 [tools]
 jq = "latest"
 yq = "latest"
@@ -13,10 +11,10 @@ neovim = "latest"
 lazygit = "latest"
 starship = "latest"
 usage = "latest"
-fzf = "latest"          # cmux remplace tmux -> plus de conflit fzf-tmux
-delta = "latest"        # pager git diff/grep avec coloration syntaxique
-tealdeer = "latest"     # client tldr rapide
-glow = "latest"         # rendu markdown dans le terminal
-atuin = "latest"        # historique shell SQLite + sync chiffrée
+fzf = "latest"
+delta = "latest"
+tealdeer = "latest"
+glow = "latest"
+atuin = "latest"
 python = "latest"
 uv = "latest"

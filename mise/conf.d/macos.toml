@@ -1,57 +1,27 @@
-# Tout ce qui est spécifique à macOS : réglages système et paquets qui
-# n'ont pas de sens (ou pas la même forme) sur un futur poste Linux. Chaque
-# entrée de [bootstrap.packages] porte `os = "macos"` explicitement pour
-# qu'un `linux.toml` puisse un jour coexister ici sans qu'on ait à trier.
-
 [bootstrap.packages]
-"brew:git"        = { version = "latest", os = "macos" }
-"brew:tree"       = { version = "latest", os = "macos" }
-"brew:urlview"    = { version = "latest", os = "macos" }
-"brew:extract_url" = { version = "latest", os = "macos" }
-# NOTE: felixkratz/formulae/borders (bordures de fenêtre pour AeroSpace) est
-# volontairement absent d'ici -- échoue à la compilation sur cette machine :
-# le linker des Command Line Tools ne comprend pas le format des .tbd du SDK
-# macOS 27.0 installé (`unknown architecture arm64e.x1-macos`), décalage
-# CLT/SDK à corriger séparément (`xcode-select --install` après mise à jour).
-# container : outil secondaire d'Apple pour prototyper vite un conteneur
-# isolé (démarrage quasi instantané, pas de daemon). Ne remplace pas Colima :
-# pas de support natif Docker Compose ni de socket Docker compatible, et pas
-# visé pour du Kubernetes local (minikube) -- les deux sont utilisés ici.
-"brew:container"  = { version = "latest", os = "macos" }
-# NOTE: font-jetbrains-mono-nerd-font est volontairement absent d'ici. mise
-# rejette le chemin cible $HOME/Library/Fonts pour les casks de police
-# (bug connu : https://github.com/jdx/mise/discussions/10765). En attendant un
-# correctif, installer la police manuellement : télécharger
-# JetBrainsMono.zip depuis https://github.com/ryanoasis/nerd-fonts/releases
-# et dézipper le contenu dans ~/Library/Fonts.
-"brew-cask:ghostty"       = { version = "latest", os = "macos" }
-"brew-cask:raycast"       = { version = "latest", os = "macos" }
-"brew-cask:stats"         = { version = "latest", os = "macos" }
-"brew-cask:brave-browser" = { version = "latest", os = "macos" }
-"brew-cask:zed"           = { version = "latest", os = "macos" }
-# cmux : remplace tmux (abandonné) -- terminal natif macOS basé sur Ghostty
-# avec tabs/splits/session persistence intégrés, plus besoin de multiplexeur.
-"brew-cask:cmux"          = { version = "latest", os = "macos" }
-# LinearMouse : macOS ne permet pas nativement un sens de défilement différent
-# pour le trackpad (naturel) et une souris à molette (classique). LinearMouse
-# gère ça par périphérique via un fichier de config JSON (voir config/linearmouse).
-"brew-cask:linearmouse"   = { version = "latest", os = "macos" }
-# caffeinate est déjà intégré à macOS (/usr/bin/caffeinate) -- KeepingYouAwake
-# est un habillage GUI (barre de menu) open source autour de la même API.
+"brew:git"          = { version = "latest", os = "macos" }
+"brew:tree"         = { version = "latest", os = "macos" }
+"brew:urlview"      = { version = "latest", os = "macos" }
+"brew:extract_url"  = { version = "latest", os = "macos" }
+"brew:container"    = { version = "latest", os = "macos" }
+"brew-cask:ghostty"         = { version = "latest", os = "macos" }
+"brew-cask:raycast"         = { version = "latest", os = "macos" }
+"brew-cask:stats"           = { version = "latest", os = "macos" }
+"brew-cask:brave-browser"   = { version = "latest", os = "macos" }
+"brew-cask:zed"             = { version = "latest", os = "macos" }
+"brew-cask:cmux"            = { version = "latest", os = "macos" }
+"brew-cask:linearmouse"     = { version = "latest", os = "macos" }
 "brew-cask:keepingyouawake" = { version = "latest", os = "macos" }
 
-# AeroSpace en macos-app direct depuis les releases GitHub : le cask
-# nikitabobko/tap/aerospace échoue à l'évaluation chez mise
-# (`unsupported cask metadata DSL 'staged_path'`), donc on contourne
-# entièrement Homebrew pour ce paquet. Contrepartie : pas de suivi "latest"
-# automatique pour le type macos-app -- penser à mettre à jour `version` et
-# `sha256` à la main lors d'une prochaine release
-# (https://github.com/nikitabobko/AeroSpace/releases).
+# nikitabobko/tap/aerospace's cask can't be evaluated by mise yet, so this
+# installs straight from the GitHub release instead. No "latest" tracking
+# for macos-app: bump version + sha256 by hand on a new release, and note
+# {{version}} isn't interpolated in `artifact`.
 [bootstrap.packages."macos-app:aerospace"]
 version = "0.21.3-Beta"
 url = "https://github.com/nikitabobko/AeroSpace/releases/download/v{{version}}/AeroSpace-v{{version}}.zip"
 sha256 = "bdbd3fedb3a41bdd3987d241dd5cc1d8b74a56fdbc0d76a98e6925c5cfef4ce4"
-artifact = "AeroSpace-v0.21.3-Beta/AeroSpace.app" # {{version}} n'est pas interpolé dans `artifact`, à changer à la main avec `version` ci-dessus
+artifact = "AeroSpace-v0.21.3-Beta/AeroSpace.app"
 os = "macos/arm64"
 
 [bootstrap.macos.dock]
@@ -79,7 +49,6 @@ press_and_hold = true
 tap_to_click = true
 three_finger_drag = true
 
-# Réglages non couverts par les sections "friendly" ci-dessus
 [bootstrap.macos.defaults]
 NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, AppleShowAllExtensions = true, NSWindowResizeTime = 0.001, NSAutomaticCapitalizationEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleShowScrollBars = "Always" }
 "com.apple.screencapture" = { location = "~/Desktop/Screenshots", type = "png", "disable-shadow" = true }

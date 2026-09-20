@@ -1,33 +1,16 @@
-# "Dotfiles that save themselves" : ~/.zshrc est tracké en place (pas déplacé
-# dans le repo) et le service mise-history (voir mise.toml à la racine)
-# checkpoint automatiquement tout changement -- plus de config perdue entre
-# deux commits manuels, ce qui est ce qui a fait perdre la config atuin lors
-# du dernier crash.
-#
-# `track`, `[history.*]` et `[settings.history]` ne sont reconnus que depuis
-# la config globale (~/.config/mise/config.toml) -- c'est pour ça qu'ils sont
-# ici (ce fichier finit symlinké dans ~/.config/mise/conf.d/) et pas dans le
-# mise.toml à la racine du repo, qui reste un fichier "projet" du point de vue
-# de mise même quand on `cd` dans le repo pour lancer `mise bootstrap`.
+# `track`/edit entries and [history.*]/[settings.history] only take effect
+# from mise's global config -- must stay here, not in the root mise.toml.
 [dotfiles]
 "~/.zshrc" = { mode = "track" }
-
-# Entrées "edit" : mise possède seulement le bloc entre ses marqueurs, le
-# reste du fichier reste libre. Ça permet aussi à mise (pas moi/Claude) de
-# faire l'écriture dans ~/.zshrc, qui est protégé en écriture directe.
 "~/.zshrc/omz-init" = { block = '''
 export ZSH="$HOME/.config/oh-my-zsh"
 plugins=(zsh-autosuggestions zsh-syntax-highlighting)
 source "$ZSH/oh-my-zsh.sh"
 ''' }
-
 "~/.zshrc/mise-activate" = { block = 'eval "$(/Users/fabrice.pont/.local/bin/mise activate zsh)"' }
 
 [history.origin]
 url = "https://github.com/fapont/dotfiles.git"
 
 [settings.history]
-# Commence en "manual" (mise dot save / mise dot history) le temps de
-# valider le comportement -- passer à "sync" pour un push automatique
-# périodique une fois éprouvé sur cette machine.
 sync = "manual"
