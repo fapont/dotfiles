@@ -5,6 +5,7 @@
 "brew:extract_url"  = { version = "latest", os = "macos" }
 "brew:container"    = { version = "latest", os = "macos" }
 "brew:felixkratz/formulae/borders" = { version = "latest", os = "macos" }
+"brew:btop"         = { version = "latest", os = "macos" }
 "brew-cask:ghostty"         = { version = "latest", os = "macos" }
 "brew-cask:raycast"         = { version = "latest", os = "macos" }
 "brew-cask:stats"           = { version = "latest", os = "macos" }
