@@ -75,3 +75,27 @@ mise run restore-secrets                    # unlocks, pulls id_ed25519_age back
 
 Open a new terminal -- `GH_TOKEN`/`GITHUB_TOKEN` are already there. Both tasks are
 idempotent, safe to `mise run` again on an already-set-up machine.
+
+## macOS permissions (manual, one-time)
+
+Bootstrap installs each app's `.app` bundle and `macos.toml`'s
+`[bootstrap.hooks.post-packages]` opens the background/menu-bar ones once (so
+first-run setup happens and macOS shows the permission prompts) -- but
+granting a permission prompt is not scriptable. Do it in **System Settings >
+Privacy & Security**, then quit and reopen the app (or reboot):
+
+- **Accessibility**: AeroSpace (the window manager itself, plus needed for
+  `start-at-login` and the `borders` hook below to run), LinearMouse, AltTab
+  (mandatory -- it does nothing without it), Ice, Raycast (hotkeys/snippets).
+- **Screen Recording**: Raycast (window management, Screen Awareness), AltTab
+  (optional, window thumbnails only), Ice (menu bar item images/Ice Bar --
+  re-grant after every update since it ships ad-hoc-signed builds), cmux's
+  `cmux-cua` helper (only if its Computer Use feature is used).
+- **"Launch at Login"**: no scriptable config found for Stats, KeepingYouAwake,
+  Ice, AltTab, Raycast or Brave -- toggle it by hand in each app's own settings
+  if it should survive a reboot. AeroSpace is the exception: `start-at-login =
+  true` in `config/aerospace/aerospace.toml` handles it once Accessibility is
+  granted, and `borders` then starts on its own via AeroSpace's
+  `after-startup-command`. Bitwarden and LinearMouse already register as
+  macOS login items out of the box; Raycast does the same the first time it's
+  opened.
