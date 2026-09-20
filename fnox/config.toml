@@ -3,11 +3,9 @@ default_provider = "bitwarden"
 [providers.bitwarden]
 type = "bitwarden"
 
-# Générer une fois : ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_age -C "fnox age"
-# Puis remplacer `recipients` par le contenu de ~/.ssh/id_ed25519_age.pub
 [providers.age]
 type = "age"
-recipients = []
+recipients = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICP2g5weFd7pkYop0x7HKyVM/ribR8yeifcc6AM8FKnV fnox age"]
 key_file = "~/.ssh/id_ed25519_age"
 
 [secrets]
