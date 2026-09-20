@@ -16,6 +16,7 @@
 "brew-cask:alt-tab"         = { version = "latest", os = "macos" }
 "brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
+"brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
 
 # aerospace's cask can't be evaluated by mise; installed from GitHub instead.
 # Bump version+sha256 by hand on a new release ({{version}} isn't in `artifact`).
