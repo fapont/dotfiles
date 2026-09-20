@@ -26,6 +26,9 @@
 "~/.config/aerospace"                     = { source = "config/aerospace", mode = "symlink" }
 "~/.config/colima"                        = { source = "config/colima", mode = "symlink" }
 "~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
+"~/.config/oh-my-zsh/custom/functions.zsh" = { source = "config/zsh/functions.zsh", mode = "symlink" }
+"~/.config/worktrunk/config.toml"          = { source = "config/worktrunk/config.toml", mode = "symlink" }
+"~/.config/claude/CLAUDE.md"               = { source = "config/claude/CLAUDE.md", mode = "symlink" }
 "~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
 "~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
 "~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
