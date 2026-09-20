@@ -5,4 +5,4 @@
 cc = 'bash ~/.config/claude/scripts/cc'
 
 [env]
-CLAUDE_CONFIG_DIR="{{env.XDG_CONFIG_HOME}}/claude"
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/.config/claude"

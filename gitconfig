@@ -1,0 +1,9 @@
+[user]
+	name = Fabrice Pont
+	email = 32645951+fapont@users.noreply.github.com
+
+[init]
+	defaultBranch = main
+
+[includeIf "gitdir:~/Perso/"]
+	path = ~/.gitconfig-perso
