@@ -69,21 +69,25 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   GitHub release (sha256-verified) because mise can't evaluate its cask's
   Ruby DSL yet -- no "latest" tracking for that entry, bump `version` +
   `sha256` by hand on a new release.
-- **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `fnox/config.toml`
-  (also holds an `age` provider for secrets to encrypt and commit directly,
-  using a dedicated SSH key, `id_ed25519_age`). `bw login` once. The file's
-  top-level `env = "exec"` keeps every secret scoped to `fnox exec -- <cmd>`
-  by default; `GH_TOKEN`/`GITHUB_TOKEN` opt into `env = true` so `eval
-  "$(fnox activate zsh)"` (in `~/.zshrc`) exports them into every shell --
-  plain `gh`/`git push` just work.
-- **BW_SESSION caching**: `bwu` unlocks Bitwarden and caches the session,
-  age-encrypted, at `~/.local/state/bw-session.age` (outside the repo, never
-  committed). `mise/conf.d/shell.toml`'s `[env]` decrypts it fresh into
-  every shell, uncached by mise itself -- fnox has no auto-unlock of its
-  own, it just reads `$BW_SESSION` the same way `bw` does. Deliberate
-  tradeoff: convenience over re-entering the master password per terminal --
-  the cache is only as safe as `id_ed25519_age` already is, no new exposure
-  introduced.
+- **Secrets**: `fnox`, configured in `fnox/config.toml` with two providers --
+  `bitwarden` (live vault lookups, dormant: nothing uses it today, kept for
+  a future secret that genuinely needs to stay fresh rather than committed)
+  and `age` (encrypt once, commit the ciphertext, decrypt locally with
+  `id_ed25519_age` -- no network, no vault, no session). `GH_TOKEN`/
+  `GITHUB_TOKEN` use `age`: a PAT barely rotates, so it fits the "static,
+  committed" shape far better than a live lookup. The file's top-level
+  `env = "exec"` keeps any future secret scoped to `fnox exec -- <cmd>` by
+  default; these two opt into `env = true` so `eval "$(fnox activate zsh)"`
+  (in `~/.zshrc`) exports them into every shell -- plain `gh`/`git push`
+  just work, offline, no Bitwarden involved.
+- **BW_SESSION caching**: only matters for the dormant `bitwarden` provider
+  and for `mise run restore-secrets` (see "Fresh machine"). `bwu` unlocks
+  Bitwarden and caches the session, age-encrypted, at
+  `~/.local/state/bw-session.age` (outside the repo, never committed).
+  `mise/conf.d/shell.toml`'s `[env]` decrypts it fresh into every shell,
+  uncached by mise itself. Deliberate tradeoff: convenience over re-entering
+  the master password per terminal -- the cache is only as safe as
+  `id_ed25519_age` already is, no new exposure introduced.
 
 ## Known gaps (upstream mise, not this repo)
 
@@ -116,8 +120,14 @@ gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName
 gh config set git_protocol ssh
 bw login && export BW_SESSION=$(bw unlock --raw)
 mise run restore-secrets                    # pulls ~/.ssh/id_ed25519_age back from Bitwarden
-bwu                                          # caches the unlocked session for every future terminal
 ```
+
+That's it -- open a new terminal and `GH_TOKEN`/`GITHUB_TOKEN` are already
+there (`fnox`'s `age` provider decrypts them straight from `fnox/config.toml`,
+no Bitwarden needed once the key above is restored). `bw`/`bwu` only
+matter for that one restore step and for any *future* secret that's
+deliberately sourced live from Bitwarden instead of committed -- day-to-day,
+nothing here needs a Bitwarden session at all.
 
 The `bw login`/`unlock` step stays manual on purpose -- a password manager
 that could be scripted open wouldn't be one. Everything after it
