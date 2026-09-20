@@ -13,6 +13,7 @@
 "brew-cask:cmux"            = { version = "latest", os = "macos" }
 "brew-cask:linearmouse"     = { version = "latest", os = "macos" }
 "brew-cask:keepingyouawake" = { version = "latest", os = "macos" }
+"brew-cask:alt-tab"         = { version = "latest", os = "macos" }
 
 # nikitabobko/tap/aerospace's cask can't be evaluated by mise yet, so this
 # installs straight from the GitHub release instead. No "latest" tracking
