@@ -92,6 +92,10 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'com.google.Chrome'
     run = 'move-node-to-workspace G'
 
+[[on-window-detected]]
+    if.app-id = 'com.anthropic.claudefordesktop'
+    run       = ['move-node-to-workspace C']
+
 ##################
 ### Workspaces ###
 ##################
@@ -145,6 +149,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-cmd-ctrl-s = 'workspace S'
     alt-cmd-ctrl-o = 'workspace O'
     alt-cmd-ctrl-g = 'workspace G'
+    alt-cmd-ctrl-c = 'workspace C'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
     alt-cmd-ctrl-shift-1 = 'move-node-to-workspace 1'
