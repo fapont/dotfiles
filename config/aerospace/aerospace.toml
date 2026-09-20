@@ -1,3 +1,4 @@
+config-version = 2
 after-login-command = []
 
 after-startup-command = [
@@ -99,8 +100,8 @@ automatically-unhide-macos-hidden-apps = false
     2 = 'main'                       # Main monitor
     3 = 'main'                  # Non-main monitor in case when there are only two monitors
     4 = 'main'                   # Case insensitive regex substring
-    5 = 'main'    
-    6 = 2    
+    5 = 'main'
+    6 = 2
 #    7 = '^built-in retina display$'
     7 = 3
 ####################
@@ -140,7 +141,7 @@ automatically-unhide-macos-hidden-apps = false
     alt-cmd-ctrl-6 = 'workspace 6'
     alt-cmd-ctrl-7 = 'workspace 7'
     alt-cmd-ctrl-8 = 'workspace 8'
- 
+
     alt-cmd-ctrl-s = 'workspace S'
     alt-cmd-ctrl-o = 'workspace O'
     alt-cmd-ctrl-g = 'workspace G'
