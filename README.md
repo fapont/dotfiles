@@ -38,6 +38,7 @@ mise/
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
 config/                        # app configs (ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
+fnox/config.toml               # secrets-as-env-vars, see below
 nvim/                           # Neovim (LazyVim)
 zprofile, gitconfig, gitconfig-perso
 ```
@@ -68,16 +69,15 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   GitHub release (sha256-verified) because mise can't evaluate its cask's
   Ruby DSL yet -- no "latest" tracking for that entry, bump `version` +
   `sha256` by hand on a new release.
+- **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `fnox/config.toml`.
+  `bw login` once, then `fnox exec -- <cmd>` (or `ghx` for `gh`) injects
+  secrets into that one subprocess only -- never a global env var.
 
 ## Known gaps (upstream mise, not this repo)
 
 - **JetBrains Mono Nerd Font**: font-cask rejects `$HOME/Library/Fonts`
   ([jdx/mise#10765](https://github.com/jdx/mise/discussions/10765)). Install
   by hand from [nerd-fonts releases](https://github.com/ryanoasis/nerd-fonts/releases).
-- **borders**: no prebuilt bottle yet for this macOS version, and building
-  from source needs a linker that understands the current SDK's `.tbd`
-  format. Re-add `felixkratz/formulae/borders` to `macos.toml` once either
-  lands.
 - **Root-owned files under `/opt/homebrew`**: a past `sudo mise ...` run can
   leave stray root-owned paths that block new installs with `Permission
   denied`. Fix with `sudo chown -R "$(whoami)":admin /opt/homebrew`; never
