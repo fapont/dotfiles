@@ -1,0 +1,3 @@
+# Avoids "Page cache not found" on a fresh install: downloads the cache on first use.
+[updates]
+auto_update = true
