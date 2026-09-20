@@ -15,7 +15,6 @@ copier      = 'latest'
 just        = 'latest'
 trivy       = 'latest'
 rclone      = 'latest'
-ggshield    = 'latest'
 git-lfs     = 'latest'
 docker-cli = "latest"
 lima = 'latest'
