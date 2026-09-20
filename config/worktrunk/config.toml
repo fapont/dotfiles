@@ -1,0 +1,7 @@
+worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
+
+[aliases]
+prune = "wt step prune {{ args }}"
+
+[post-start]
+copy = "wt step copy-ignored"
