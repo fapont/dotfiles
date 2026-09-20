@@ -16,7 +16,7 @@
 "~/.config/mise/conf.d/agents.toml"       = { source = "mise/conf.d/agents.toml", mode = "symlink" }
 "~/.config/mise/conf.d/work.toml"         = { source = "mise/conf.d/work.toml", mode = "symlink" }
 "~/.config/mise/conf.d/macos.toml"        = { source = "mise/conf.d/macos.toml", mode = "symlink" }
-"~/.config/fnox/config.toml"               = { source = "fnox/config.toml", mode = "symlink" }
+"~/.config/fnox/config.toml"               = { source = "secrets.toml", mode = "symlink" }
 "~/.config/ghostty/config"                = { source = "config/ghostty/config", mode = "symlink" }
 "~/.config/karabiner/karabiner.json"      = { source = "config/karabiner/karabiner.json", mode = "symlink" }
 "~/.config/btop"                          = { source = "config/btop", mode = "symlink" }
