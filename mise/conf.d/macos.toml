@@ -16,6 +16,7 @@
 "brew-cask:alt-tab"         = { version = "latest", os = "macos" }
 "brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
+"brew-cask:karabiner-elements" = { version = "latest", os = "macos" }
 "brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
 
 # aerospace's cask can't be evaluated by mise; installed from GitHub instead.
@@ -72,10 +73,11 @@ run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 # on this first launch and registers itself as a login item; its
 # `after-startup-command` then starts `borders`. The rest (Stats, Raycast,
 # AltTab, Ice) still need "Launch at Login" turned on by hand in their own
-# settings -- see README "macOS permissions (manual, one-time)".
+# settings -- see README "macOS permissions (manual, one-time)". Karabiner-Elements
+# additionally needs its Driver Extension approved and a reboot before remapping works.
 [bootstrap.hooks.post-packages]
 run = '''
-for app in AeroSpace Stats Raycast AltTab Ice; do
+for app in AeroSpace Stats Raycast AltTab Ice Karabiner-Elements; do
   pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
 done
 '''
