@@ -38,7 +38,7 @@ mise/
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
 config/                        # app configs (ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
-fnox/config.toml               # secrets-as-env-vars, see below
+secrets.toml                   # secrets-as-env-vars, see below
 nvim/                           # Neovim (LazyVim)
 zprofile, gitconfig, gitconfig-perso
 ```
@@ -69,9 +69,11 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   GitHub release (sha256-verified) because mise can't evaluate its cask's
   Ruby DSL yet -- no "latest" tracking for that entry, bump `version` +
   `sha256` by hand on a new release.
-- **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `fnox/config.toml`.
-  `bw login` once, then `fnox exec -- <cmd>` (or `ghx` for `gh`) injects
-  secrets into that one subprocess only -- never a global env var.
+- **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `secrets.toml`
+  (also holds an `age` provider for secrets to encrypt and commit directly,
+  using a dedicated SSH key). `bw login` once, then `fnox exec -- <cmd>`
+  (or `ghx` for `gh`) injects secrets into that one subprocess only -- never
+  a global env var.
 
 ## Known gaps (upstream mise, not this repo)
 
