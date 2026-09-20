@@ -71,19 +71,19 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   `sha256` by hand on a new release.
 - **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `fnox/config.toml`
   (also holds an `age` provider for secrets to encrypt and commit directly,
-  using a dedicated SSH key, `id_ed25519_age`). `bw login` once. For a
-  secret meant to stay scoped to one command, `fnox exec -- <cmd>` injects
-  it into that subprocess only. `GH_TOKEN`/`GITHUB_TOKEN`, by choice, are
-  the exception: they're always exported (see below), so plain `gh` and
-  `git push` just work.
+  using a dedicated SSH key, `id_ed25519_age`). `bw login` once. The file's
+  top-level `env = "exec"` keeps every secret scoped to `fnox exec -- <cmd>`
+  by default; `GH_TOKEN`/`GITHUB_TOKEN` opt into `env = true` so `eval
+  "$(fnox activate zsh)"` (in `~/.zshrc`) exports them into every shell --
+  plain `gh`/`git push` just work.
 - **BW_SESSION caching**: `bwu` unlocks Bitwarden and caches the session,
   age-encrypted, at `~/.local/state/bw-session.age` (outside the repo, never
-  committed). `mise/conf.d/shell.toml`'s `[env]` decrypts it (and, from it,
-  resolves `GH_TOKEN`/`GITHUB_TOKEN` via `fnox get`) fresh on every shell,
-  uncached by mise itself, so nothing ends up sitting on disk in plaintext
-  beyond that one age-encrypted file. Deliberate tradeoff: convenience over
-  re-entering the master password per terminal -- the cache is only as safe as
-  `id_ed25519_age` already is, no new exposure introduced.
+  committed). `mise/conf.d/shell.toml`'s `[env]` decrypts it fresh into
+  every shell, uncached by mise itself -- fnox has no auto-unlock of its
+  own, it just reads `$BW_SESSION` the same way `bw` does. Deliberate
+  tradeoff: convenience over re-entering the master password per terminal --
+  the cache is only as safe as `id_ed25519_age` already is, no new exposure
+  introduced.
 
 ## Known gaps (upstream mise, not this repo)
 
