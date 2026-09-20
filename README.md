@@ -114,24 +114,23 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
 ```sh
 curl https://mise.run | sh
 mise bootstrap --adopt fapont/dotfiles      # everything: packages, defaults, tools, dotfiles
-gh auth refresh -h github.com -s admin:public_key
-ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -C "fabrice.pont@doctolib.com"
-gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName)"
-gh config set git_protocol ssh
-bw login && export BW_SESSION=$(bw unlock --raw)
-mise run restore-secrets                    # pulls ~/.ssh/id_ed25519_age back from Bitwarden
+mise run setup-github-ssh                   # per-machine git SSH key, registered with GitHub
+bw login                                    # the one step that can't be scripted away
+mise run restore-secrets                    # unlocks, pulls id_ed25519_age back from Bitwarden
 ```
 
 That's it -- open a new terminal and `GH_TOKEN`/`GITHUB_TOKEN` are already
 there (`fnox`'s `age` provider decrypts them straight from `fnox/config.toml`,
-no Bitwarden needed once the key above is restored). `bw`/`bwu` only
-matter for that one restore step and for any *future* secret that's
-deliberately sourced live from Bitwarden instead of committed -- day-to-day,
-nothing here needs a Bitwarden session at all.
+no Bitwarden needed once the key above is restored). `bw` only matters for
+that one restore step and for any *future* secret that's deliberately
+sourced live from Bitwarden instead of committed -- day-to-day, nothing
+here needs a Bitwarden session at all.
 
-The `bw login`/`unlock` step stays manual on purpose -- a password manager
-that could be scripted open wouldn't be one. Everything after it
-(`restore-secrets`) is scripted specifically so a fresh machine doesn't get
-a *new* age key, which would make every previously-encrypted secret in this
-repo unreadable. The GitHub SSH key, by contrast, is fine to regenerate per
-machine -- each one just gets added to the account.
+Both tasks are idempotent -- safe to `mise run` again on an already-set-up
+machine, they just no-op. `setup-github-ssh` still needs a browser the
+*first* time (`gh auth refresh` for the `admin:public_key` scope), and
+`bw login` needs your master password -- neither can be scripted away
+without giving up the thing that makes them secure. The GitHub SSH key is
+fine to regenerate per machine (each one just gets added to the account);
+the age key, by contrast, must be restored, never regenerated -- a new one
+would make every previously-encrypted secret in this repo unreadable.
