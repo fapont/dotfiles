@@ -6,7 +6,7 @@ ls     = 'eza --color=always --long --git --no-filesize --icons=always --no-time
 la     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'
 python = 'python3'
 ghx    = 'fnox exec -- gh'
-bwu    = 'bw unlock --raw | age -r "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICP2g5weFd7pkYop0x7HKyVM/ribR8yeifcc6AM8FKnV fnox age" -o ~/.local/state/bw-session.age && export BW_SESSION=$(age -d -i ~/.ssh/id_ed25519_age ~/.local/state/bw-session.age)'
+bwu    = 'bw unlock --raw | age -r "$(cat ~/.ssh/id_ed25519_age.pub)" -o ~/.local/state/bw-session.age && export BW_SESSION=$(age -d -i ~/.ssh/id_ed25519_age ~/.local/state/bw-session.age)'
 
 [env]
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
@@ -14,3 +14,5 @@ XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
 # gcloud's bundled Python doesn't support macOS's system Python (3.9)
 CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
+# no cache: it's a live decrypt each time, never a plaintext secret at rest
+BW_SESSION = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"
