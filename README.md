@@ -94,4 +94,23 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   commit from `~/.dotfiles`. For `~/.zshrc`, use `mise dot status` / `mise
   dot diff` / `mise dot save` -- it's tracked, not symlinked.
 - **Before a risky change**: `mise bootstrap --dry-run` to preview.
-- **New machine**: `mise bootstrap --adopt fapont/dotfiles`.
+
+## Fresh machine
+
+```sh
+curl https://mise.run | sh
+mise bootstrap --adopt fapont/dotfiles      # everything: packages, defaults, tools, dotfiles
+gh auth refresh -h github.com -s admin:public_key
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -C "fabrice.pont@doctolib.com"
+gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName)"
+gh config set git_protocol ssh
+bw login && export BW_SESSION=$(bw unlock --raw)
+mise run restore-secrets                    # pulls ~/.ssh/id_ed25519_age back from Bitwarden
+```
+
+The `bw login`/`unlock` step stays manual on purpose -- a password manager
+that could be scripted open wouldn't be one. Everything after it
+(`restore-secrets`) is scripted specifically so a fresh machine doesn't get
+a *new* age key, which would make every previously-encrypted secret in this
+repo unreadable. The GitHub SSH key, by contrast, is fine to regenerate per
+machine -- each one just gets added to the account.

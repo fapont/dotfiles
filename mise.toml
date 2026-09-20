@@ -36,11 +36,29 @@
 builtin = "history-watch"
 
 # Self-hosted Bitwarden -- not a secret, just which server the CLI talks to.
+# `bw config server` refuses to run while logged in, even to the same
+# server, so skip it once already configured.
 [bootstrap.hooks.post-tools]
-run = "bw config server https://vault.fapont.xyz"
+run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw config server https://vault.fapont.xyz"
 
 # ~/.config/mise/conf.d/history.toml only becomes "global" once the dotfiles
 # phase above has symlinked it there -- re-running just that phase here
 # closes the loop in a single `mise bootstrap`, instead of asking for two.
 [tasks.bootstrap]
 run = "mise bootstrap --only dotfiles --yes"
+
+# After `bw login` + `bw unlock` (irreducibly manual -- that's the point of a
+# password manager), this restores the fnox age key from its Bitwarden
+# backup so a fresh machine doesn't need a brand new key -- which would
+# leave every previously age-encrypted secret unreadable.
+[tasks.restore-secrets]
+run = '''
+set -euo pipefail
+mkdir -p ~/.ssh
+item=$(bw get item "fnox age" --session "$BW_SESSION")
+echo "$item" | jq -r '.sshKey.privateKey' > ~/.ssh/id_ed25519_age
+chmod 600 ~/.ssh/id_ed25519_age
+echo "$item" | jq -r '.sshKey.publicKey' > ~/.ssh/id_ed25519_age.pub
+chmod 644 ~/.ssh/id_ed25519_age.pub
+echo "Restored ~/.ssh/id_ed25519_age(.pub)"
+'''
