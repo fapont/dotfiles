@@ -13,10 +13,10 @@ Homebrew or chezmoi required, just mise itself.
 | [Ghostty](https://ghostty.org/) | Terminal emulator |
 | [cmux](https://github.com/manaflow-ai/cmux) | Terminal app (tabs/splits/session persistence, built on Ghostty) -- replaces tmux |
 | [Neovim](https://www.lazyvim.org/) | Editor (LazyVim distribution) |
-| [AeroSpace](https://github.com/nikitabobko/AeroSpace) | Tiling window manager (manual install for now, see below) |
+| [AeroSpace](https://github.com/nikitabobko/AeroSpace) | Tiling window manager |
 | [Starship](https://starship.rs/) | Shell prompt |
 | [mise](https://mise.jdx.dev/) | Runtime/tool version manager, package installs, machine bootstrap |
-| [Oh My Zsh](https://ohmyz.sh/) | Zsh framework with syntax highlighting and autosuggestions |
+| [Oh My Zsh](https://ohmyz.sh/) | Zsh framework, with `zsh-autosuggestions` + `zsh-syntax-highlighting` |
 | [Karabiner-Elements](https://karabiner-elements.pqrs.org/) | Keyboard remapping (caps lock -> option, option -> hyper key) |
 | [bat](https://github.com/sharkdp/bat) | `cat` replacement with syntax highlighting |
 | [k9s](https://k9scli.io/) | Kubernetes TUI |
@@ -57,26 +57,23 @@ cd ~/.dotfiles
 mise bootstrap
 ```
 
-This runs, in order: system packages (brew formulae/casks -- no sudo, no
+This runs, in order: system packages (brew/brew-cask/macos-app -- no sudo, no
 Homebrew), the `mise-history` watcher service, git repos (Oh My Zsh +
-plugins), dotfiles (symlinks app configs into `~/.config`, copies `~/.gitconfig`),
-macOS defaults (Dock/Finder/keyboard/trackpad), and finally the CLI tool
-versions declared in `mise/config.toml`.
+plugins), dotfiles (symlinks app configs into `~/.config`, copies
+`~/.gitconfig`, edits the managed blocks in `~/.zshrc`), macOS defaults
+(Dock/Finder/keyboard/trackpad), and finally the CLI tool versions declared
+in `mise/conf.d/*.toml`.
 
 Run it **twice** on a truly fresh machine: the first run creates the symlink
-`~/.config/mise/config.toml -> ~/.dotfiles/mise/config.toml`; only after that
-symlink exists does mise treat that file's `[dotfiles]` `track` entries and
-`[history.*]` settings as *global* config (mise ignores those specific keys
-when it only sees them in a project-level file). Everything else applies
-correctly on the first run.
+`~/.config/mise/conf.d/history.toml -> ~/.dotfiles/mise/conf.d/history.toml`;
+only after that symlink exists does mise treat that file's `[dotfiles]`
+`track`/edit entries and `[history.*]` settings as *global* config (mise
+ignores those specific keys when it only sees them in a project-level file).
+Everything else -- packages, macOS defaults, tool versions, plain
+symlink/copy dotfiles -- applies correctly on the first run.
 
 ### Known gaps (upstream mise bugs, not this repo)
 
-- **AeroSpace**: mise can't yet evaluate this cask's third-party tap Ruby DSL
-  (`unsupported cask metadata DSL 'staged_path'`). Install manually:
-  `brew install nikitabobko/tap/aerospace` (needs a real Homebrew) or grab a
-  release from https://github.com/nikitabobko/AeroSpace/releases. The config
-  at `~/.config/aerospace` is already wired up and ready.
 - **JetBrains Mono Nerd Font**: mise's font-cask target path rejects
   `$HOME/Library/Fonts` ([jdx/mise#10765](https://github.com/jdx/mise/discussions/10765)).
   Install manually: download `JetBrainsMono.zip` from
@@ -85,7 +82,7 @@ correctly on the first run.
   linker that understands the current macOS SDK's `.tbd` format -- fails with
   `tapi error: malformed file` if your Xcode Command Line Tools are behind
   the SDK. Update CLT (`xcode-select --install`) and re-add
-  `"brew:felixkratz/formulae/borders"` to `[bootstrap.packages]` once it builds.
+  `"brew:felixkratz/formulae/borders"` to `mise/conf.d/macos.toml` once it builds.
 - **Stray root-owned files under `/opt/homebrew`**: if a past `sudo mise ...`
   invocation ran, some paths under the prefix (`Caskroom/.mise.lock`,
   `var/homebrew/locks`, `share/fish`, etc.) can end up owned by root, which
@@ -93,14 +90,27 @@ correctly on the first run.
   once with `sudo chown -R "$(whoami)":admin /opt/homebrew`; never run `mise
   bootstrap` itself with `sudo`.
 
+AeroSpace used to be on this list (mise can't evaluate the
+`nikitabobko/tap/aerospace` cask's Ruby DSL -- `unsupported cask metadata DSL
+'staged_path'`) but is now installed directly from its GitHub release as a
+pinned `macos-app:` package -- see `mise/conf.d/macos.toml` for the tradeoff
+(no automatic "latest" tracking for that package type; bump `version` +
+`sha256` by hand on a new release).
+
 ## Structure
 
 ```
 .
-├── mise.toml                  # bootstrap recipe: packages, macOS defaults, repos, dotfiles map
+├── mise.toml                  # thin bootstrap recipe: git repos to clone, the dotfiles map (what goes where)
 ├── mise/
-│   ├── config.toml            # [tools]/[env]/[shell_alias] + [dotfiles] track + [history.*] -> ~/.config/mise/config.toml
-│   └── conf.d/                # work.toml (k8s/Docker/AWS/GCloud), claude.toml
+│   ├── config.toml            # [settings] only (trusted_config_paths) -> ~/.config/mise/config.toml
+│   └── conf.d/
+│       ├── tools.toml         # [tools] cross-platform CLI versions (jq, bat, eza, ripgrep, delta, atuin, ...)
+│       ├── shell.toml         # [shell_alias] + [env] (XDG_*, CLOUDSDK_PYTHON)
+│       ├── history.toml       # [dotfiles] ~/.zshrc track + edit blocks, [history.*] -- "global-only" settings live here
+│       ├── agents.toml        # AI/dev-agent CLIs (Claude Code today; room for more)
+│       ├── work.toml          # k8s/Docker/AWS/GCloud
+│       └── macos.toml         # everything macOS-only: [bootstrap.packages] (tagged os = "macos"), [bootstrap.macos.*], post-defaults hook
 ├── config/
 │   ├── aerospace/             # Tiling WM config
 │   ├── bat/                   # Bat config + Catppuccin theme
@@ -117,31 +127,59 @@ correctly on the first run.
 └── gitconfig-perso            # [user.email] override for ~/Perso/**
 ```
 
+`mise/conf.d/` mirrors the same layout mise uses globally at
+`~/.config/mise/conf.d/`, which is why a project-level `mise/` directory here
+is auto-discovered the same way -- no need for everything to live in one
+`mise.toml`.
+
 ## Key design choices
 
 - **mise does everything**: package installs (`[bootstrap.packages]`), macOS
   defaults (`[bootstrap.macos.*]`), git repo clones (`[bootstrap.repos]`), and
   dotfile deployment (`[dotfiles]`) are all mise-native. No chezmoi, no
   Homebrew as a separate dependency.
-- **symlink vs. copy vs. track**: app configs are `symlink`ed (edit in the
-  repo, live immediately). `~/.gitconfig` is `copy`d because `gh auth
+- **Config split by domain, not by app**: `mise/conf.d/*.toml` is split into
+  `tools` (generic CLI), `shell` (aliases/env), `history` (dotfile
+  tracking -- constrained to live here, see below), `agents` (AI/dev-agent
+  CLIs), `work` (job-specific cloud/k8s tools), and `macos` (anything
+  platform-specific). The macOS split exists so a future `linux.toml` can sit
+  next to it without reshuffling anything; every package in `macos.toml` is
+  tagged `os = "macos"` for exactly that reason.
+- **symlink vs. copy vs. track vs. edit**: app configs are `symlink`ed (edit
+  in the repo, live immediately). `~/.gitconfig` is `copy`d because `gh auth
   setup-git` and similar tools append machine-local lines to it after
-  bootstrap that shouldn't leak into the repo. `~/.zshrc` is `track`ed in
-  place (mise versions it via its own history, without moving the file).
+  bootstrap that shouldn't leak into the repo (re-run `gh auth setup-git`
+  after any `mise bootstrap` that touches it). `~/.zshrc` is `track`ed in
+  place (mise versions it via its own history, without moving the file) *and*
+  carries two `edit` entries (`omz-init`, `mise-activate`) that mise owns as
+  marker-delimited blocks -- this is also how the Oh My Zsh sourcing line and
+  the `mise activate` line get written into `~/.zshrc` without this repo (or
+  Claude) needing direct write access to that file.
+- **"Global-only" mise settings**: `[dotfiles]` `track`/edit entries,
+  `[history.*]`, and `[settings] trusted_config_paths` are only honored by
+  mise from its *global* config -- which is exactly what `mise/config.toml`
+  and `mise/conf.d/*.toml` become once symlinked into `~/.config/mise/`.
+  Declaring them in the *root* `mise.toml` doesn't work (mise treats that as
+  a project-level file even when you `cd` into this repo to bootstrap), which
+  is why `history.toml` lives under `mise/conf.d/` and the root `mise.toml`
+  stays limited to repo clones and the dotfiles map.
 - **Dotfiles that save themselves**: the `mise-history` watcher service
   auto-checkpoints tracked files (currently just `~/.zshrc`) so a crash
   between two manual commits doesn't lose config again -- this is what bit
   us with the lost atuin config. `history.sync` starts at `manual`
   (`mise dot save` / `mise dot history`); flip to `sync` in
-  `mise/config.toml` once proven out, for automatic periodic push.
+  `mise/conf.d/history.toml` once proven out, for automatic periodic push.
 - **Per-directory git identity**: `~/Doctolib/**` uses the work email (global
   default), `~/Perso/**` overrides to the personal one via `includeIf`.
-- **Modular mise configs**: work tools (k8s, Docker, AWS/GCloud) and Claude
-  Code are split into separate `conf.d/` files.
+- **Pinned `macos-app` as an escape hatch**: when mise's Homebrew cask
+  evaluation can't handle a particular tap (AeroSpace today), a pinned
+  `macos-app:` entry sourced straight from GitHub releases (sha256-verified)
+  is the fallback -- no real Homebrew needed, at the cost of manual version
+  bumps for that one package.
 
 ## Shell aliases
 
-Defined in `mise/config.toml`:
+Defined in `mise/conf.d/shell.toml`:
 
 | Alias | Command |
 |-------|---------|
@@ -152,4 +190,4 @@ Defined in `mise/config.toml`:
 | `la` | `eza -a` |
 | `python` | `python3` |
 
-Additional work aliases in `conf.d/work.toml` (kubectx, docker compose shortcuts, etc.).
+Additional work aliases in `mise/conf.d/work.toml` (kubectx, docker compose shortcuts, etc.).
