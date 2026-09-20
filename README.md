@@ -55,6 +55,17 @@ than one big `mise.toml`.
 - **Root-owned files under `/opt/homebrew`**: a past `sudo mise ...` run can leave stray
   root-owned paths that block new installs with `Permission denied`. Fix with
   `sudo chown -R "$(whoami)":admin /opt/homebrew`; never run `mise bootstrap` itself with `sudo`.
+- **Hardware-specific entries in `config/karabiner/karabiner.json`**: the "Default
+  profile"'s `devices` array pins `simple_modifications` to a specific Apple
+  keyboard (`vendor_id = 1452` / `0x5AC`, `product_id = 591` / `0x24F`) and lists
+  a Keychron device (`vendor_id = 13364` / `0x3434`, `product_id = 2832` /
+  `0xB10`, matching the separate unused "Keychron Q1" profile's name) as a
+  pointing device to not ignore. These came from a previous machine's setup and
+  may not match any keyboard currently plugged into this one -- harmless if so
+  (Karabiner just never matches that device section), but worth pruning by hand
+  if/when the old keyboard is confirmed gone for good. The global
+  caps-lock/left-option hyper-key remap (used by AeroSpace's `alt-cmd-ctrl-*`
+  bindings) is untouched by this and applies regardless of connected keyboard.
 
 ## Keeping this up to date
 
@@ -86,11 +97,23 @@ Privacy & Security**, then quit and reopen the app (or reboot):
 
 - **Accessibility**: AeroSpace (the window manager itself, plus needed for
   `start-at-login` and the `borders` hook below to run), LinearMouse, AltTab
-  (mandatory -- it does nothing without it), Ice, Raycast (hotkeys/snippets).
+  (mandatory -- it does nothing without it), Ice, Raycast (hotkeys/snippets),
+  Karabiner-Elements (event capture; also covers Input Monitoring on 16.0+,
+  no separate grant needed there).
 - **Screen Recording**: Raycast (window management, Screen Awareness), AltTab
   (optional, window thumbnails only), Ice (menu bar item images/Ice Bar --
   re-grant after every update since it ships ad-hoc-signed builds), cmux's
   `cmux-cua` helper (only if its Computer Use feature is used).
+- **Driver Extension** (Karabiner-Elements only): its `.pkg`-based cask install
+  needs `sudo` interactively -- `mise bootstrap` prints the exact
+  `sudo installer -pkg ... -target /` command to run by hand if no TTY is
+  available (e.g. from an agent/CI context). Afterwards approve
+  `Karabiner-DriverKit-VirtualHIDDevice` under **System Settings > General >
+  Login Items & Extensions > Driver Extensions**, and allow Karabiner to run
+  in the background in the same **Login Items & Extensions** pane. A **reboot
+  is required** before the virtual HID driver is fully active and the
+  `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
+  starts working end-to-end.
 - **"Launch at Login"**: no scriptable config found for Stats, KeepingYouAwake,
   Ice, AltTab, Raycast or Brave -- toggle it by hand in each app's own settings
   if it should survive a reboot. AeroSpace is the exception: `start-at-login =
@@ -98,4 +121,7 @@ Privacy & Security**, then quit and reopen the app (or reboot):
   granted, and `borders` then starts on its own via AeroSpace's
   `after-startup-command`. Bitwarden and LinearMouse already register as
   macOS login items out of the box; Raycast does the same the first time it's
-  opened.
+  opened. Karabiner-Elements is a different case again: there's no login-item
+  toggle or config key -- its installer registers LaunchDaemons that
+  auto-start it at every login once it's been run once; quit it (or remove the
+  LaunchDaemons) if that's not wanted.
