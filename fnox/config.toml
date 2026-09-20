@@ -1,0 +1,8 @@
+default_provider = "bitwarden"
+
+[providers.bitwarden]
+type = "bitwarden"
+
+[secrets]
+GH_TOKEN     = { provider = "bitwarden", value = "GitHub CLI Token", env = "exec" }
+GITHUB_TOKEN = { provider = "bitwarden", value = "GitHub CLI Token", env = "exec" }

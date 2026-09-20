@@ -5,6 +5,7 @@ diff   = 'delta'
 ls     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
 la     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'
 python = 'python3'
+ghx    = 'fnox exec -- gh'
 
 [env]
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
