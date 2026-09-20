@@ -35,6 +35,10 @@
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
+# Self-hosted Bitwarden -- not a secret, just which server the CLI talks to.
+[bootstrap.hooks.post-tools]
+run = "bw config server https://vault.fapont.xyz"
+
 # ~/.config/mise/conf.d/history.toml only becomes "global" once the dotfiles
 # phase above has symlinked it there -- re-running just that phase here
 # closes the loop in a single `mise bootstrap`, instead of asking for two.
