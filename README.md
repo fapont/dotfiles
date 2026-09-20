@@ -71,9 +71,15 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
   `sha256` by hand on a new release.
 - **Secrets**: `fnox` + Bitwarden, referenced (not stored) in `fnox/config.toml`
   (also holds an `age` provider for secrets to encrypt and commit directly,
-  using a dedicated SSH key). `bw login` once, then `fnox exec -- <cmd>`
-  (or `ghx` for `gh`) injects secrets into that one subprocess only -- never
-  a global env var.
+  using a dedicated SSH key, `id_ed25519_age`). `bw login` once, then
+  `fnox exec -- <cmd>` (or `ghx` for `gh`) injects secrets into that one
+  subprocess only -- never a global env var.
+- **BW_SESSION caching**: `bwu` unlocks Bitwarden and caches the session,
+  age-encrypted, at `~/.local/state/bw-session.age` (outside the repo, never
+  committed); a `~/.zshrc` edit block decrypts it into every new shell
+  automatically. Deliberate tradeoff: convenience over re-entering the
+  master password per terminal -- the cache is only as safe as
+  `id_ed25519_age` already is, no new exposure introduced.
 
 ## Known gaps (upstream mise, not this repo)
 
@@ -106,6 +112,7 @@ gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName
 gh config set git_protocol ssh
 bw login && export BW_SESSION=$(bw unlock --raw)
 mise run restore-secrets                    # pulls ~/.ssh/id_ed25519_age back from Bitwarden
+bwu                                          # caches the unlocked session for every future terminal
 ```
 
 The `bw login`/`unlock` step stays manual on purpose -- a password manager
