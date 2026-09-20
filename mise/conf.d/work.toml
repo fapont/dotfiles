@@ -11,7 +11,7 @@ kubeconform = 'latest'
 minikube    = 'latest'
 k9s         = 'latest'
 helm        = 'latest'
-copier      = 'latest'
+copier      = { version = "latest", uvx = true } # évite la dépendance à pipx (cf. uv/uvx)
 just        = 'latest'
 trivy       = 'latest'
 rclone      = 'latest'

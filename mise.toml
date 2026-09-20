@@ -1,0 +1,122 @@
+# Bootstrap recipe for this machine. Run `mise bootstrap` from a checkout of
+# this repo (or `mise bootstrap --adopt fapont/dotfiles` on a fresh Mac) to
+# converge everything below. Day-to-day tool versions/env/aliases live in
+# mise/config.toml, which this file symlinks into ~/.config/mise so mise picks
+# them up on every future run regardless of cwd.
+#
+# See mise.jdx.dev/bootstrap.html for the full phase order.
+
+[bootstrap.repos]
+"~/.config/oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git" }
+"~/.config/oh-my-zsh/custom/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
+"~/.config/oh-my-zsh/custom/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
+
+[bootstrap.packages]
+"brew:git" = "latest"
+"brew:tree" = "latest"
+"brew:urlview" = "latest"
+"brew:extract_url" = "latest"
+# NOTE: felixkratz/formulae/borders (bordures de fenêtre pour AeroSpace) est
+# volontairement absent d'ici -- échoue à la compilation sur cette machine :
+# le linker des Command Line Tools ne comprend pas le format des .tbd du SDK
+# macOS 27.0 installé (`unknown architecture arm64e.x1-macos`), décalage
+# CLT/SDK à corriger séparément (`xcode-select --install` après mise à jour).
+# container : outil secondaire d'Apple pour prototyper vite un conteneur
+# isolé (démarrage quasi instantané, pas de daemon). Ne remplace pas Colima :
+# pas de support natif Docker Compose ni de socket Docker compatible, et pas
+# visé pour du Kubernetes local (minikube) -- les deux sont utilisés ici.
+"brew:container" = "latest"
+# NOTE: nikitabobko/tap/aerospace est volontairement absent d'ici. mise ne
+# sait pas encore évaluer ce Cask tiers (`unsupported cask metadata DSL
+# 'staged_path'`) -- installer manuellement en attendant un correctif :
+# `brew install nikitabobko/tap/aerospace` (nécessite un vrai Homebrew) ou
+# télécharger depuis https://github.com/nikitabobko/AeroSpace/releases.
+# La config (~/.config/aerospace) reste gérée ci-dessous, prête à l'emploi.
+# NOTE: font-jetbrains-mono-nerd-font est volontairement absent d'ici. mise
+# rejette le chemin cible $HOME/Library/Fonts pour les casks de police
+# (bug connu : https://github.com/jdx/mise/discussions/10765). En attendant un
+# correctif, installer la police manuellement : télécharger
+# JetBrainsMono.zip depuis https://github.com/ryanoasis/nerd-fonts/releases
+# et dézipper le contenu dans ~/Library/Fonts.
+"brew-cask:ghostty" = "latest"
+"brew-cask:raycast" = "latest"
+"brew-cask:stats" = "latest"
+"brew-cask:brave-browser" = "latest"
+"brew-cask:zed" = "latest"
+# cmux : remplace tmux (abandonné) -- terminal natif macOS basé sur Ghostty
+# avec tabs/splits/session persistence intégrés, plus besoin de multiplexeur.
+"brew-cask:cmux" = "latest"
+# LinearMouse : macOS ne permet pas nativement un sens de défilement différent
+# pour le trackpad (naturel) et une souris à molette (classique). LinearMouse
+# gère ça par périphérique via un fichier de config JSON (voir config/linearmouse).
+"brew-cask:linearmouse" = "latest"
+# caffeinate est déjà intégré à macOS (/usr/bin/caffeinate) -- KeepingYouAwake
+# est un habillage GUI (barre de menu) open source autour de la même API.
+"brew-cask:keepingyouawake" = "latest"
+
+[dotfiles]
+"~/.config/mise/config.toml"              = { source = "mise/config.toml", mode = "symlink" }
+"~/.config/mise/conf.d/work.toml"         = { source = "mise/conf.d/work.toml", mode = "symlink" }
+"~/.config/mise/conf.d/claude.toml"       = { source = "mise/conf.d/claude.toml", mode = "symlink" }
+"~/.config/ghostty/config"                = { source = "config/ghostty/config", mode = "symlink" }
+"~/.config/karabiner/karabiner.json"      = { source = "config/karabiner/karabiner.json", mode = "symlink" }
+"~/.config/btop"                          = { source = "config/btop", mode = "symlink" }
+"~/.config/k9s"                           = { source = "config/k9s", mode = "symlink" }
+"~/.config/bat"                           = { source = "config/bat", mode = "symlink" }
+"~/.config/nvim"                          = { source = "nvim", mode = "symlink" }
+"~/.config/starship.toml"                 = { source = "config/starship.toml", mode = "symlink" }
+"~/.config/aerospace"                     = { source = "config/aerospace", mode = "symlink" }
+"~/.config/colima"                        = { source = "config/colima", mode = "symlink" }
+"~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
+"~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
+# Copiés (pas symlinkés) : gh/other tools appendent des lignes locales
+# (credential helper, etc.) après le bootstrap initial -- on ne veut pas que
+# ça pollue le repo. Le contenu de base (identité) reste versionné ici.
+"~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
+"~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
+
+[bootstrap.macos.dock]
+autohide = true
+tilesize = 36
+orientation = "bottom"
+show_recents = false
+magnification = false
+
+[bootstrap.macos.finder]
+show_all_files = true
+show_pathbar = true
+show_status_bar = true
+preferred_view_style = "list"
+sort_folders_first = true
+show_extensions_warning = false
+save_new_documents_to_cloud = false
+
+[bootstrap.macos.keyboard]
+key_repeat = 2
+initial_key_repeat = 15
+press_and_hold = true
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+three_finger_drag = true
+
+# Réglages non couverts par les sections "friendly" ci-dessus
+[bootstrap.macos.defaults]
+NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, AppleShowAllExtensions = true, NSWindowResizeTime = 0.001, NSAutomaticCapitalizationEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleShowScrollBars = "Always" }
+"com.apple.screencapture" = { location = "~/Desktop/Screenshots", type = "png", "disable-shadow" = true }
+"com.apple.dock" = { "expose-animation-duration" = 0.1, launchanim = false }
+"com.apple.controlcenter" = { BatteryShowPercentage = false }
+"com.apple.finder" = { DisableAllAnimations = true }
+"com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
+"com.apple.WindowManager" = { StandardHideWidgets = true }
+
+[bootstrap.hooks.post-defaults]
+run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
+
+# "Dotfiles that save themselves": watches tracked files (see [dotfiles] in
+# mise/config.toml, mode = "track") and checkpoints them automatically so a
+# crash between two manual commits doesn't lose config again. [history.*] and
+# [settings.history] live in mise/config.toml (not here) for the same reason
+# as the "track" dotfile entry: they're only honored from the global config.
+[bootstrap.services.mise-history]
+builtin = "history-watch"
