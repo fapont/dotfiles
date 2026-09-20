@@ -11,9 +11,7 @@ bwu    = 'bw unlock --raw | age -r "$(cat ~/.ssh/id_ed25519_age.pub)" -o ~/.loca
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
 XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
-# gcloud's bundled Python doesn't support macOS's system Python (3.9)
+# macOS system Python (3.9) is too old for gcloud's bundler
 CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
-# No cache: it's a live decrypt each time, never a plaintext secret cached
-# at rest by mise itself. fnox's own shell activation (see history.toml)
-# reads this to resolve GH_TOKEN/GITHUB_TOKEN (env = true in fnox/config.toml).
+# live decrypt each time, never cached in plaintext
 BW_SESSION = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"

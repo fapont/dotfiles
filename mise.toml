@@ -1,7 +1,5 @@
-# Run `mise bootstrap` from a checkout, or `mise bootstrap --adopt
-# fapont/dotfiles` on a fresh Mac. Everything besides repos/dotfiles here
-# lives in mise/config.toml + mise/conf.d/*.toml (symlinked into
-# ~/.config/mise so it's picked up regardless of cwd).
+# Run `mise bootstrap` from a checkout. Everything else lives in
+# mise/config.toml + mise/conf.d/*.toml, symlinked into ~/.config/mise.
 
 [bootstrap.repos]
 "~/.config/oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git" }
@@ -28,30 +26,21 @@
 "~/.config/colima"                        = { source = "config/colima", mode = "symlink" }
 "~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
 "~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
-# copy, not symlink: gh and friends append machine-local lines after bootstrap
 "~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
 "~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
-# Self-hosted Bitwarden -- not a secret, just which server the CLI talks to.
-# `bw config server` refuses to run while logged in, even to the same
-# server, so skip it once already configured.
+# Self-hosted Bitwarden server, not a secret.
 [bootstrap.hooks.post-tools]
 run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw config server https://vault.fapont.xyz"
 
-# ~/.config/mise/conf.d/history.toml only becomes "global" once the dotfiles
-# phase above has symlinked it there -- re-running just that phase here
-# closes the loop in a single `mise bootstrap`, instead of asking for two.
+# Closes the global-config chicken-and-egg (history.toml needs the symlink first).
 [tasks.bootstrap]
 run = "mise bootstrap --only dotfiles --yes"
 
-# `bw login` stays manual (irreducibly -- that's the point of a password
-# manager), but this handles the unlock itself and restores the fnox age
-# key from its Bitwarden backup, so a fresh machine doesn't get a *new*
-# key, which would leave every previously age-encrypted secret unreadable.
-# No-op if the key is already present.
+# Restores the fnox age key from Bitwarden. No-op if already present.
 [tasks.restore-secrets]
 run = '''
 set -euo pipefail
@@ -69,9 +58,7 @@ chmod 644 ~/.ssh/id_ed25519_age.pub
 echo "Restored ~/.ssh/id_ed25519_age(.pub)"
 '''
 
-# Idempotent: generates a per-machine git SSH key if missing, registers it
-# with GitHub, and switches git to SSH. `gh auth refresh` still needs a
-# browser -- that step can't be scripted away, only skipped once granted.
+# Per-machine git SSH key, registered with GitHub. Idempotent.
 [tasks.setup-github-ssh]
 run = '''
 set -euo pipefail

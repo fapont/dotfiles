@@ -9,17 +9,16 @@ Personal macOS dotfiles, bootstrapped entirely by [mise](https://mise.jdx.dev/) 
 ```sh
 curl https://mise.run | sh
 export PATH="$HOME/.local/bin:$PATH"
-mise bootstrap --adopt fapont/dotfiles
-```
-
-Or from a checkout:
-
-```sh
 git clone https://github.com/fapont/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles && mise bootstrap
 ```
 
-One command, safe to re-run any time. It installs packages (via mise's own
+No GitHub auth needed for this clone -- the repo is public, plain HTTPS.
+`mise bootstrap --adopt owner/repo` looks tempting but clones straight into
+`~/.config/mise`, which doesn't match this repo's layout (`nvim/`, `config/`,
+`fnox/`, etc. live at the root) -- don't use it here.
+
+Safe to re-run `mise bootstrap` any time. It installs packages (via mise's own
 `brew`/`brew-cask`/`macos-app` backends -- no real Homebrew involved),
 clones Oh My Zsh + plugins, symlinks app configs into `~/.config`, wires
 `~/.zshrc`, applies macOS defaults, and installs CLI tool versions.
@@ -113,7 +112,8 @@ tagged `os = "macos"`) so a `linux.toml` could sit next to it later.
 
 ```sh
 curl https://mise.run | sh
-mise bootstrap --adopt fapont/dotfiles      # everything: packages, defaults, tools, dotfiles
+git clone https://github.com/fapont/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && mise bootstrap             # everything: packages, defaults, tools, dotfiles
 mise run setup-github-ssh                   # per-machine git SSH key, registered with GitHub
 bw login                                    # the one step that can't be scripted away
 mise run restore-secrets                    # unlocks, pulls id_ed25519_age back from Bitwarden

@@ -1,5 +1,4 @@
-# `track`/edit entries and [history.*]/[settings.history] only take effect
-# from mise's global config -- must stay here, not in the root mise.toml.
+# track/edit/[history.*] only work from mise's global config, not mise.toml.
 [dotfiles]
 "~/.zshrc" = { mode = "track" }
 "~/.zshrc/omz-init" = { block = '''

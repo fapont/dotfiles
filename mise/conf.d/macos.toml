@@ -17,10 +17,8 @@
 "brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
 
-# nikitabobko/tap/aerospace's cask can't be evaluated by mise yet, so this
-# installs straight from the GitHub release instead. No "latest" tracking
-# for macos-app: bump version + sha256 by hand on a new release, and note
-# {{version}} isn't interpolated in `artifact`.
+# aerospace's cask can't be evaluated by mise; installed from GitHub instead.
+# Bump version+sha256 by hand on a new release ({{version}} isn't in `artifact`).
 [bootstrap.packages."macos-app:aerospace"]
 version = "0.21.3-Beta"
 url = "https://github.com/nikitabobko/AeroSpace/releases/download/v{{version}}/AeroSpace-v{{version}}.zip"
