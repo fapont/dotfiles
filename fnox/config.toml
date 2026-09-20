@@ -1,4 +1,5 @@
 default_provider = "bitwarden"
+env = "exec"
 
 [providers.bitwarden]
 type = "bitwarden"
@@ -9,5 +10,5 @@ recipients = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICP2g5weFd7pkYop0x7HKyVM/ribR
 key_file = "~/.ssh/id_ed25519_age"
 
 [secrets]
-GH_TOKEN     = { provider = "bitwarden", value = "GitHub CLI Token", env = "exec" }
-GITHUB_TOKEN = { provider = "bitwarden", value = "GitHub CLI Token", env = "exec" }
+GH_TOKEN     = { provider = "bitwarden", value = "GitHub CLI Token", env = true }
+GITHUB_TOKEN = { provider = "bitwarden", value = "GitHub CLI Token", env = true }

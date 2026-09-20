@@ -9,6 +9,7 @@ source "$ZSH/oh-my-zsh.sh"
 ''' }
 "~/.zshrc/mise-activate" = { block = 'eval "$(/Users/fabrice.pont/.local/bin/mise activate zsh)"' }
 "~/.zshrc/starship-init" = { block = 'eval "$(starship init zsh)"' }
+"~/.zshrc/fnox-activate" = { block = 'eval "$(fnox activate zsh)"' }
 
 [history.origin]
 url = "https://github.com/fapont/dotfiles.git"
