@@ -5,7 +5,6 @@ diff   = 'delta'
 ls     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
 la     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'
 python = 'python3'
-ghx    = 'fnox exec -- gh'
 bwu    = 'bw unlock --raw | age -r "$(cat ~/.ssh/id_ed25519_age.pub)" -o ~/.local/state/bw-session.age && export BW_SESSION=$(age -d -i ~/.ssh/id_ed25519_age ~/.local/state/bw-session.age)'
 
 [env]
@@ -14,5 +13,10 @@ XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
 # gcloud's bundled Python doesn't support macOS's system Python (3.9)
 CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
-# no cache: it's a live decrypt each time, never a plaintext secret at rest
-BW_SESSION = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"
+# No cache on any of these: they're live decrypts/lookups each time, never
+# a plaintext secret cached at rest by mise itself. Each command derives
+# BW_SESSION itself rather than relying on the sibling entry below having
+# already run -- [env] evaluation order across entries isn't guaranteed.
+BW_SESSION   = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"
+GH_TOKEN     = "{{ exec(command='BW_SESSION=$(age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null) fnox get GH_TOKEN 2>/dev/null || true') }}"
+GITHUB_TOKEN = "{{ exec(command='BW_SESSION=$(age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null) fnox get GITHUB_TOKEN 2>/dev/null || true') }}"
