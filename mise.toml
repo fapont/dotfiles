@@ -47,13 +47,19 @@ run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw co
 [tasks.bootstrap]
 run = "mise bootstrap --only dotfiles --yes"
 
-# After `bw login` + `bw unlock` (irreducibly manual -- that's the point of a
-# password manager), this restores the fnox age key from its Bitwarden
-# backup so a fresh machine doesn't need a brand new key -- which would
-# leave every previously age-encrypted secret unreadable.
+# `bw login` stays manual (irreducibly -- that's the point of a password
+# manager), but this handles the unlock itself and restores the fnox age
+# key from its Bitwarden backup, so a fresh machine doesn't get a *new*
+# key, which would leave every previously age-encrypted secret unreadable.
+# No-op if the key is already present.
 [tasks.restore-secrets]
 run = '''
 set -euo pipefail
+if [ -f ~/.ssh/id_ed25519_age ]; then
+  echo "~/.ssh/id_ed25519_age already present, nothing to restore"
+  exit 0
+fi
+BW_SESSION=$(bw unlock --raw)
 mkdir -p ~/.ssh
 item=$(bw get item "fnox age" --session "$BW_SESSION")
 echo "$item" | jq -r '.sshKey.privateKey' > ~/.ssh/id_ed25519_age
@@ -61,4 +67,24 @@ chmod 600 ~/.ssh/id_ed25519_age
 echo "$item" | jq -r '.sshKey.publicKey' > ~/.ssh/id_ed25519_age.pub
 chmod 644 ~/.ssh/id_ed25519_age.pub
 echo "Restored ~/.ssh/id_ed25519_age(.pub)"
+'''
+
+# Idempotent: generates a per-machine git SSH key if missing, registers it
+# with GitHub, and switches git to SSH. `gh auth refresh` still needs a
+# browser -- that step can't be scripted away, only skipped once granted.
+[tasks.setup-github-ssh]
+run = '''
+set -euo pipefail
+if ! gh ssh-key list >/dev/null 2>&1; then
+  gh auth refresh -h github.com -s admin:public_key
+fi
+if [ ! -f ~/.ssh/id_ed25519_github ]; then
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "fabrice.pont@doctolib.com"
+fi
+pubkey=$(awk '{print $1, $2}' ~/.ssh/id_ed25519_github.pub)
+if ! gh ssh-key list | grep -qF "$pubkey"; then
+  gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName)"
+fi
+gh config set git_protocol ssh
+echo "Git SSH ready: ~/.ssh/id_ed25519_github"
 '''
