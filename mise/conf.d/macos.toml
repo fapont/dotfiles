@@ -63,3 +63,19 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 
 [bootstrap.hooks.post-defaults]
 run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
+
+# mise only drops the .app bundle in /Applications -- it never launches it, so
+# background/menu-bar helpers stay dormant (no first-run setup, no login-item
+# registration) until opened by hand at least once. `open -g` opens without
+# stealing focus; skipped when already running so reruns stay a no-op.
+# AeroSpace reads its own `start-at-login = true` (config/aerospace/aerospace.toml)
+# on this first launch and registers itself as a login item; its
+# `after-startup-command` then starts `borders`. The rest (Stats, Raycast,
+# AltTab, Ice) still need "Launch at Login" turned on by hand in their own
+# settings -- see README "macOS permissions (manual, one-time)".
+[bootstrap.hooks.post-packages]
+run = '''
+for app in AeroSpace Stats Raycast AltTab Ice; do
+  pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
+done
+'''
