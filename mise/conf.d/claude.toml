@@ -1,8 +1,0 @@
-[tools]
-"aqua:anthropics/claude-code" = "latest"
-
-[shell_alias]
-cc = 'bash ~/.config/claude/scripts/cc'
-
-[env]
-CLAUDE_CONFIG_DIR = "{{env.HOME}}/.config/claude"

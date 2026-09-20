@@ -1,0 +1,15 @@
+[shell_alias]
+cat    = 'bat'
+vim    = 'nvim'
+diff   = 'delta'
+ls     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+la     = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'
+python = 'python3'
+
+[env]
+XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
+XDG_CONFIG_HOME = "{{env.HOME}}/.config"
+XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
+# gcloud embarque son propre bootstrapping Python et ignore le python système
+# (3.9 sur macOS, non supporté) -- on le pointe vers le python géré par mise.
+CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
