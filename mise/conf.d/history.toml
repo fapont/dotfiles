@@ -12,6 +12,7 @@ source "$ZSH/oh-my-zsh.sh"
 "~/.zshrc/zoxide-init" = { block = 'eval "$(zoxide init zsh)"' }
 "~/.zshrc/atuin-init" = { block = 'eval "$(atuin init zsh)"' }
 "~/.zshrc/fzf-init" = { block = 'eval "$(fzf --zsh)"' }
+"~/.zshrc/wt-init" = { block = 'eval "$(wt config shell init zsh)"' }
 
 [history.origin]
 url = "https://github.com/fapont/dotfiles.git"
