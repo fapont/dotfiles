@@ -2,3 +2,12 @@ fnox.local.toml
 .fnox.local.toml
 .env
 .claude/worktrees/
+
+# colima runtime state (VM disk/store, sockets, tunnel ssh config) --
+# lands here only because ~/.config/colima is symlinked into the repo.
+config/colima/_lima/
+config/colima/_store/
+config/colima/default/daemon/
+config/colima/ssh_config
+config/colima/*.sock
+config/colima/default/*.sock
