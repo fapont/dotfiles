@@ -1,6 +1,8 @@
 [tools]
-"aqua:anthropics/claude-code" = "latest"
 "aqua:max-sixty/worktrunk" = "latest"
+claude = "latest"
+node = "lts"
+"npm:ccstatusline" = "latest"
 
 [shell_alias]
 # wt-clone is a zsh function (config/zsh/functions.zsh), not an alias here --
