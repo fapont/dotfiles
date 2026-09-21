@@ -4,6 +4,18 @@
     {
       "if" : {
         "device" : {
+          "category" : "mouse"
+        }
+      },
+      "scrolling" : {
+        "reverse" : {
+          "vertical" : true
+        }
+      }
+    },
+    {
+      "if" : {
+        "device" : {
           "category" : "mouse",
           "productID" : "0x250d",
           "productName" : "Dell Mouse MS3320W",

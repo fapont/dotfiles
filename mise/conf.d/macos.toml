@@ -5,6 +5,7 @@
 "brew:extract_url"  = { version = "latest", os = "macos" }
 "brew:container"    = { version = "latest", os = "macos" }
 "brew:felixkratz/formulae/borders" = { version = "latest", os = "macos" }
+"brew:btop"         = { version = "latest", os = "macos" }
 "brew-cask:ghostty"         = { version = "latest", os = "macos" }
 "brew-cask:raycast"         = { version = "latest", os = "macos" }
 "brew-cask:stats"           = { version = "latest", os = "macos" }
@@ -18,6 +19,7 @@
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
 "brew-cask:karabiner-elements" = { version = "latest", os = "macos" }
 "brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
+"brew-cask:spotify" = { version = "latest", os = "macos" }
 
 # aerospace's cask can't be evaluated by mise; installed from GitHub instead.
 # Bump version+sha256 by hand on a new release ({{version}} isn't in `artifact`).
