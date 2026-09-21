@@ -1,11 +1,14 @@
 [tools]
-"aqua:anthropics/claude-code" = "latest"
 "aqua:max-sixty/worktrunk" = "latest"
+claude = "latest"
+node = "lts"
+"npm:ccstatusline" = "latest"
 
 [shell_alias]
 # wt-clone is a zsh function (config/zsh/functions.zsh), not an alias here --
 # it needs to cd and re-run `wt` after cloning, which a plain alias can't do.
 wsc = 'wt switch --create --execute=claude'
+claude = 'fnox exec -- claude'
 
 [env]
 CLAUDE_CONFIG_DIR = "{{env.HOME}}/.config/claude"

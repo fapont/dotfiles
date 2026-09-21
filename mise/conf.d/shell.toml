@@ -1,4 +1,5 @@
 [shell_alias]
+gst    = 'git status'
 cat    = 'bat'
 vim    = 'nvim'
 diff   = 'delta'
