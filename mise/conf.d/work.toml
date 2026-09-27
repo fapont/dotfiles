@@ -15,6 +15,7 @@ helm        = 'latest'
 copier      = 'latest'
 just        = 'latest'
 trivy       = 'latest'
+"github:DataDog/pup" = { version = "latest", asset_pattern = "pup_*_Darwin_arm64.tar.gz" }
 rclone      = 'latest'
 git-lfs     = 'latest'
 docker-cli = "latest"
