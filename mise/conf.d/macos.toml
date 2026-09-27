@@ -21,6 +21,7 @@
 "brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
 "brew-cask:spotify" = { version = "latest", os = "macos" }
 "brew-cask:telegram" = { version = "latest", os = "macos" }
+"brew-cask:obsidian" = { version = "latest", os = "macos" }
 
 # aerospace's cask can't be evaluated by mise; installed from GitHub instead.
 # Bump version+sha256 by hand on a new release ({{version}} isn't in `artifact`).
@@ -68,16 +69,7 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 [bootstrap.hooks.post-defaults]
 run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 
-# mise only drops the .app bundle in /Applications -- it never launches it, so
-# background/menu-bar helpers stay dormant (no first-run setup, no login-item
-# registration) until opened by hand at least once. `open -g` opens without
-# stealing focus; skipped when already running so reruns stay a no-op.
-# AeroSpace reads its own `start-at-login = true` (config/aerospace/aerospace.toml)
-# on this first launch and registers itself as a login item; its
-# `after-startup-command` then starts `borders`. The rest (Stats, Raycast,
-# AltTab, Ice) still need "Launch at Login" turned on by hand in their own
-# settings -- see README "macOS permissions (manual, one-time)". Karabiner-Elements
-# additionally needs its Driver Extension approved and a reboot before remapping works.
+# mise never launches what it installs; open menu-bar helpers once so they register.
 [bootstrap.hooks.post-packages]
 run = '''
 for app in AeroSpace Stats Raycast AltTab Ice Karabiner-Elements; do

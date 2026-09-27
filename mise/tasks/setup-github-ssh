@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#MISE description="Create this machine's git SSH key and register it with GitHub"
+set -euo pipefail
+if ! gh ssh-key list >/dev/null 2>&1; then
+  gh auth refresh -h github.com -s admin:public_key
+fi
+if [ ! -f ~/.ssh/id_ed25519_github ]; then
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "fabrice.pont@doctolib.com"
+fi
+pubkey=$(awk '{print $1, $2}' ~/.ssh/id_ed25519_github.pub)
+if ! gh ssh-key list | grep -qF "$pubkey"; then
+  gh ssh-key add ~/.ssh/id_ed25519_github.pub --title "$(scutil --get ComputerName)"
+fi
+gh config set git_protocol ssh
+echo "Git SSH ready: ~/.ssh/id_ed25519_github"

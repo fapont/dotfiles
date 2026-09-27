@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#MISE description="Set up the ~/Obsidian vault with self-hosted LiveSync"
+#MISE raw=true
+set -euo pipefail
+vault="$HOME/Obsidian"
+plugin="$vault/.obsidian/plugins/obsidian-livesync"
+registry="$HOME/Library/Application Support/obsidian/obsidian.json"
+
+if [ -z "${FORCE:-}" ] && jq -e '.isConfigured' "$plugin/data.json" >/dev/null 2>&1; then
+  echo "LiveSync already configured in $vault, nothing to do (FORCE=1 to re-apply)"
+  exit 0
+fi
+
+setup=$(
+  export LIVESYNC_COUCHDB_URI=https://obsidian-livesync.fapont.xyz
+  export LIVESYNC_COUCHDB_USER=$(fnox -P obsidian get LIVESYNC_COUCHDB_USER)
+  export LIVESYNC_COUCHDB_DB=$(fnox -P obsidian get LIVESYNC_COUCHDB_DB)
+  export LIVESYNC_COUCHDB_PASSWORD=$(fnox -P obsidian get LIVESYNC_COUCHDB_PASSWORD)
+  export LIVESYNC_E2EE_PASSPHRASE=$(fnox -P obsidian --if-missing ignore get LIVESYNC_E2EE_PASSPHRASE 2>/dev/null || true)
+  mise x deno@2 -- deno run -q --allow-env --allow-net --allow-read \
+    "$(dirname "$0")/setup-obsidian.ts" | tail -2
+)
+passphrase=$(sed -n 1p <<<"$setup")
+uri=$(sed -n 2p <<<"$setup")
+
+mkdir -p "$plugin"
+for f in main.js manifest.json styles.css; do
+  [ -f "$plugin/$f" ] || curl -fsSL -o "$plugin/$f" "https://github.com/vrtmrz/obsidian-livesync/releases/latest/download/$f"
+done
+[ -f "$vault/.obsidian/community-plugins.json" ] || echo '["obsidian-livesync"]' > "$vault/.obsidian/community-plugins.json"
+
+# Obsidian only opens vaults listed in its registry, and rewrites it on quit.
+if ! { [ -f "$registry" ] && jq -e --arg p "$vault" '.vaults[]? | select(.path == $p)' "$registry" >/dev/null; }; then
+  osascript -e 'quit app "Obsidian"' 2>/dev/null || true
+  while pgrep -x Obsidian >/dev/null; do sleep 0.5; done
+  mkdir -p "$(dirname "$registry")"
+  [ -f "$registry" ] || echo '{}' > "$registry"
+  tmp=$(mktemp)
+  jq --arg id "$(openssl rand -hex 8)" --arg p "$vault" --argjson ts "$(date +%s)000" \
+    '.vaults[$id] = {path: $p, ts: $ts, open: true}' "$registry" > "$tmp"
+  mv "$tmp" "$registry"
+fi
+
+open -a Obsidian
+printf 'In Obsidian: "Trust author and enable plugins", then press Enter here... '
+read -r _
+printf '%s' "$uri" | pbcopy
+open "$uri"
+printf 'Setup URI opened and copied. No LiveSync dialog? Cmd+P > "Use the copied setup URI". Press Enter once it asks for the passphrase... '
+read -r _
+printf '%s' "$passphrase" | pbcopy
+printf 'Passphrase copied, paste it, pick "fetch from remote" (and "Fetch" for hidden files), then press Enter... '
+read -r _
+pbcopy </dev/null
+echo "Done. LiveSync will now pull the vault from the server."
