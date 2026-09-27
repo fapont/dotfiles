@@ -29,6 +29,7 @@ mise/
     agents.toml                  # AI/dev-agent CLIs
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
+  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh, setup-obsidian)
 config/                        # app configs (ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
 fnox/config.toml               # secrets-as-env-vars
 nvim/                           # Neovim (LazyVim)
@@ -82,6 +83,7 @@ cd ~/.dotfiles
 mise run setup-github-ssh                   # per-machine git SSH key, registered with GitHub
 bw login                                    # the one step that can't be scripted away
 mise run restore-secrets                    # unlocks, pulls id_ed25519_age back from Bitwarden
+mise run setup-obsidian                     # ~/Obsidian vault + LiveSync, CouchDB creds from the fnox "obsidian" profile
 ```
 
 Open a new terminal -- `GH_TOKEN`/`GITHUB_TOKEN` are already there. Both tasks are
