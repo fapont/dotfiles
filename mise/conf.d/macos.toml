@@ -63,38 +63,25 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 [bootstrap.hooks.post-defaults]
 run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 
-# Menu-bar helpers with no scriptable "Launch at Login": a LaunchAgent opens each
-# one at login (and once right away when bootstrap loads it). `open -g` is a
-# no-op if the app is already running, so toggling the in-app setting too is harmless.
-[bootstrap.macos.launchd.agents.stats]
-program = "/usr/bin/open"
-args = ["-g", "-a", "Stats"]
-run_at_load = true
-process_type = "Interactive"
-
-[bootstrap.macos.launchd.agents.alttab]
-program = "/usr/bin/open"
-args = ["-g", "-a", "AltTab"]
-run_at_load = true
-process_type = "Interactive"
-
-[bootstrap.macos.launchd.agents.ice]
-program = "/usr/bin/open"
-args = ["-g", "-a", "Ice"]
-run_at_load = true
-process_type = "Interactive"
-
-[bootstrap.macos.launchd.agents.keepingyouawake]
-program = "/usr/bin/open"
-args = ["-g", "-a", "KeepingYouAwake"]
-run_at_load = true
-process_type = "Interactive"
-
-# The rest register their own login item (AeroSpace via start-at-login, Raycast,
-# Karabiner's LaunchDaemons) but only once opened; mise never launches what it installs.
+# mise never launches what it installs: open these once so they finish first-run
+# setup and register their own login item (AeroSpace via start-at-login, Raycast,
+# Karabiner's LaunchDaemons).
+#
+# The menu-bar helpers below have no scriptable "Launch at Login", so they're
+# added as regular Login Items (System Settings > General > Login Items > "Open
+# at Login", with their own name and icon). Not LaunchAgents: macOS lists those
+# under the executable's name, so `/usr/bin/open` agents all showed up as "open".
+# First run asks to let the terminal control System Events (Automation).
 [bootstrap.hooks.post-packages]
 run = '''
 for app in AeroSpace Raycast Karabiner-Elements; do
+  pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
+done
+existing=$(osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null || true)
+for app in Stats AltTab Ice KeepingYouAwake; do
+  [ -d "/Applications/$app.app" ] || continue
+  case ", $existing, " in *", $app, "*) continue ;; esac
+  osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"/Applications/$app.app\", hidden:true}" >/dev/null
   pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
 done
 '''

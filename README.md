@@ -127,9 +127,9 @@ Privacy & Security**, then quit and reopen the app (or reboot):
   is required** before the virtual HID driver is fully active and the
   `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
   starts working end-to-end.
-- **"Launch at Login"**: Stats, AltTab, Ice and KeepingYouAwake are started at
-  login by LaunchAgents declared in `macos.toml`
-  (`~/Library/LaunchAgents/dev.mise.*.plist`). AeroSpace handles it itself
+- **"Launch at Login"**: Stats, AltTab, Ice and KeepingYouAwake are added as
+  regular Login Items by `macos.toml`'s `post-packages` hook (through System
+  Events: the first run asks to allow the terminal under **Automation**). AeroSpace handles it itself
   (`start-at-login = true` in `config/aerospace/aerospace.toml`, once
   Accessibility is granted, and `borders` then starts via its
   `after-startup-command`); Raycast, Bitwarden and LinearMouse register their own
