@@ -5,3 +5,10 @@ prune = "wt step prune {{ args }}"
 
 [post-start]
 copy = "wt step copy-ignored"
+
+# ~/.dotfiles is a plain clone, not the bare ~/Perso/<repo>/.git layout, so the
+# default would drop worktrees straight into ~. Keep them grouped in
+# ~/.dotfiles.worktrees/ instead, outside the checkout: a worktree nested in
+# ~/.dotfiles would also load the parent's mise.toml and clash on [dotfiles].
+[projects."github.com/fapont/dotfiles"]
+worktree-path = "{{ repo_path }}.worktrees/{{ branch | sanitize }}"

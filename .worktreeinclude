@@ -1,0 +1,6 @@
+# Gitignored files `wt step copy-ignored` may copy into a new worktree.
+# Everything else ignored here is runtime state (e.g. the colima VM disk under
+# config/colima/, several GB) that must stay with the live checkout.
+fnox.local.toml
+.fnox.local.toml
+.env
