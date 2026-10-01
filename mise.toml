@@ -8,12 +8,9 @@
 
 [dotfiles]
 "~/.config/mise/config.toml"              = { source = "mise/config.toml", mode = "symlink" }
-"~/.config/mise/conf.d/tools.toml"        = { source = "mise/conf.d/tools.toml", mode = "symlink" }
-"~/.config/mise/conf.d/shell.toml"        = { source = "mise/conf.d/shell.toml", mode = "symlink" }
-"~/.config/mise/conf.d/history.toml"      = { source = "mise/conf.d/history.toml", mode = "symlink" }
-"~/.config/mise/conf.d/agents.toml"       = { source = "mise/conf.d/agents.toml", mode = "symlink" }
-"~/.config/mise/conf.d/work.toml"         = { source = "mise/conf.d/work.toml", mode = "symlink" }
-"~/.config/mise/conf.d/macos.toml"        = { source = "mise/conf.d/macos.toml", mode = "symlink" }
+# symlink-each: new fragments are picked up automatically, and machine-local ones
+# (e.g. doctolib.toml) can sit next to the links without landing in the repo.
+"~/.config/mise/conf.d"                   = { source = "mise/conf.d", mode = "symlink-each" }
 "~/.config/fnox/config.toml"               = { source = "fnox/config.toml", mode = "symlink" }
 "~/.config/ghostty/config"                = { source = "config/ghostty/config", mode = "symlink" }
 "~/.config/karabiner/karabiner.json"      = { source = "config/karabiner/karabiner.json", mode = "symlink" }
@@ -30,8 +27,16 @@
 "~/.config/worktrunk/config.toml"          = { source = "config/worktrunk/config.toml", mode = "symlink" }
 "~/.config/claude/CLAUDE.md"               = { source = "config/claude/CLAUDE.md", mode = "symlink" }
 "~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
-"~/.gitconfig"                            = { source = "gitconfig", mode = "copy" }
-"~/.gitconfig-perso"                      = { source = "gitconfig-perso", mode = "copy" }
+"~/.config/git/config"                    = { source = "config/git/config", mode = "symlink" }
+"~/.config/git/perso"                     = { source = "config/git/perso", mode = "symlink" }
+# leftover from when ~/.gitconfig{,-perso} were copied from the repo
+"~/.gitconfig-perso"                      = { mode = "absent" }
+
+# ~/.gitconfig stays a plain, untracked file for machine-local settings. It must
+# exist, or `git config --global` (gh auth setup-git...) would write through the
+# ~/.config/git/config symlink into the repo.
+[bootstrap.hooks.post-dotfiles]
+run = '[ -e ~/.gitconfig ] || echo "# Machine-local git config, read after ~/.config/git/config (wins)." > ~/.gitconfig'
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
