@@ -29,7 +29,8 @@ mise/
     agents.toml                  # AI/dev-agent CLIs
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
-  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh, setup-obsidian)
+    obsidian/                     # folder fragment: app + setup-obsidian task + its helper
+  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh)
 config/                        # app configs (git, ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
 fnox/config.toml               # secrets-as-env-vars
 nvim/                           # Neovim (LazyVim)
@@ -39,6 +40,10 @@ zprofile
 `mise/conf.d/` mirrors `~/.config/mise/conf.d/` (each file symlinked with
 `symlink-each`), split by domain rather than one big `mise.toml`. Machine-local
 fragments (e.g. `doctolib.toml`) can sit next to the links without being tracked.
+When a domain needs more than config (scripts, templates, helpers), make it a
+**folder fragment** like `conf.d/obsidian/`: a `mise.toml` plus the files it
+uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
+`tasks/` runnable from any directory.
 
 ## Notable choices
 

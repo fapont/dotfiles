@@ -18,7 +18,7 @@ setup=$(
   export LIVESYNC_COUCHDB_PASSWORD=$(fnox -P obsidian get LIVESYNC_COUCHDB_PASSWORD)
   export LIVESYNC_E2EE_PASSPHRASE=$(fnox -P obsidian --if-missing ignore get LIVESYNC_E2EE_PASSPHRASE 2>/dev/null || true)
   mise x deno@2 -- deno run -q --allow-env --allow-net --allow-read \
-    "$(dirname "$0")/setup-obsidian.ts" | tail -2
+    "$MISE_CONFIG_ROOT/setup-obsidian.ts" | tail -2
 )
 passphrase=$(sed -n 1p <<<"$setup")
 uri=$(sed -n 2p <<<"$setup")

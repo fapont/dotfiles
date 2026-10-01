@@ -8,7 +8,8 @@
 
 [dotfiles]
 "~/.config/mise/config.toml"              = { source = "mise/config.toml", mode = "symlink" }
-# symlink-each: new fragments are picked up automatically, and machine-local ones
+# symlink-each: every file (folder fragments included) is linked one by one, so
+# re-run `mise bootstrap --only dotfiles` after adding one. Machine-local ones
 # (e.g. doctolib.toml) can sit next to the links without landing in the repo.
 "~/.config/mise/conf.d"                   = { source = "mise/conf.d", mode = "symlink-each" }
 "~/.config/fnox/config.toml"               = { source = "fnox/config.toml", mode = "symlink" }
