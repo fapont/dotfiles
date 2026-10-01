@@ -3,13 +3,13 @@
 "~/.zshrc" = { mode = "track" }
 "~/.zshrc/omz-init" = { block = '''
 export ZSH="$HOME/.config/oh-my-zsh"
-plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git docker docker-compose kubectl kubectx terraform aws gcloud helm gh common-aliases command-not-found zsh-autosuggestions zsh-syntax-highlighting)
 source "$ZSH/oh-my-zsh.sh"
 ''' }
 "~/.zshrc/mise-activate" = { block = 'eval "$(/Users/fabrice.pont/.local/bin/mise activate zsh)"' }
 "~/.zshrc/starship-init" = { block = 'eval "$(starship init zsh)"' }
 "~/.zshrc/fnox-activate" = { block = 'eval "$(fnox activate zsh)"' }
-"~/.zshrc/zoxide-init" = { block = 'eval "$(zoxide init zsh)"' }
+"~/.zshrc/zoxide-init" = { block = 'eval "$(zoxide init zsh --cmd cd)"' }
 "~/.zshrc/atuin-init" = { block = 'eval "$(atuin init zsh)"' }
 "~/.zshrc/fzf-init" = { block = 'eval "$(fzf --zsh)"' }
 "~/.zshrc/wt-init" = { block = 'eval "$(wt config shell init zsh)"' }

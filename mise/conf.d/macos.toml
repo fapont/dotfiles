@@ -64,7 +64,7 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 "com.apple.controlcenter" = { BatteryShowPercentage = false }
 "com.apple.finder" = { DisableAllAnimations = true }
 "com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
-"com.apple.WindowManager" = { StandardHideWidgets = true }
+"com.apple.WindowManager" = { StandardHideWidgets = true, EnableStandardClickToShowDesktop = false }
 
 [bootstrap.hooks.post-defaults]
 run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"

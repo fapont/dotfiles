@@ -2,7 +2,6 @@ fnox.local.toml
 .fnox.local.toml
 .env
 .claude/worktrees/
-mise/conf.d/doctolib.toml
 
 # colima runtime state (VM disk/store, sockets, tunnel ssh config) --
 # lands here only because ~/.config/colima is symlinked into the repo.
