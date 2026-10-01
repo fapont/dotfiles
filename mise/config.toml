@@ -1,4 +1,7 @@
 [settings]
+# Supply-chain cooldown: `latest` resolves to releases at least this old (mise's
+# default is 24h). Explicit pins (teleport-ent, aerospace...) are not affected.
+minimum_release_age = "3d"
 trusted_config_paths = ["~/.config/mise", "~/Doctolib", "~/Perso"]
 
 [settings.pypi]
