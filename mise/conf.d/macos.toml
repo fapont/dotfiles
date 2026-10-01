@@ -21,7 +21,6 @@
 "brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
 "brew-cask:spotify" = { version = "latest", os = "macos" }
 "brew-cask:telegram" = { version = "latest", os = "macos" }
-"brew-cask:obsidian" = { version = "latest", os = "macos" }
 
 # Third-party cask (Ruby DSL, evaluable since mise 2026.9.12): also links the
 # `aerospace` CLI and its shell completions.

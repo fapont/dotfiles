@@ -1,0 +1,14 @@
+# Folder fragment: everything Obsidian needs lives in this folder, which mise
+# treats as its own config root (relative paths, {{config_root}} and
+# $MISE_CONFIG_ROOT all point here). Template for any domain that outgrows a
+# single conf.d/*.toml: a mise.toml + the files it uses, side by side.
+#
+#   mise.toml            app install + task wiring (this file)
+#   tasks/               file tasks, `mise run <name>` from any directory
+#   setup-obsidian.ts    helper the task runs (not a task itself)
+
+[bootstrap.packages]
+"brew-cask:obsidian" = { version = "latest", os = "macos" }
+
+[task_config]
+includes = ["tasks"]
