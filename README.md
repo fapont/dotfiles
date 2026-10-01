@@ -30,23 +30,29 @@ mise/
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
   tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh, setup-obsidian)
-config/                        # app configs (ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
+config/                        # app configs (git, ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
 fnox/config.toml               # secrets-as-env-vars
 nvim/                           # Neovim (LazyVim)
-zprofile, gitconfig, gitconfig-perso
+zprofile
 ```
 
-`mise/conf.d/` mirrors `~/.config/mise/conf.d/` (symlinked), split by domain rather
-than one big `mise.toml`.
+`mise/conf.d/` mirrors `~/.config/mise/conf.d/` (each file symlinked with
+`symlink-each`), split by domain rather than one big `mise.toml`. Machine-local
+fragments (e.g. `doctolib.toml`) can sit next to the links without being tracked.
 
 ## Notable choices
 
-- App configs are **symlinked** (edit in place, live immediately); `~/.gitconfig` is
-  **copied** (tools like `gh auth setup-git` append local-only lines -- re-run bootstrap
-  if a copy wipes them); `~/.zshrc` is **tracked** with two marker-delimited edit blocks
+- App configs are **symlinked** (edit in place, live immediately), git included: the
+  shared config is `~/.config/git/config`, while `~/.gitconfig` stays a plain local file
+  (read last, so it wins) that catches `git config --global` writes such as
+  `gh auth setup-git`. `~/.zshrc` is **tracked** with two marker-delimited edit blocks
   mise owns (Oh My Zsh init, `mise activate`) -- use `mise dot status`/`diff`/`save` for it.
-- AeroSpace installs from a pinned GitHub release, not its Homebrew cask (mise can't
-  evaluate the cask's Ruby DSL) -- bump `version`/`sha256` by hand on a new release.
+- **Git identity per context**: work email by default, personal email (`config/git/perso`)
+  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub remote. Add
+  a context = one file with a `[user]` block + one `includeIf` in `config/git/config`.
+  Commits and tags are SSH-signed with the per-machine key from `setup-github-ssh`.
+- **Supply-chain cooldown**: `minimum_release_age = "3d"` -- `latest` never resolves to
+  a release younger than 3 days. Pin a version explicitly to bypass it for one tool.
 - Secrets live in `fnox/config.toml`. `GH_TOKEN`/`GITHUB_TOKEN` use the `age` provider
   (ciphertext committed, decrypted locally, no network/vault needed) so they're in every
   shell without a Bitwarden session; see "Fresh machine" for restoring the decryption key.
@@ -80,7 +86,7 @@ than one big `mise.toml`.
 ```sh
 curl -fsSL https://raw.githubusercontent.com/fapont/dotfiles/main/bootstrap.sh | sh
 cd ~/.dotfiles
-mise run setup-github-ssh                   # per-machine git SSH key, registered with GitHub
+mise run setup-github-ssh                   # per-machine SSH key, registered with GitHub for auth + commit signing
 bw login                                    # the one step that can't be scripted away
 mise run restore-secrets                    # unlocks, pulls id_ed25519_age back from Bitwarden
 mise run setup-obsidian                     # ~/Obsidian vault + LiveSync, CouchDB creds from the fnox "obsidian" profile
@@ -116,14 +122,14 @@ Privacy & Security**, then quit and reopen the app (or reboot):
   is required** before the virtual HID driver is fully active and the
   `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
   starts working end-to-end.
-- **"Launch at Login"**: no scriptable config found for Stats, KeepingYouAwake,
-  Ice, AltTab, Raycast or Brave -- toggle it by hand in each app's own settings
-  if it should survive a reboot. AeroSpace is the exception: `start-at-login =
-  true` in `config/aerospace/aerospace.toml` handles it once Accessibility is
-  granted, and `borders` then starts on its own via AeroSpace's
-  `after-startup-command`. Bitwarden and LinearMouse already register as
-  macOS login items out of the box; Raycast does the same the first time it's
-  opened. Karabiner-Elements is a different case again: there's no login-item
-  toggle or config key -- its installer registers LaunchDaemons that
-  auto-start it at every login once it's been run once; quit it (or remove the
-  LaunchDaemons) if that's not wanted.
+- **"Launch at Login"**: Stats, AltTab, Ice and KeepingYouAwake are started at
+  login by LaunchAgents declared in `macos.toml`
+  (`~/Library/LaunchAgents/dev.mise.*.plist`). AeroSpace handles it itself
+  (`start-at-login = true` in `config/aerospace/aerospace.toml`, once
+  Accessibility is granted, and `borders` then starts via its
+  `after-startup-command`); Raycast, Bitwarden and LinearMouse register their own
+  login item the first time they're opened. Brave has no scriptable option --
+  toggle it by hand if wanted. Karabiner-Elements is a different case again:
+  there's no login-item toggle or config key -- its installer registers
+  LaunchDaemons that auto-start it at every login once it's been run once; quit
+  it (or remove the LaunchDaemons) if that's not wanted.

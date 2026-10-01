@@ -1,5 +1,6 @@
 [tools]
-"aqua:max-sixty/worktrunk" = "latest"
+# registry short name: signed packslip install (0.80+), ships completions + skills
+worktrunk = "latest"
 claude = "latest"
 node = "lts"
 "npm:ccstatusline" = "latest"

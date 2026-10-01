@@ -21,14 +21,16 @@ git-lfs     = 'latest'
 docker-cli = "latest"
 lima = 'latest'
 colima = 'latest'
-"github:docker/compose" = { version = "latest", asset_pattern = "docker-compose-darwin-aarch64", bin = "docker-compose", postinstall = """
+# postinstall `when = "always"`: the cli-plugins links are re-created on every
+# `mise install`, not only on a fresh install of a new version.
+"github:docker/compose" = { version = "latest", asset_pattern = "docker-compose-darwin-aarch64", bin = "docker-compose", postinstall = { when = "always", run = """
 mkdir -p ~/.docker/cli-plugins
 ln -sf "$(mise which docker-compose)" ~/.docker/cli-plugins/docker-compose
-""" }
-"github:docker/buildx" = { version = "latest", asset_pattern = "buildx-v*.darwin-arm64", bin = "docker-buildx", postinstall = """
+""" } }
+"github:docker/buildx" = { version = "latest", asset_pattern = "buildx-v*.darwin-arm64", bin = "docker-buildx", postinstall = { when = "always", run = """
 mkdir -p ~/.docker/cli-plugins
 ln -sf "$(mise which docker-buildx)" ~/.docker/cli-plugins/docker-buildx
-""" }
+""" } }
 
 [shell_alias]
 ktx    = 'kubectx'
