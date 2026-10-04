@@ -26,12 +26,15 @@
 "~/.config/linearmouse/linearmouse.json"  = { source = "config/linearmouse/linearmouse.json", mode = "symlink" }
 "~/.config/oh-my-zsh/custom/functions.zsh" = { source = "config/zsh/functions.zsh", mode = "symlink" }
 "~/.config/worktrunk/config.toml"          = { source = "config/worktrunk/config.toml", mode = "symlink" }
-"~/.config/claude/CLAUDE.md"               = { source = "config/claude/CLAUDE.md", mode = "symlink" }
+# AI agents: see mise/conf.d/agents/mise.toml for the layout.
+"~/.config/claude/CLAUDE.md"               = { source = "mise/conf.d/agents/AGENTS.md", mode = "symlink" }
 "~/.zprofile"                             = { source = "zprofile", mode = "symlink" }
 "~/.config/git/config"                    = { source = "config/git/config", mode = "symlink" }
 "~/.config/git/perso"                     = { source = "config/git/perso", mode = "symlink" }
 # leftover from when ~/.gitconfig{,-perso} were copied from the repo
 "~/.gitconfig-perso"                      = { mode = "absent" }
+# leftover from before conf.d/agents.toml became the conf.d/agents/ folder fragment
+"~/.config/mise/conf.d/agents.toml"        = { mode = "absent" }
 
 # ~/.gitconfig stays a plain, untracked file for machine-local settings. It must
 # exist, or `git config --global` (gh auth setup-git...) would write through the
@@ -47,5 +50,6 @@ builtin = "history-watch"
 run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw config server https://vault.fapont.xyz"
 
 # Closes the global-config chicken-and-egg (history.toml needs the symlink first).
+# Then fold the Claude settings fragments into the live, untracked settings.json.
 [tasks.bootstrap]
-run = "mise bootstrap --only dotfiles --yes"
+run = ["mise bootstrap --only dotfiles --yes", "mise run claude-settings"]
