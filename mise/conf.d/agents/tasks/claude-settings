@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#MISE description="Merge the tracked claude/settings.d/*.json fragments into the live Claude settings.json"
+#USAGE flag "--diff" help="Only show how the live settings.json differs from the fragments; write nothing"
+set -euo pipefail
+
+# The live file stays a plain, untracked file Claude can write to (/model, /config,
+# "always allow"...). Fragments are merged INTO it, managed-settings.d style: in
+# alphabetical order, objects deep-merged, arrays concatenated + deduplicated, a
+# fragment's scalar wins. Additive only: removing a key from a fragment does not
+# remove it from the live file.
+live="${CLAUDE_SETTINGS_FILE:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json}"
+fragments=("$MISE_CONFIG_ROOT"/claude/settings.d/*.json)
+
+lib='
+def dedupe: reduce .[] as $x ([]; if index([$x]) then . else . + [$x] end);
+def merge($a; $b):
+  if ($a|type) == "object" and ($b|type) == "object" then
+    reduce ($b|keys_unsorted[]) as $k ($a; .[$k] = merge($a[$k]; $b[$k]))
+  elif ($a|type) == "array" and ($b|type) == "array" then $a + $b | dedupe
+  elif $b == null then $a
+  else $b end;
+def short: if type == "object" then "{…}" elif type == "array" then "[\(length) items]" else tojson end;
+def pstr: map(tostring) | join(".");
+# +  only in the live file (candidate to add to a fragment, or keep local)
+# ~  live value differs from the fragment (the fragment wins on next merge)
+# -  in a fragment but not applied yet
+def compare($l; $f; $p):
+  if ($l|type) == "object" and ($f|type) == "object" then
+    (($l|keys_unsorted[]) as $k
+      | if $f|has($k) then compare($l[$k]; $f[$k]; $p + [$k])
+        else "+ \($p + [$k] | pstr): \($l[$k] | short)" end),
+    ((($f|keys_unsorted) - ($l|keys_unsorted))[] as $k
+      | "- \($p + [$k] | pstr): \($f[$k] | short)")
+  elif ($l|type) == "array" and ($f|type) == "array" then
+    ($l[] | select(. as $x | $f | index([$x]) | not) | "+ \($p | pstr): \(short)"),
+    ($f[] | select(. as $x | $l | index([$x]) | not) | "- \($p | pstr): \(short)")
+  elif $l != $f then "~ \($p | pstr): \($l | short) (fragments: \($f | short))"
+  else empty end;
+'
+
+current='{}'
+[ -s "$live" ] && current=$(cat "$live")
+merged_fragments=$(jq -s "$lib reduce .[] as \$x ({}; merge(.; \$x))" "${fragments[@]}")
+
+if [ "${usage_diff:-false}" = true ]; then
+  out=$(jq -nr --argjson l "$current" --argjson f "$merged_fragments" "$lib compare(\$l; \$f; [])")
+  echo "${out:-$live matches the fragments}"
+  exit 0
+fi
+
+result=$(jq -n --argjson l "$current" --argjson f "$merged_fragments" "$lib merge(\$l; \$f)")
+if [ "$(jq -S . <<<"$current")" = "$(jq -S . <<<"$result")" ]; then
+  echo "$live already up to date"
+  exit 0
+fi
+mkdir -p "$(dirname "$live")"
+tmp=$(mktemp "$live.XXXXXX")
+printf '%s\n' "$result" > "$tmp"
+mv "$tmp" "$live"
+echo "Merged ${#fragments[@]} fragment(s) into $live"

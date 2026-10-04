@@ -26,7 +26,7 @@ mise/
     tools.toml                 # generic CLI versions
     shell.toml                 # aliases + env
     history.toml                # ~/.zshrc tracking
-    agents.toml                  # AI/dev-agent CLIs
+    agents/                       # folder fragment: AI agent CLIs + AGENTS.md + per-agent configs
     work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
     obsidian/                     # folder fragment: app + setup-obsidian task + its helper
@@ -58,6 +58,15 @@ uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
   Commits and tags are SSH-signed with the per-machine key from `setup-github-ssh`.
 - **Supply-chain cooldown**: `minimum_release_age = "3d"` -- `latest` never resolves to
   a release younger than 3 days. Pin a version explicitly to bypass it for one tool.
+- **AI agents** live in `mise/conf.d/agents/`: one `AGENTS.md` linked under each agent's
+  expected name (`~/.config/claude/CLAUDE.md`...), one folder per agent for its config.
+  Claude's `settings.json` is **not** tracked (this repo is public, and Claude writes to
+  it): the shared parts live as fragments in `agents/claude/settings.d/*.json`, merged
+  *into* the live file by `mise run claude-settings` (also run by `mise bootstrap`),
+  `managed-settings.d` style -- objects deep-merged, arrays concatenated, a fragment's
+  scalar wins, everything else (e.g. work-only `autoMode`) left alone. Additive only:
+  deleting a key from a fragment doesn't delete it live. `mise run claude-settings --diff`
+  lists what to promote (`+` live only, `~` live differs, `-` not applied yet).
 - Secrets live in `fnox/config.toml`. `GH_TOKEN`/`GITHUB_TOKEN` use the `age` provider
   (ciphertext committed, decrypted locally, no network/vault needed) so they're in every
   shell without a Bitwarden session; see "Fresh machine" for restoring the decryption key.
