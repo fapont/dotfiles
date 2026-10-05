@@ -21,6 +21,10 @@
 [init]
 	defaultBranch = main
 
+# first `git push` of a new branch sets its upstream, no `-u origin <branch>` needed
+[push]
+	autoSetupRemote = true
+
 # delta as the diff pager: https://dandavison.github.io/delta/configuration.html
 [core]
 	pager = delta
