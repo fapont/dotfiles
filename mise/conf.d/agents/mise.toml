@@ -18,6 +18,8 @@ worktrunk = "latest"
 claude = "latest"
 node = "lts"
 "npm:ccstatusline" = "latest"
+# spec-kit: `specify` CLI (spec-driven development), not in the registry
+"pipx:github/spec-kit" = "latest"
 
 [shell_alias]
 # wt-clone is a zsh function (config/zsh/functions.zsh), not an alias here --
