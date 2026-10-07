@@ -33,6 +33,7 @@ ln -sf "$(mise which docker-buildx)" ~/.docker/cli-plugins/docker-buildx
 """ } }
 
 [shell_alias]
+k      = 'kubectl'
 ktx    = 'kubectx'
 kns    = 'kubens'
 kgp    = 'kubectl get pods'
