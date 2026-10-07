@@ -92,4 +92,5 @@ if (( $+functions[compdef] )); then
     _arguments '-a[list every profile]' "1:AWS profile:(- -u -c ${profiles})"
   }
   compdef _awsp awsp
+  compdef k=kubectl
 fi
