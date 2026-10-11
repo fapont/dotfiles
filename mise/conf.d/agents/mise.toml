@@ -4,9 +4,8 @@
 #   AGENTS.md               global instructions, linked under each agent's
 #                           expected name (~/.config/claude/CLAUDE.md...)
 #   claude/settings.d/      Claude Code settings fragments (tracked, public),
-#                           merged into the untracked live settings.json by
-#                           `mise run claude-settings` (--diff to compare)
-#   tasks/                  file tasks, `mise run <name>` from any directory
+#                           merged into the untracked live settings.json by the
+#                           merge entries in the root mise.toml [dotfiles]
 #
 # Add an agent = a <agent>/ folder + its links in the root mise.toml [dotfiles].
 # Shared skills will go in skills/<name>/SKILL.md (Agent Skills format, read by
@@ -30,6 +29,3 @@ claude = 'fnox exec -- claude'
 
 [env]
 CLAUDE_CONFIG_DIR = "{{env.HOME}}/.config/claude"
-
-[task_config]
-includes = ["tasks"]

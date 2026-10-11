@@ -62,11 +62,12 @@ uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
   expected name (`~/.config/claude/CLAUDE.md`...), one folder per agent for its config.
   Claude's `settings.json` is **not** tracked (this repo is public, and Claude writes to
   it): the shared parts live as fragments in `agents/claude/settings.d/*.json`, merged
-  *into* the live file by `mise run claude-settings` (also run by `mise bootstrap`),
-  `managed-settings.d` style -- objects deep-merged, arrays concatenated, a fragment's
-  scalar wins, everything else (e.g. work-only `autoMode`) left alone. Additive only:
-  deleting a key from a fragment doesn't delete it live. `mise run claude-settings --diff`
-  lists what to promote (`+` live only, `~` live differs, `-` not applied yet).
+  *into* the live file by `merge` entries in the root `mise.toml` (applied by
+  `mise bootstrap`): they own only their keys, everything else (e.g. work-only `autoMode`)
+  is left alone. `merge = true` enforces (permissions), `"missing"` only sets defaults
+  so `/config` and `/plugin` changes stick. Arrays are replaced, not unioned: `mise dot
+  diff` shows "always allow" entries to promote into a fragment. Deleting a key from a
+  fragment doesn't delete it live.
 - Secrets live in `fnox/config.toml`. `GH_TOKEN`/`GITHUB_TOKEN` use the `age` provider
   (ciphertext committed, decrypted locally, no network/vault needed) so they're in every
   shell without a Bitwarden session; see "Fresh machine" for restoring the decryption key.
