@@ -31,7 +31,7 @@ mise/
     macos.toml                    # macOS packages + system defaults
     obsidian/                     # folder fragment: app + setup-obsidian task + its helper
   tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh)
-config/                        # app configs (git, ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
+config/                        # app configs (git, ghostty, karabiner, btop, k9s, bat, aerospace, colima, vorssaint, starship)
 fnox/config.toml               # secrets-as-env-vars
 nvim/                           # Neovim (LazyVim)
 zprofile
@@ -118,13 +118,15 @@ first-run setup happens and macOS shows the permission prompts) -- but
 granting a permission prompt is not scriptable. Do it in **System Settings >
 Privacy & Security**, then quit and reopen the app (or reboot):
 
+- **Vorssaint** (replaces AltTab, Stats, KeepingYouAwake, LinearMouse): grant
+  Accessibility and Screen Recording, then import its settings by hand --
+  Settings > Import > `config/vorssaint/settings.plist` (not scriptable; re-export
+  to the same file after changing settings).
 - **Accessibility**: AeroSpace (the window manager itself, plus needed for
-  `start-at-login` and the `borders` hook below to run), LinearMouse, AltTab
-  (mandatory -- it does nothing without it), Ice, Raycast (hotkeys/snippets),
+  `start-at-login` and the `borders` hook below to run), Ice, Raycast (hotkeys/snippets),
   Karabiner-Elements (event capture; also covers Input Monitoring on 16.0+,
   no separate grant needed there).
-- **Screen Recording**: Raycast (window management, Screen Awareness), AltTab
-  (optional, window thumbnails only), Ice (menu bar item images/Ice Bar --
+- **Screen Recording**: Raycast (window management, Screen Awareness), Ice (menu bar item images/Ice Bar --
   re-grant after every update since it ships ad-hoc-signed builds), cmux's
   `cmux-cua` helper (only if its Computer Use feature is used).
 - **Driver Extension** (Karabiner-Elements only): its `.pkg`-based cask install
@@ -137,12 +139,12 @@ Privacy & Security**, then quit and reopen the app (or reboot):
   is required** before the virtual HID driver is fully active and the
   `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
   starts working end-to-end.
-- **"Launch at Login"**: Stats, AltTab, Ice and KeepingYouAwake are added as
-  regular Login Items by `macos.toml`'s `post-packages` hook (through System
+- **"Launch at Login"**: Ice is added as a
+  regular Login Item by `macos.toml`'s `post-packages` hook (through System
   Events: the first run asks to allow the terminal under **Automation**). AeroSpace handles it itself
   (`start-at-login = true` in `config/aerospace/aerospace.toml`, once
   Accessibility is granted, and `borders` then starts via its
-  `after-startup-command`); Raycast, Bitwarden and LinearMouse register their own
+  `after-startup-command`); Raycast and Bitwarden register their own
   login item the first time they're opened. Brave has no scriptable option --
   toggle it by hand if wanted. Karabiner-Elements is a different case again:
   there's no login-item toggle or config key -- its installer registers
