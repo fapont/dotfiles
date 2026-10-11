@@ -16,6 +16,7 @@
 # registry short name: signed packslip install (0.80+), ships completions + skills
 worktrunk = "latest"
 claude = "latest"
+"npm:@agentclientprotocol/claude-agent-acp" = "latest"
 node = "lts"
 "npm:ccstatusline" = "latest"
 # spec-kit: `specify` CLI (spec-driven development), not in the registry
