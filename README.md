@@ -4,7 +4,7 @@ Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org)
 (Arch + Hyprland) personal laptop, bootstrapped entirely by
 [mise](https://mise.jdx.dev/). No Homebrew, no chezmoi.
 
-![Preview](assets/preview.png)
+![Preview](.github/preview.png)
 
 ## Install
 
@@ -49,8 +49,6 @@ config/                     # group `config`: shared app configs (git, ghostty, 
 macos/                      # group `macos`: aerospace, karabiner, vorssaint, colima
 omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
 work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
-fnox/config.toml            # secrets as env vars
-zprofile
 ```
 
 ## How it works
@@ -82,7 +80,7 @@ zprofile
   Claude's `settings.json` isn't tracked; fragments in `agents/claude/settings.d/`
   are merged into it (`merge = true` enforces, `"missing"` only sets defaults;
   arrays are replaced, and removed keys stay live).
-- **Secrets**: `fnox/config.toml`, age-encrypted in the repo, decrypted locally.
+- **Secrets**: `config/fnox/config.toml`, age-encrypted in the repo, decrypted locally.
 
 ## Day to day
 
