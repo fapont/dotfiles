@@ -12,6 +12,9 @@ bwu    = 'bw unlock --raw | age -r "$(cat ~/.ssh/id_ed25519_age.pub)" -o ~/.loca
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
 XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
+# Loads platform files (mise.macos.toml / mise.linux.toml pick the dotfile groups).
+# Read at mise startup, so the first `mise bootstrap` passes it by hand.
+MISE_AUTO_ENV   = "1"
 # live decrypt each time, never cached in plaintext
 BW_SESSION = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"
 
