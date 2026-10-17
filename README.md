@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal macOS dotfiles, bootstrapped entirely by [mise](https://mise.jdx.dev/) -- no Homebrew, no chezmoi.
+Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org) (Arch + Hyprland) personal one, bootstrapped entirely by [mise](https://mise.jdx.dev/) -- no Homebrew, no chezmoi.
 
 ![Preview](assets/preview.png)
 
@@ -27,11 +27,14 @@ mise/
     shell.toml                 # aliases + env
     history.toml                # ~/.zshrc tracking
     agents/                       # folder fragment: AI agent CLIs + AGENTS.md + per-agent configs
-    work.toml                    # k8s/Docker/AWS/GCloud
     macos.toml                    # macOS packages + system defaults
+    omarchy.toml                  # Arch packages Omarchy doesn't ship (pacman/aur)
     obsidian/                     # folder fragment: app + setup-obsidian task + its helper
   tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh)
-config/                        # app configs (git, ghostty, karabiner, btop, k9s, bat, aerospace, colima, linearmouse, starship)
+config/                        # dotfile group `config`: shared app configs (git, ghostty, btop, bat, starship...)
+macos/                         # dotfile group `macos`: aerospace, karabiner, vorssaint, colima
+omarchy/                       # dotfile group `omarchy`: Hyprland input overrides, default terminal
+work/                          # dotfile group `work`: k9s + mise/conf.d/work.toml (k8s/Docker/AWS/GCloud)
 fnox/config.toml               # secrets-as-env-vars
 nvim/                           # Neovim (LazyVim)
 zprofile
@@ -44,6 +47,20 @@ When a domain needs more than config (scripts, templates, helpers), make it a
 **folder fragment** like `conf.d/obsidian/`: a `mise.toml` plus the files it
 uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
 `tasks/` runnable from any directory.
+
+Each top-level group folder is linked into `~/.config`. Every group applies unless
+the machine picks some in `~/.config/mise/config.local.toml` (untracked):
+
+```toml
+[bootstrap]
+dotfile_groups = ["config", "macos", "work"]   # work Mac
+dotfile_groups = ["config", "omarchy"]         # Omarchy laptop
+```
+
+Packages are OS-gated (`os = "macos"` on `brew*` entries; `pacman:`/`aur:` are
+skipped where those managers don't exist), and CLIs Omarchy already ships with
+pacman (jq, bat, eza, fd, zoxide, ripgrep, neovim, lazygit, starship, fzf) are
+`os = "macos"` in `tools.toml` so mise doesn't install them twice.
 
 ## Notable choices
 
@@ -73,6 +90,10 @@ uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
   shell without a Bitwarden session; see "Fresh machine" for restoring the decryption key.
 
 ## Known gaps
+
+- **Omarchy writes to the global mise config**: its lazy wrappers (`gh`, `codex`...)
+  and dev-env installer run `mise use -g`, which lands in `~/.config/mise/config.toml`,
+  i.e. in this repo through the symlink. Review with `git diff` before committing.
 
 - **Root-owned files under `/opt/homebrew`**: a past `sudo mise ...` run can leave stray
   root-owned paths that block new installs with `Permission denied`. Fix with
@@ -110,6 +131,28 @@ mise run setup-obsidian                     # ~/Obsidian vault + LiveSync, Couch
 Open a new terminal -- `GH_TOKEN`/`GITHUB_TOKEN` are already there. Both tasks are
 idempotent, safe to `mise run` again on an already-set-up machine.
 
+## Omarchy machine
+
+Omarchy already ships mise (`/usr/bin/mise`) and seeds its own `~/.config/{git,starship.toml,btop,ghostty}`,
+so pick the groups first, then force the first run over those seeded files:
+
+```sh
+git clone https://github.com/fapont/dotfiles.git ~/.dotfiles && cd ~/.dotfiles
+mkdir -p ~/.config/mise && printf '[bootstrap]\ndotfile_groups = ["config", "omarchy"]\n' > ~/.config/mise/config.local.toml
+mise bootstrap --dry-run                     # check what it replaces
+mise bootstrap --yes --force-dotfiles        # switches the login shell to zsh too
+```
+
+Then the same `setup-github-ssh` / `bw login` / `restore-secrets` steps as above
+(`setup-obsidian` works there too, with `wl-copy`/`xdg-open`). Ghostty follows the
+Omarchy theme switcher through an optional `config-file` include, and is the
+SUPER+RETURN terminal (`omarchy/xdg-terminals.list`). The first bootstrap also
+applies Omarchy's Catppuccin theme once; later picks from the menu stick.
+Hyprland: only `input.lua` (AZERTY, natural scroll) and `looknfeel.lua` (rounded
+corners, blur, dimmed inactive windows, resize on border) are overridden;
+Omarchy keeps bindings, gaps and monitors. Avoid `omarchy-reinstall-configs`:
+it copies its defaults over `~/.config`, through these symlinks into the repo.
+
 ## macOS permissions (manual, one-time)
 
 Bootstrap installs each app's `.app` bundle and `macos.toml`'s
@@ -118,13 +161,15 @@ first-run setup happens and macOS shows the permission prompts) -- but
 granting a permission prompt is not scriptable. Do it in **System Settings >
 Privacy & Security**, then quit and reopen the app (or reboot):
 
+- **Vorssaint** (replaces AltTab, Stats, KeepingYouAwake, LinearMouse): grant
+  Accessibility and Screen Recording, then import its settings by hand --
+  Settings > Import > `config/vorssaint/settings.plist` (not scriptable; re-export
+  to the same file after changing settings).
 - **Accessibility**: AeroSpace (the window manager itself, plus needed for
-  `start-at-login` and the `borders` hook below to run), LinearMouse, AltTab
-  (mandatory -- it does nothing without it), Ice, Raycast (hotkeys/snippets),
+  `start-at-login` and the `borders` hook below to run), Ice, Raycast (hotkeys/snippets),
   Karabiner-Elements (event capture; also covers Input Monitoring on 16.0+,
   no separate grant needed there).
-- **Screen Recording**: Raycast (window management, Screen Awareness), AltTab
-  (optional, window thumbnails only), Ice (menu bar item images/Ice Bar --
+- **Screen Recording**: Raycast (window management, Screen Awareness), Ice (menu bar item images/Ice Bar --
   re-grant after every update since it ships ad-hoc-signed builds), cmux's
   `cmux-cua` helper (only if its Computer Use feature is used).
 - **Driver Extension** (Karabiner-Elements only): its `.pkg`-based cask install
@@ -137,12 +182,12 @@ Privacy & Security**, then quit and reopen the app (or reboot):
   is required** before the virtual HID driver is fully active and the
   `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
   starts working end-to-end.
-- **"Launch at Login"**: Stats, AltTab, Ice and KeepingYouAwake are added as
-  regular Login Items by `macos.toml`'s `post-packages` hook (through System
+- **"Launch at Login"**: Ice is added as a
+  regular Login Item by `macos.toml`'s `post-packages` hook (through System
   Events: the first run asks to allow the terminal under **Automation**). AeroSpace handles it itself
   (`start-at-login = true` in `config/aerospace/aerospace.toml`, once
   Accessibility is granted, and `borders` then starts via its
-  `after-startup-command`); Raycast, Bitwarden and LinearMouse register their own
+  `after-startup-command`); Raycast and Bitwarden register their own
   login item the first time they're opened. Brave has no scriptable option --
   toggle it by hand if wanted. Karabiner-Elements is a different case again:
   there's no login-item toggle or config key -- its installer registers

@@ -8,13 +8,10 @@
 "brew:btop"         = { version = "latest", os = "macos" }
 "brew-cask:ghostty"         = { version = "latest", os = "macos" }
 "brew-cask:raycast"         = { version = "latest", os = "macos" }
-"brew-cask:stats"           = { version = "latest", os = "macos" }
 "brew-cask:brave-browser"   = { version = "latest", os = "macos" }
 "brew-cask:zed"             = { version = "latest", os = "macos" }
 "brew-cask:cmux"            = { version = "latest", os = "macos" }
-"brew-cask:linearmouse"     = { version = "latest", os = "macos" }
-"brew-cask:keepingyouawake" = { version = "latest", os = "macos" }
-"brew-cask:alt-tab"         = { version = "latest", os = "macos" }
+"brew-cask:vorssaint"       = { version = "latest", os = "macos" }
 "brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
 "brew-cask:karabiner-elements" = { version = "latest", os = "macos" }
@@ -62,7 +59,7 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 "com.apple.WindowManager" = { StandardHideWidgets = true, EnableStandardClickToShowDesktop = false }
 
 [bootstrap.hooks.post-defaults]
-run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
+run = "[ \"$(uname)\" != Darwin ] || killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 
 # mise never launches what it installs: open these once so they finish first-run
 # setup and register their own login item (AeroSpace via start-at-login, Raycast,
@@ -75,11 +72,12 @@ run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 # First run asks to let the terminal control System Events (Automation).
 [bootstrap.hooks.post-packages]
 run = '''
+[ "$(uname)" = Darwin ] || exit 0
 for app in AeroSpace Raycast Karabiner-Elements; do
   pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
 done
 existing=$(osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null || true)
-for app in Stats AltTab Ice KeepingYouAwake; do
+for app in Ice; do
   [ -d "/Applications/$app.app" ] || continue
   case ", $existing, " in *", $app, "*) continue ;; esac
   osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"/Applications/$app.app\", hidden:true}" >/dev/null

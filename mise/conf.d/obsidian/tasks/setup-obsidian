@@ -4,7 +4,20 @@
 set -euo pipefail
 vault="$HOME/Obsidian"
 plugin="$vault/.obsidian/plugins/obsidian-livesync"
-registry="$HOME/Library/Application Support/obsidian/obsidian.json"
+if [[ $OSTYPE == darwin* ]]; then
+  registry="$HOME/Library/Application Support/obsidian/obsidian.json"
+  copy() { pbcopy; }
+  launch() { open "$@"; }
+  running() { pgrep -x Obsidian >/dev/null; }
+  quit() { osascript -e 'quit app "Obsidian"' 2>/dev/null || true; }
+else
+  registry="${XDG_CONFIG_HOME:-$HOME/.config}/obsidian/obsidian.json"
+  copy() { wl-copy; }
+  launch() { xdg-open "$@" >/dev/null 2>&1; }
+  # ponytail: Arch runs Obsidian under a shared electron binary, so match its asar path
+  running() { pgrep -f 'obsidian/app\.asar' >/dev/null; }
+  quit() { pkill -f 'obsidian/app\.asar' || true; }
+fi
 
 if [ -z "${FORCE:-}" ] && jq -e '.isConfigured' "$plugin/data.json" >/dev/null 2>&1; then
   echo "LiveSync already configured in $vault, nothing to do (FORCE=1 to re-apply)"
@@ -31,8 +44,8 @@ done
 
 # Obsidian only opens vaults listed in its registry, and rewrites it on quit.
 if ! { [ -f "$registry" ] && jq -e --arg p "$vault" '.vaults[]? | select(.path == $p)' "$registry" >/dev/null; }; then
-  osascript -e 'quit app "Obsidian"' 2>/dev/null || true
-  while pgrep -x Obsidian >/dev/null; do sleep 0.5; done
+  quit
+  while running; do sleep 0.5; done
   mkdir -p "$(dirname "$registry")"
   [ -f "$registry" ] || echo '{}' > "$registry"
   tmp=$(mktemp)
@@ -41,15 +54,15 @@ if ! { [ -f "$registry" ] && jq -e --arg p "$vault" '.vaults[]? | select(.path =
   mv "$tmp" "$registry"
 fi
 
-open -a Obsidian
+launch obsidian://
 printf 'In Obsidian: "Trust author and enable plugins", then press Enter here... '
 read -r _
-printf '%s' "$uri" | pbcopy
-open "$uri"
-printf 'Setup URI opened and copied. No LiveSync dialog? Cmd+P > "Use the copied setup URI". Press Enter once it asks for the passphrase... '
+printf '%s' "$uri" | copy
+launch "$uri"
+printf 'Setup URI opened and copied. No LiveSync dialog? Cmd/Ctrl+P > "Use the copied setup URI". Press Enter once it asks for the passphrase... '
 read -r _
-printf '%s' "$passphrase" | pbcopy
+printf '%s' "$passphrase" | copy
 printf 'Passphrase copied, paste it, pick "fetch from remote" (and "Fetch" for hidden files), then press Enter... '
 read -r _
-pbcopy </dev/null
+copy </dev/null
 echo "Done. LiveSync will now pull the vault from the server."
