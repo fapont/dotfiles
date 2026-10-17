@@ -1,8 +1,6 @@
 [bootstrap.packages]
 "brew:git"          = { version = "latest", os = "macos" }
 "brew:tree"         = { version = "latest", os = "macos" }
-"brew:urlview"      = { version = "latest", os = "macos" }
-"brew:extract_url"  = { version = "latest", os = "macos" }
 "brew:container"    = { version = "latest", os = "macos" }
 "brew:felixkratz/formulae/borders" = { version = "latest", os = "macos" }
 "brew:btop"         = { version = "latest", os = "macos" }
