@@ -1,197 +1,228 @@
 # Dotfiles
 
-Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org) (Arch + Hyprland) personal one, bootstrapped entirely by [mise](https://mise.jdx.dev/) -- no Homebrew, no chezmoi.
+Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org)
+(Arch + Hyprland) personal laptop, bootstrapped entirely by
+[mise](https://mise.jdx.dev/). No Homebrew, no chezmoi.
 
 ![Preview](assets/preview.png)
 
 ## Install
 
+Each machine first picks its [dotfile groups](#dotfile-groups) in an untracked
+`~/.config/mise/config.local.toml`, then runs `mise bootstrap`. Bootstrap is
+idempotent: safe to re-run at any time, previewable with `mise bootstrap --dry-run`.
+
+### macOS (work laptop)
+
 ```sh
+mkdir -p ~/.config/mise && printf '[bootstrap]\ndotfile_groups = ["config", "macos", "work"]\n' > ~/.config/mise/config.local.toml
 curl -fsSL https://raw.githubusercontent.com/fapont/dotfiles/main/bootstrap.sh | sh
 ```
 
-Idempotent: installs `mise` if missing, clones (or `git pull --ff-only`) `~/.dotfiles`,
-then runs `mise bootstrap` -- packages (via mise's own `brew`/`brew-cask`/`macos-app`
-backends, no real Homebrew involved), Oh My Zsh + plugins, symlinked app configs,
-`~/.zshrc`, macOS defaults, CLI tool versions. Safe to re-run any time; preview with
-`mise bootstrap --dry-run`.
+`bootstrap.sh` installs mise if missing, clones (or `git pull --ff-only`)
+`~/.dotfiles`, then runs `mise bootstrap`: packages through mise's own
+`brew`/`brew-cask` backends (no real Homebrew involved), Oh My Zsh and its
+plugins, symlinked app configs, `~/.zshrc`, macOS defaults and CLI tools. Some
+macOS permissions still need [granting by hand](#macos-permissions).
 
-## Structure
+### Omarchy (personal laptop)
 
-```
-mise.toml                    # repo clones + the dotfiles map (what goes where)
-mise/
-  config.toml                 # -> ~/.config/mise/config.toml
-  conf.d/
-    tools.toml                 # generic CLI versions
-    shell.toml                 # aliases + env
-    history.toml                # ~/.zshrc tracking
-    agents/                       # folder fragment: AI agent CLIs + AGENTS.md + per-agent configs
-    macos.toml                    # macOS packages + system defaults
-    omarchy.toml                  # Arch packages Omarchy doesn't ship (pacman/aur)
-    obsidian/                     # folder fragment: app + setup-obsidian task + its helper
-  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh, setup-git-identity)
-config/                        # dotfile group `config`: shared app configs (git, ghostty, btop, bat, starship...)
-macos/                         # dotfile group `macos`: aerospace, karabiner, vorssaint, colima
-omarchy/                       # dotfile group `omarchy`: Hyprland input overrides, default terminal
-work/                          # dotfile group `work`: k9s + mise/conf.d/work.toml (k8s/Docker/AWS/GCloud)
-fnox/config.toml               # secrets-as-env-vars
-nvim/                           # Neovim (LazyVim)
-zprofile
-```
-
-`mise/conf.d/` mirrors `~/.config/mise/conf.d/` (each file symlinked with
-`symlink-each`), split by domain rather than one big `mise.toml`. Machine-local
-fragments (e.g. `doctolib.toml`) can sit next to the links without being tracked.
-When a domain needs more than config (scripts, templates, helpers), make it a
-**folder fragment** like `conf.d/obsidian/`: a `mise.toml` plus the files it
-uses, with the folder as config root (`$MISE_CONFIG_ROOT`) and its
-`tasks/` runnable from any directory.
-
-Each top-level group folder is linked into `~/.config`. Every group applies unless
-the machine picks some in `~/.config/mise/config.local.toml` (untracked):
-
-```toml
-[bootstrap]
-dotfile_groups = ["config", "macos", "work"]   # work Mac
-dotfile_groups = ["config", "omarchy"]         # Omarchy laptop
-```
-
-Packages are OS-gated (`os = "macos"` on `brew*` entries; `pacman:`/`aur:` are
-skipped where those managers don't exist), and CLIs Omarchy already ships with
-pacman (jq, bat, eza, fd, zoxide, ripgrep, neovim, lazygit, starship, fzf) are
-`os = "macos"` in `tools.toml` so mise doesn't install them twice.
-
-## Notable choices
-
-- App configs are **symlinked** (edit in place, live immediately), git included: the
-  shared config is `~/.config/git/config`, while `~/.gitconfig` stays a plain local file
-  (read last, so it wins) that catches `git config --global` writes such as
-  `gh auth setup-git`. `~/.zshrc` is **tracked** with two marker-delimited edit blocks
-  mise owns (Oh My Zsh init, `mise activate`) -- use `mise dot status`/`diff`/`save` for it.
-- **Git identity per context**: work email by default, personal email
-  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub remote. The
-  emails are not in the repo: bootstrap asks for them once (`mise run setup-git-identity`,
-  writes untracked `~/.config/git/identity-{work,perso}`). Add a context = one more file in
-  that task + one `includeIf` in `config/git/config`.
-  Commits and tags are SSH-signed with the per-machine key from `setup-github-ssh`.
-- **Supply-chain cooldown**: `minimum_release_age = "3d"` -- `latest` never resolves to
-  a release younger than 3 days. Pin a version explicitly to bypass it for one tool.
-- **AI agents** live in `mise/conf.d/agents/`: one `AGENTS.md` linked under each agent's
-  expected name (`~/.config/claude/CLAUDE.md`...), one folder per agent for its config.
-  Claude's `settings.json` is **not** tracked (this repo is public, and Claude writes to
-  it): the shared parts live as fragments in `agents/claude/settings.d/*.json`, merged
-  *into* the live file by `merge` entries in the root `mise.toml` (applied by
-  `mise bootstrap`): they own only their keys, everything else (e.g. work-only `autoMode`)
-  is left alone. `merge = true` enforces (permissions), `"missing"` only sets defaults
-  so `/config` and `/plugin` changes stick. Arrays are replaced, not unioned: `mise dot
-  diff` shows "always allow" entries to promote into a fragment. Deleting a key from a
-  fragment doesn't delete it live.
-- Secrets live in `fnox/config.toml`. `GH_TOKEN`/`GITHUB_TOKEN` use the `age` provider
-  (ciphertext committed, decrypted locally, no network/vault needed) so they're in every
-  shell without a Bitwarden session; see "Fresh machine" for restoring the decryption key.
-
-## Known gaps
-
-- **Omarchy writes to the global mise config**: its lazy wrappers (`gh`, `codex`...)
-  and dev-env installer run `mise use -g`, which lands in `~/.config/mise/config.toml`,
-  i.e. in this repo through the symlink. Review with `git diff` before committing.
-
-- **Root-owned files under `/opt/homebrew`**: a past `sudo mise ...` run can leave stray
-  root-owned paths that block new installs with `Permission denied`. Fix with
-  `sudo chown -R "$(whoami)":admin /opt/homebrew`; never run `mise bootstrap` itself with `sudo`.
-- **Hardware-specific entries in `config/karabiner/karabiner.json`**: the "Default
-  profile"'s `devices` array pins `simple_modifications` to a specific Apple
-  keyboard (`vendor_id = 1452` / `0x5AC`, `product_id = 591` / `0x24F`) and lists
-  a Keychron device (`vendor_id = 13364` / `0x3434`, `product_id = 2832` /
-  `0xB10`, matching the separate unused "Keychron Q1" profile's name) as a
-  pointing device to not ignore. These came from a previous machine's setup and
-  may not match any keyboard currently plugged into this one -- harmless if so
-  (Karabiner just never matches that device section), but worth pruning by hand
-  if/when the old keyboard is confirmed gone for good. The global
-  caps-lock/left-option hyper-key remap (used by AeroSpace's `alt-cmd-ctrl-*`
-  bindings) is untouched by this and applies regardless of connected keyboard.
-
-## Keeping this up to date
-
-- **New tool/package**: add it to the relevant `conf.d/*.toml`, run `mise bootstrap`, commit.
-- **Config drifted locally**: symlinked files edit in place already, just `git add` and
-  commit from `~/.dotfiles`. For `~/.zshrc`, use `mise dot status`/`mise dot diff`/`mise dot save`.
-- **Before a risky change**: `mise bootstrap --dry-run` to preview.
-
-## Fresh machine
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/fapont/dotfiles/main/bootstrap.sh | sh
-cd ~/.dotfiles
-mise run setup-github-ssh                   # per-machine SSH key, registered with GitHub for auth + commit signing
-bw login                                    # the one step that can't be scripted away
-mise run restore-secrets                    # unlocks, pulls id_ed25519_age back from Bitwarden
-mise run setup-obsidian                     # ~/Obsidian vault + LiveSync, CouchDB creds from the fnox "obsidian" profile
-```
-
-Open a new terminal -- `GH_TOKEN`/`GITHUB_TOKEN` are already there. Both tasks are
-idempotent, safe to `mise run` again on an already-set-up machine.
-
-## Omarchy machine
-
-Omarchy already ships mise (`/usr/bin/mise`) and seeds its own `~/.config/{git,starship.toml,btop,ghostty}`,
-so pick the groups first, then force the first run over those seeded files:
+Omarchy already ships mise (`/usr/bin/mise`) and seeds its own
+`~/.config/{git,starship.toml,btop,ghostty}`, so the first run has to replace them:
 
 ```sh
 git clone https://github.com/fapont/dotfiles.git ~/.dotfiles && cd ~/.dotfiles
 mkdir -p ~/.config/mise && printf '[bootstrap]\ndotfile_groups = ["config", "omarchy"]\n' > ~/.config/mise/config.local.toml
 mise bootstrap --dry-run                     # check what it replaces
-mise bootstrap --yes --force-dotfiles        # switches the login shell to zsh too
+mise bootstrap --yes --force-dotfiles        # also switches the login shell to zsh
 ```
 
-Then the same `setup-github-ssh` / `bw login` / `restore-secrets` steps as above
-(`setup-obsidian` works there too, with `wl-copy`/`xdg-open`). Ghostty follows the
-Omarchy theme switcher through an optional `config-file` include, and is the
-SUPER+RETURN terminal (`omarchy/xdg-terminals.list`). The first bootstrap also
-applies Omarchy's Catppuccin theme once; later picks from the menu stick.
-Hyprland: only `input.lua` (AZERTY, natural scroll) and `looknfeel.lua` (rounded
-corners, blur, dimmed inactive windows, resize on border) are overridden;
-Omarchy keeps bindings, gaps and monitors. Avoid `omarchy-reinstall-configs`:
-it copies its defaults over `~/.config`, through these symlinks into the repo.
+On top of the shared configs, this machine gets:
 
-## macOS permissions (manual, one-time)
+- Arch packages Omarchy doesn't ship (`mise/conf.d/omarchy.toml`): zsh, Ghostty,
+  Zed, Bitwarden, Telegram, Brave.
+- Ghostty as the SUPER+RETURN terminal (`omarchy/xdg-terminals.list`), following
+  the Omarchy theme switcher through an optional `config-file` include.
+- Omarchy's Catppuccin theme, applied once by the first bootstrap. A theme picked
+  later from the menu is never overridden.
+- Hyprland overrides in `omarchy/hypr/`: `input.lua` (AZERTY, natural scroll) and
+  `looknfeel.lua` (rounded corners, blur, dimmed inactive windows, resize on
+  border). Bindings, gaps and monitors stay Omarchy's defaults.
 
-Bootstrap installs each app's `.app` bundle and `macos.toml`'s
-`[bootstrap.hooks.post-packages]` opens the background/menu-bar ones once (so
-first-run setup happens and macOS shows the permission prompts) -- but
-granting a permission prompt is not scriptable. Do it in **System Settings >
-Privacy & Security**, then quit and reopen the app (or reboot):
+### Then, on both
+
+```sh
+cd ~/.dotfiles
+mise run setup-github-ssh    # per-machine SSH key, registered with GitHub for auth + commit signing
+bw login                     # the one step that can't be scripted away
+mise run restore-secrets     # pulls the fnox age key (id_ed25519_age) back from Bitwarden
+mise run setup-obsidian      # ~/Obsidian vault + LiveSync, CouchDB creds from the fnox "obsidian" profile
+```
+
+Open a new terminal: `GH_TOKEN`/`GITHUB_TOKEN` are already there. All three
+tasks are idempotent.
+
+## Layout
+
+```
+bootstrap.sh                # curl | sh entry point
+mise.toml                   # repo clones, dotfile groups and the dotfiles map (what goes where)
+mise/
+  config.toml               # -> ~/.config/mise/config.toml
+  conf.d/                   # -> ~/.config/mise/conf.d/, one fragment per domain
+    tools.toml              #    CLI tools
+    shell.toml              #    aliases, env, login shell
+    history.toml            #    ~/.zshrc blocks
+    macos.toml              #    macOS packages + system defaults
+    omarchy.toml            #    Arch packages + Omarchy theme
+    agents/                 #    AI agent CLIs, AGENTS.md, Claude settings fragments
+    obsidian/               #    Obsidian app + setup-obsidian task
+  tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh, setup-git-identity
+config/                     # group `config`: shared app configs (git, ghostty, btop, bat, starship...)
+macos/                      # group `macos`: aerospace, karabiner, vorssaint, colima
+omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
+work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
+fnox/config.toml            # secrets as env vars
+nvim/                       # Neovim (LazyVim)
+zprofile
+```
+
+## How it works
+
+### Dotfile groups
+
+Each group folder (`config/`, `macos/`, `omarchy/`, `work/`) is linked file by
+file into `~/.config`. Every group applies unless the machine selects some in
+`~/.config/mise/config.local.toml`:
+
+```toml
+[bootstrap]
+dotfile_groups = ["config", "macos", "work"]   # work Mac
+# dotfile_groups = ["config", "omarchy"]       # Omarchy laptop
+```
+
+### One config, two OSes
+
+- **Packages** are OS-gated: `os = "macos"` on `brew`/`brew-cask` entries, and
+  `pacman:`/`aur:` entries are skipped where those managers don't exist.
+- **CLI tools** that Omarchy already installs with pacman (jq, bat, eza, fd,
+  zoxide, ripgrep, neovim, lazygit, starship, fzf) are `os = "macos"` in
+  `tools.toml`, so mise doesn't install them twice.
+- **Hooks and tasks** that call macOS-only tools (`osascript`, `pbcopy`,
+  `scutil`) either check the OS or have a Linux fallback.
+
+### mise fragments
+
+`mise/conf.d/` is split by domain rather than kept in one big file, and each
+file is linked individually (`symlink-each`). Machine-local fragments (e.g.
+`doctolib.toml`) can sit next to the links without being tracked. A domain that
+needs more than config (scripts, helpers) becomes a **folder fragment** like
+`conf.d/obsidian/`: a `mise.toml` plus the files it uses, with the folder as
+config root (`$MISE_CONFIG_ROOT`) and its `tasks/` runnable from any directory.
+
+### Symlinks and tracked files
+
+- App configs are **symlinked**: edits are live immediately and show up in
+  `git status` here.
+- Git's shared config is `~/.config/git/config`. `~/.gitconfig` stays a plain,
+  untracked file, read last so it wins, that catches `git config --global`
+  writes such as `gh auth setup-git`.
+- `~/.zshrc` is **tracked** by mise: it owns marker-delimited blocks (Oh My Zsh,
+  `mise activate`, starship, fnox, zoxide, atuin, fzf, worktrunk) and leaves the
+  rest alone. Use `mise dot status`/`diff`/`save` for it.
+
+## Notable choices
+
+- **Git identity per context**: work email by default; personal email
+  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub
+  remote. The emails are not in the repo: bootstrap asks for them once
+  (`mise run setup-git-identity`, writes untracked
+  `~/.config/git/identity-{work,perso}`). Adding a context is one more file in
+  that task plus one `includeIf` in `config/git/config`. Commits and tags are SSH-signed
+  with the per-machine key from `setup-github-ssh`.
+- **Supply-chain cooldown**: `minimum_release_age = "3d"`, so `latest` never
+  resolves to a release younger than 3 days. Pin a version explicitly to bypass
+  it for one tool.
+- **AI agents** live in `mise/conf.d/agents/`: one `AGENTS.md` linked under each
+  agent's expected name (`~/.config/claude/CLAUDE.md`...), one folder per agent.
+  Claude's `settings.json` is **not** tracked (this repo is public, and Claude
+  writes to it). Its shared parts are fragments in `agents/claude/settings.d/`,
+  merged *into* the live file by `merge` entries in the root `mise.toml`:
+  - each fragment owns only its keys; everything else (e.g. work-only `autoMode`)
+    is left alone;
+  - `merge = true` enforces (permissions), `merge = "missing"` only sets defaults,
+    so `/config` and `/plugin` changes stick;
+  - arrays are replaced, not unioned: `mise dot diff` shows "always allow"
+    entries worth promoting into a fragment;
+  - deleting a key from a fragment doesn't delete it from the live file.
+- **Secrets** live in `fnox/config.toml` with the `age` provider: ciphertext is
+  committed and decrypted locally, with no network or vault needed. Tokens
+  (`GH_TOKEN`, `GITHUB_TOKEN`, `AI_PROVIDER_TOKEN`) are in every shell without a
+  Bitwarden session; the `obsidian` profile holds the LiveSync credentials.
+
+## Day to day
+
+- **New tool or package**: add it to the relevant `conf.d/*.toml`, run
+  `mise bootstrap`, commit.
+- **New file in a group or in `conf.d/`**: run `mise bootstrap --only dotfiles`
+  to link it.
+- **Config drifted**: symlinked files are edited in place, so just commit from
+  `~/.dotfiles`. For `~/.zshrc`, use `mise dot status`/`diff`/`save`.
+- **Risky change**: preview with `mise bootstrap --dry-run`.
+
+## macOS permissions
+
+Bootstrap installs the apps, and `macos.toml`'s `post-packages` hook opens the
+background and menu-bar ones once so macOS shows their permission prompts.
+Granting those prompts isn't scriptable: do it in **System Settings > Privacy &
+Security**, then quit and reopen the app (or reboot).
 
 - **Vorssaint** (replaces AltTab, Stats, KeepingYouAwake, LinearMouse): grant
-  Accessibility and Screen Recording, then import its settings by hand --
-  Settings > Import > `config/vorssaint/settings.plist` (not scriptable; re-export
-  to the same file after changing settings).
-- **Accessibility**: AeroSpace (the window manager itself, plus needed for
-  `start-at-login` and the `borders` hook below to run), Ice, Raycast (hotkeys/snippets),
-  Karabiner-Elements (event capture; also covers Input Monitoring on 16.0+,
-  no separate grant needed there).
-- **Screen Recording**: Raycast (window management, Screen Awareness), Ice (menu bar item images/Ice Bar --
-  re-grant after every update since it ships ad-hoc-signed builds), cmux's
-  `cmux-cua` helper (only if its Computer Use feature is used).
-- **Driver Extension** (Karabiner-Elements only): its `.pkg`-based cask install
-  needs `sudo` interactively -- `mise bootstrap` prints the exact
-  `sudo installer -pkg ... -target /` command to run by hand if no TTY is
-  available (e.g. from an agent/CI context). Afterwards approve
-  `Karabiner-DriverKit-VirtualHIDDevice` under **System Settings > General >
-  Login Items & Extensions > Driver Extensions**, and allow Karabiner to run
-  in the background in the same **Login Items & Extensions** pane. A **reboot
-  is required** before the virtual HID driver is fully active and the
-  `caps_lock`/`left_option` hyper-key remap in `config/karabiner/karabiner.json`
-  starts working end-to-end.
-- **"Launch at Login"**: Ice is added as a
-  regular Login Item by `macos.toml`'s `post-packages` hook (through System
-  Events: the first run asks to allow the terminal under **Automation**). AeroSpace handles it itself
-  (`start-at-login = true` in `config/aerospace/aerospace.toml`, once
-  Accessibility is granted, and `borders` then starts via its
-  `after-startup-command`); Raycast and Bitwarden register their own
-  login item the first time they're opened. Brave has no scriptable option --
-  toggle it by hand if wanted. Karabiner-Elements is a different case again:
-  there's no login-item toggle or config key -- its installer registers
-  LaunchDaemons that auto-start it at every login once it's been run once; quit
-  it (or remove the LaunchDaemons) if that's not wanted.
+  Accessibility and Screen Recording, then import its settings by hand via
+  Settings > Import > `macos/vorssaint/settings.plist`. Re-export to the same
+  file after changing settings.
+- **Accessibility**: AeroSpace (also needed for `start-at-login` and its
+  `borders` startup command), Ice, Raycast (hotkeys, snippets),
+  Karabiner-Elements (event capture; recent versions don't need a separate
+  Input Monitoring grant).
+- **Screen Recording**: Raycast (window management, Screen Awareness), Ice
+  (menu bar item images; re-grant after every update, it ships ad-hoc-signed
+  builds), and cmux's `cmux-cua` helper if its Computer Use feature is used.
+- **Karabiner driver extension**: its `.pkg` install needs `sudo`; without a TTY
+  (agent or CI), `mise bootstrap` prints the exact `sudo installer -pkg ...`
+  command to run by hand. Then approve `Karabiner-DriverKit-VirtualHIDDevice`
+  under **System Settings > General > Login Items & Extensions > Driver
+  Extensions**, allow Karabiner to run in the background in the same pane, and
+  **reboot**: the caps lock / left option hyper key only works after that.
+- **Launch at login**:
+  - Ice is added as a regular Login Item by the `post-packages` hook (the first
+    run asks to let the terminal control System Events under **Automation**).
+  - AeroSpace handles it itself (`start-at-login = true`, once Accessibility is
+    granted) and starts `borders` from its `after-startup-command`.
+  - Raycast and Bitwarden register their own login item the first time they're
+    opened.
+  - Brave has no scriptable option: toggle it by hand if wanted.
+  - Karabiner-Elements has no toggle: its installer registers LaunchDaemons
+    that start it at every login. Quit it (or remove them) if unwanted.
+
+## Known gaps
+
+- **Omarchy writes to the global mise config**: its lazy wrappers (`gh`,
+  `codex`...) and dev-env installer run `mise use -g`, which lands in
+  `~/.config/mise/config.toml`, i.e. in this repo through the symlink. Review
+  with `git diff` before committing.
+- **`omarchy-reinstall-configs`** copies Omarchy's defaults over `~/.config`,
+  and so through the symlinks into this repo. Avoid it, or check `git status`
+  afterwards.
+- **Colima runtime state** (VM disk, sockets) lives in `macos/colima/`, because
+  `~/.config/colima` is a whole-directory symlink. It's gitignored, but moving
+  that folder means stopping the VM first.
+- **Root-owned files under `/opt/homebrew`**: a past `sudo mise ...` run can leave
+  root-owned paths that make installs fail with `Permission denied`. Fix with
+  `sudo chown -R "$(whoami)":admin /opt/homebrew`, and never run `mise bootstrap`
+  itself with `sudo`.
+- **Old keyboards in `macos/karabiner/karabiner.json`**: the default profile
+  still lists an Apple keyboard (`vendor_id` 1452, `product_id` 591) and a
+  Keychron (13364 / 2832) from a previous machine. Harmless if they're not
+  plugged in; prune them once they're gone for good. The hyper-key remap
+  applies whatever keyboard is connected.
