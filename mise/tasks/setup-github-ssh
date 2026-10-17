@@ -7,13 +7,14 @@ fi
 if [ ! -f ~/.ssh/id_ed25519_github ]; then
   ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "32645951+fapont@users.noreply.github.com"
 fi
+title=$(scutil --get ComputerName 2>/dev/null || uname -n)
 pubkey=$(awk '{print $1, $2}' ~/.ssh/id_ed25519_github.pub)
 keys=$(gh ssh-key list)
 for type in authentication signing; do
   if ! grep -F "$pubkey" <<<"$keys" | grep -qw "$type"; then
-    gh ssh-key add ~/.ssh/id_ed25519_github.pub --type "$type" --title "$(scutil --get ComputerName)" \
+    gh ssh-key add ~/.ssh/id_ed25519_github.pub --type "$type" --title "$title" \
       || { gh auth refresh -h github.com -s admin:public_key,admin:ssh_signing_key \
-           && gh ssh-key add ~/.ssh/id_ed25519_github.pub --type "$type" --title "$(scutil --get ComputerName)"; }
+           && gh ssh-key add ~/.ssh/id_ed25519_github.pub --type "$type" --title "$title"; }
   fi
 done
 # Every identity in config/git/{config,perso} signs with this key.

@@ -9,6 +9,7 @@
 
 [bootstrap.packages]
 "brew-cask:obsidian" = { version = "latest", os = "macos" }
+"pacman:obsidian"    = "latest"
 
 [task_config]
 includes = ["tasks"]

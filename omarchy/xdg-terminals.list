@@ -1,0 +1,3 @@
+# -> ~/.config/xdg-terminals.list: what Omarchy's SUPER+RETURN launches
+# (same file `omarchy-install-terminal ghostty` writes). Ghostty comes from omarchy.toml.
+com.mitchellh.ghostty.desktop

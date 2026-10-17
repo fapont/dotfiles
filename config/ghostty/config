@@ -35,3 +35,7 @@ macos-icon = xray
 # keybind = global:cmd+:=toggle_quick_terminal
 keybind = shift+enter=text:\n
 
+
+# Omarchy: follow its theme switcher (loaded last, so it overrides `theme`
+# above). The leading `?` makes it optional, so macOS ignores it.
+config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
