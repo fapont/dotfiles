@@ -45,12 +45,11 @@ mise/
     agents/                 #    AI agent CLIs, AGENTS.md, Claude settings fragments
     obsidian/               #    Obsidian app + setup-obsidian task
   tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh, setup-git-identity
-config/                     # group `config`: shared app configs (git, ghostty, btop, bat, starship...)
+config/                     # group `config`: shared app configs (git, ghostty, nvim, btop, starship...)
 macos/                      # group `macos`: aerospace, karabiner, vorssaint, colima
 omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
 work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
 fnox/config.toml            # secrets as env vars
-nvim/                       # Neovim (LazyVim)
 zprofile
 ```
 
@@ -110,4 +109,3 @@ Not scriptable: grant in **System Settings > Privacy & Security**, then restart 
 - Colima's VM state lives (gitignored) in `macos/colima/`: stop the VM before moving it.
 - A past `sudo mise` can leave root-owned files in `/opt/homebrew`:
   `sudo chown -R "$(whoami)":admin /opt/homebrew`.
-- `macos/karabiner/karabiner.json` still lists keyboards from a previous machine.

@@ -3,7 +3,7 @@
 "~/.zshrc" = { mode = "track" }
 "~/.zshrc/omz-init" = { block = '''
 export ZSH="$HOME/.config/oh-my-zsh"
-plugins=(git docker docker-compose kubectl kubectx terraform aws gcloud helm gh common-aliases command-not-found zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git docker docker-compose kubectl kubectx aws gcloud helm gh common-aliases command-not-found zsh-autosuggestions zsh-syntax-highlighting)
 source "$ZSH/oh-my-zsh.sh"
 ''' }
 # Kept as an ordered block (not [bootstrap.mise_shell_activate], which appends its
