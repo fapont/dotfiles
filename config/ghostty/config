@@ -27,8 +27,7 @@ quit-after-last-window-closed = true
 shell-integration-features = true
 
 # macos
-# macos-titlebar-style = transparent
-macos-titlebar-style = transparent 
+macos-titlebar-style = transparent
 macos-icon = xray
 
 # Keybinding
