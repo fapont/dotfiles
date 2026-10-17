@@ -59,7 +59,7 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 "com.apple.WindowManager" = { StandardHideWidgets = true, EnableStandardClickToShowDesktop = false }
 
 [bootstrap.hooks.post-defaults]
-run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
+run = "[ \"$(uname)\" != Darwin ] || killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 
 # mise never launches what it installs: open these once so they finish first-run
 # setup and register their own login item (AeroSpace via start-at-login, Raycast,
@@ -72,6 +72,7 @@ run = "killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 # First run asks to let the terminal control System Events (Automation).
 [bootstrap.hooks.post-packages]
 run = '''
+[ "$(uname)" = Darwin ] || exit 0
 for app in AeroSpace Raycast Karabiner-Elements; do
   pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
 done

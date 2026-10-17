@@ -8,7 +8,8 @@ source "$ZSH/oh-my-zsh.sh"
 ''' }
 # Kept as an ordered block (not [bootstrap.mise_shell_activate], which appends its
 # own) so mise is active before the starship/fnox/zoxide/... inits below.
-"~/.zshrc/mise-activate" = { block = 'eval "$("$HOME/.local/bin/mise" activate zsh)"' }
+# mise.run puts it in ~/.local/bin (macOS), Omarchy's pacman in /usr/bin.
+"~/.zshrc/mise-activate" = { block = 'eval "$(${commands[mise]:-$HOME/.local/bin/mise} activate zsh)"' }
 "~/.zshrc/starship-init" = { block = 'eval "$(starship init zsh)"' }
 "~/.zshrc/fnox-activate" = { block = 'eval "$(fnox activate zsh)"' }
 "~/.zshrc/zoxide-init" = { block = 'eval "$(zoxide init zsh --cmd cd)"' }

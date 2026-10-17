@@ -1,17 +1,19 @@
 [tools]
-jq = "latest"
+# Omarchy installs these with pacman, so mise only provides them on macOS.
+jq = { version = "latest", os = "macos" }
+bat = { version = "latest", os = "macos" }
+eza = { version = "latest", os = "macos" }
+fd = { version = "latest", os = "macos" }
+zoxide = { version = "latest", os = "macos" }
+ripgrep = { version = "latest", os = "macos" }
+neovim = { version = "latest", os = "macos" }
+lazygit = { version = "latest", os = "macos" }
+starship = { version = "latest", os = "macos" }
+fzf = { version = "latest", os = "macos" }
+
 yq = "latest"
-bat = "latest"
-eza = "latest"
-fd = "latest"
-zoxide = "latest"
-ripgrep = "latest"
 github-cli = "latest"
-neovim = "latest"
-lazygit = "latest"
-starship = "latest"
 usage = "latest"
-fzf = "latest"
 delta = "latest"
 tealdeer = "latest"
 glow = "latest"

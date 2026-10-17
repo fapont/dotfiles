@@ -12,7 +12,9 @@ bwu    = 'bw unlock --raw | age -r "$(cat ~/.ssh/id_ed25519_age.pub)" -o ~/.loca
 XDG_DATA_HOME   = "{{env.HOME}}/.local/share"
 XDG_CONFIG_HOME = "{{env.HOME}}/.config"
 XDG_STATE_HOME  = "{{env.HOME}}/.local/state"
-# macOS system Python (3.9) is too old for gcloud's bundler
-CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
 # live decrypt each time, never cached in plaintext
 BW_SESSION = "{{ exec(command='age -d -i $HOME/.ssh/id_ed25519_age $HOME/.local/state/bw-session.age 2>/dev/null || true') }}"
+
+# /bin/zsh on both macOS and Arch (/bin -> /usr/bin); mise adds it to /etc/shells.
+[bootstrap.user]
+login_shell = "/bin/zsh"

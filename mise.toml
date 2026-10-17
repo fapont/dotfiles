@@ -6,8 +6,10 @@
 "~/.config/oh-my-zsh/custom/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
 "~/.config/oh-my-zsh/custom/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
 
-# config/<x> -> ~/.config/<x>, file by file. Dirs that hold runtime state or are
-# written by their app stay whole-dir links.
+# <group>/<x> -> ~/.config/<x>, file by file. Dirs that hold runtime state or are
+# written by their app stay whole-dir links. Every group applies unless the
+# machine picks some in ~/.config/mise/config.local.toml (untracked), e.g. on
+# Omarchy: [bootstrap] dotfile_groups = ["config", "omarchy"]
 [dotfile_groups.config]
 root = "config"
 target = "~/.config"
@@ -15,7 +17,24 @@ exclude = ["zsh/**"]
 
 [dotfile_groups.config.entries]
 "~/.config/btop"   = { mode = "symlink" }
+
+# macOS-only apps (AeroSpace, Karabiner, Vorssaint, Colima)
+[dotfile_groups.macos]
+root = "macos"
+target = "~/.config"
+
+[dotfile_groups.macos.entries]
 "~/.config/colima" = { mode = "symlink" }
+
+# Omarchy laptop: Hyprland overrides + default terminal
+[dotfile_groups.omarchy]
+root = "omarchy"
+target = "~/.config"
+
+# Work machine: k8s/cloud tooling (mise/conf.d/work.toml) + k9s
+[dotfile_groups.work]
+root = "work"
+target = "~/.config"
 
 [dotfiles]
 "~/.config/mise/config.toml"              = { source = "mise/config.toml", mode = "symlink" }
