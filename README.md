@@ -8,33 +8,31 @@ Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org)
 
 ## Install
 
-Each machine first picks its [dotfile groups](#dotfile-groups) in an untracked
-`~/.config/mise/config.local.toml`, then runs `mise bootstrap`. Bootstrap is
-idempotent: safe to re-run at any time, previewable with `mise bootstrap --dry-run`.
+`mise bootstrap --from` clones this repo into `~/.dotfiles` and applies it.
+`MISE_AUTO_ENV=1` makes mise load `mise.macos.toml` or `mise.linux.toml`, which
+pick the machine's [dotfile groups](#dotfile-groups): no local file to write.
+Bootstrap is idempotent and previewable with `--dry-run`.
 
 ### macOS (work laptop)
 
 ```sh
-mkdir -p ~/.config/mise && printf '[bootstrap]\ndotfile_groups = ["config", "macos", "work"]\n' > ~/.config/mise/config.local.toml
-curl -fsSL https://raw.githubusercontent.com/fapont/dotfiles/main/bootstrap.sh | sh
+curl https://mise.run | sh
+MISE_AUTO_ENV=1 ~/.local/bin/mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --yes
 ```
 
-`bootstrap.sh` installs mise if missing, clones (or `git pull --ff-only`)
-`~/.dotfiles`, then runs `mise bootstrap`: packages through mise's own
-`brew`/`brew-cask` backends (no real Homebrew involved), Oh My Zsh and its
-plugins, symlinked app configs, `~/.zshrc`, macOS defaults and CLI tools. Some
-macOS permissions still need [granting by hand](#macos-permissions).
+This installs packages through mise's own `brew`/`brew-cask` backends (no real
+Homebrew involved), Oh My Zsh and its plugins, symlinked app configs,
+`~/.zshrc`, macOS defaults and CLI tools. Some macOS permissions still need
+[granting by hand](#macos-permissions).
 
 ### Omarchy (personal laptop)
 
 Omarchy already ships mise (`/usr/bin/mise`) and seeds its own
-`~/.config/{git,starship.toml,btop,ghostty}`, so the first run has to replace them:
+`~/.config/{git,starship.toml,btop,ghostty}`, so the first run has to replace
+them (`--force-dotfiles`). It also switches the login shell to zsh:
 
 ```sh
-git clone https://github.com/fapont/dotfiles.git ~/.dotfiles && cd ~/.dotfiles
-mkdir -p ~/.config/mise && printf '[bootstrap]\ndotfile_groups = ["config", "omarchy"]\n' > ~/.config/mise/config.local.toml
-mise bootstrap --dry-run                     # check what it replaces
-mise bootstrap --yes --force-dotfiles        # also switches the login shell to zsh
+MISE_AUTO_ENV=1 mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --yes --force-dotfiles
 ```
 
 On top of the shared configs, this machine gets:
@@ -59,14 +57,16 @@ mise run restore-secrets     # pulls the fnox age key (id_ed25519_age) back from
 mise run setup-obsidian      # ~/Obsidian vault + LiveSync, CouchDB creds from the fnox "obsidian" profile
 ```
 
-Open a new terminal: `GH_TOKEN`/`GITHUB_TOKEN` are already there. All three
-tasks are idempotent.
+Open a new terminal: `GH_TOKEN`/`GITHUB_TOKEN` are already there, and so is
+`MISE_AUTO_ENV` (from `shell.toml`), so later runs are a plain `mise bootstrap`
+from `~/.dotfiles`. All three tasks are idempotent.
 
 ## Layout
 
 ```
-bootstrap.sh                # curl | sh entry point
 mise.toml                   # repo clones, dotfile groups and the dotfiles map (what goes where)
+mise.macos.toml             # dotfile groups on macOS
+mise.linux.toml             # dotfile groups on Linux
 mise/
   config.toml               # -> ~/.config/mise/config.toml
   conf.d/                   # -> ~/.config/mise/conf.d/, one fragment per domain
@@ -92,14 +92,15 @@ zprofile
 ### Dotfile groups
 
 Each group folder (`config/`, `macos/`, `omarchy/`, `work/`) is linked file by
-file into `~/.config`. Every group applies unless the machine selects some in
-`~/.config/mise/config.local.toml`:
+file into `~/.config`. The OS picks the groups, through platform files that
+mise loads when `MISE_AUTO_ENV=1` (on by default from mise 2027.6):
 
-```toml
-[bootstrap]
-dotfile_groups = ["config", "macos", "work"]   # work Mac
-# dotfile_groups = ["config", "omarchy"]       # Omarchy laptop
-```
+| File | Groups |
+|---|---|
+| `mise.macos.toml` | `config`, `macos`, `work` |
+| `mise.linux.toml` | `config`, `omarchy` |
+
+Without `MISE_AUTO_ENV`, every group applies.
 
 ### One config, two OSes
 
