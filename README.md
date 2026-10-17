@@ -30,7 +30,7 @@ mise/
     macos.toml                    # macOS packages + system defaults
     omarchy.toml                  # Arch packages Omarchy doesn't ship (pacman/aur)
     obsidian/                     # folder fragment: app + setup-obsidian task + its helper
-  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh)
+  tasks/                      # `mise run <name>` scripts (restore-secrets, setup-github-ssh, setup-git-identity)
 config/                        # dotfile group `config`: shared app configs (git, ghostty, btop, bat, starship...)
 macos/                         # dotfile group `macos`: aerospace, karabiner, vorssaint, colima
 omarchy/                       # dotfile group `omarchy`: Hyprland input overrides, default terminal
@@ -69,9 +69,11 @@ pacman (jq, bat, eza, fd, zoxide, ripgrep, neovim, lazygit, starship, fzf) are
   (read last, so it wins) that catches `git config --global` writes such as
   `gh auth setup-git`. `~/.zshrc` is **tracked** with two marker-delimited edit blocks
   mise owns (Oh My Zsh init, `mise activate`) -- use `mise dot status`/`diff`/`save` for it.
-- **Git identity per context**: work email by default, personal email (`config/git/perso`)
-  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub remote. Add
-  a context = one file with a `[user]` block + one `includeIf` in `config/git/config`.
+- **Git identity per context**: work email by default, personal email
+  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub remote. The
+  emails are not in the repo: bootstrap asks for them once (`mise run setup-git-identity`,
+  writes untracked `~/.config/git/identity-{work,perso}`). Add a context = one more file in
+  that task + one `includeIf` in `config/git/config`.
   Commits and tags are SSH-signed with the per-machine key from `setup-github-ssh`.
 - **Supply-chain cooldown**: `minimum_release_age = "3d"` -- `latest` never resolves to
   a release younger than 3 days. Pin a version explicitly to bypass it for one tool.

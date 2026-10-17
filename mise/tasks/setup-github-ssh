@@ -5,7 +5,7 @@ if ! gh ssh-key list >/dev/null 2>&1; then
   gh auth refresh -h github.com -s admin:public_key,admin:ssh_signing_key
 fi
 if [ ! -f ~/.ssh/id_ed25519_github ]; then
-  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "fabrice.pont@doctolib.com"
+  ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github -N "" -C "$(id -un)@$(uname -n)"
 fi
 title=$(scutil --get ComputerName 2>/dev/null || uname -n)
 pubkey=$(awk '{print $1, $2}' ~/.ssh/id_ed25519_github.pub)
@@ -17,9 +17,9 @@ for type in authentication signing; do
            && gh ssh-key add ~/.ssh/id_ed25519_github.pub --type "$type" --title "$title"; }
   fi
 done
-# Every identity in config/git/{config,perso} signs with this key.
+# Every identity in ~/.config/git/identity-* signs with this key.
 mkdir -p ~/.config/git
-emails=$(git config --file ~/.dotfiles/config/git/config user.email),$(git config --file ~/.dotfiles/config/git/perso user.email)
+emails=$(cat ~/.config/git/identity-* | git config --file - --get-all user.email | paste -sd, -)
 echo "$emails namespaces=\"git\" $pubkey" > ~/.config/git/allowed_signers
 gh config set git_protocol ssh
 echo "Git SSH ready: ~/.ssh/id_ed25519_github (auth + signing)"
