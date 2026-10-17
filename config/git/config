@@ -4,7 +4,6 @@
 
 [user]
 	name = Fabrice Pont
-	email = 32645951+fapont@users.noreply.github.com
 	# per-machine key from `mise run setup-github-ssh`, registered for auth + signing
 	signingkey = ~/.ssh/id_ed25519_github.pub
 
@@ -38,16 +37,19 @@
 	process = git-lfs filter-process
 	required = true
 
-# Identity per context: work email by default, personal email when the repo
-# lives under ~/Perso, is this dotfiles checkout, or points at a fapont/* remote
-# (so a personal repo cloned anywhere still gets the right email). To add
-# another context (new employer, client...): a new file next to `perso` with its
-# own [user] and one includeIf here.
+# Emails stay out of the repo: `mise run setup-git-identity` writes them to the
+# untracked ~/.config/git/identity-{work,perso} (git ignores a missing include).
+# Work email by default, personal email when the repo lives under ~/Perso, is
+# this dotfiles checkout, or points at a fapont/* remote (so a personal repo
+# cloned anywhere still gets the right email). To add another context (new
+# employer, client...): one more identity file in the task and one includeIf here.
+[include]
+	path = ~/.config/git/identity-work
 [includeIf "gitdir:~/Perso/"]
-	path = ~/.config/git/perso
+	path = ~/.config/git/identity-perso
 [includeIf "gitdir:~/.dotfiles/"]
-	path = ~/.config/git/perso
+	path = ~/.config/git/identity-perso
 [includeIf "hasconfig:remote.*.url:git@github.com:fapont/**"]
-	path = ~/.config/git/perso
+	path = ~/.config/git/identity-perso
 [includeIf "hasconfig:remote.*.url:https://github.com/fapont/**"]
-	path = ~/.config/git/perso
+	path = ~/.config/git/identity-perso

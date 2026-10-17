@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#MISE description="Ask for this machine's git emails (kept out of the repo, in ~/.config/git/identity-*)"
+set -euo pipefail
+mkdir -p ~/.config/git
+ask() { # <file> <label> <hint>
+  local f=~/.config/git/identity-$1 email
+  [ -s "$f" ] && return
+  [ -t 0 ] || { echo "no TTY, skipping $f (run: mise run setup-git-identity)"; return; }
+  read -rp "$2 ($3): " email
+  [ -n "$email" ] && printf '[user]\n\temail = %s\n' "$email" > "$f"
+}
+ask work "Work git email" "e.g. first.last@company.com"
+ask perso "Personal git email" "e.g. <id>+<user>@users.noreply.github.com"

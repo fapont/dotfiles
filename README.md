@@ -77,7 +77,7 @@ mise/
     omarchy.toml            #    Arch packages + Omarchy theme
     agents/                 #    AI agent CLIs, AGENTS.md, Claude settings fragments
     obsidian/               #    Obsidian app + setup-obsidian task
-  tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh
+  tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh, setup-git-identity
 config/                     # group `config`: shared app configs (git, ghostty, btop, bat, starship...)
 macos/                      # group `macos`: aerospace, karabiner, vorssaint, colima
 omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
@@ -134,9 +134,11 @@ config root (`$MISE_CONFIG_ROOT`) and its `tasks/` runnable from any directory.
 ## Notable choices
 
 - **Git identity per context**: work email by default; personal email
-  (`config/git/perso`) under `~/Perso/`, in this checkout, or in any repo with a
-  `fapont/*` GitHub remote. Adding a context is one file with a `[user]` block
-  plus one `includeIf` in `config/git/config`. Commits and tags are SSH-signed
+  under `~/Perso/`, in this checkout, or in any repo with a `fapont/*` GitHub
+  remote. The emails are not in the repo: bootstrap asks for them once
+  (`mise run setup-git-identity`, writes untracked
+  `~/.config/git/identity-{work,perso}`). Adding a context is one more file in
+  that task plus one `includeIf` in `config/git/config`. Commits and tags are SSH-signed
   with the per-machine key from `setup-github-ssh`.
 - **Supply-chain cooldown**: `minimum_release_age = "3d"`, so `latest` never
   resolves to a release younger than 3 days. Pin a version explicitly to bypass
