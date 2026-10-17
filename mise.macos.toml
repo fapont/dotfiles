@@ -1,0 +1,3 @@
+# Loaded on macOS only (MISE_AUTO_ENV, see shell.toml): the Mac is the work laptop.
+[bootstrap]
+dotfile_groups = ["config", "macos", "work"]
