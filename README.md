@@ -60,7 +60,8 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
 - **Two OSes, one config**: `brew` entries are `os = "macos"`, `pacman`/`aur`
   ones are skipped where missing, and CLIs Omarchy already ships (jq, bat, eza,
   fd, ripgrep...) are macOS-only in `tools.toml`.
-- **Omarchy extras**: missing Arch packages, Ghostty as default terminal,
+- **Omarchy extras**: missing Arch packages, Ghostty as default terminal (with
+  a Linux-sized font, `omarchy/ghostty/omarchy.conf`),
   Catppuccin applied once, Hyprland overrides in `omarchy/hypr/` (AZERTY,
   natural scroll, rounded corners, blur).
 - **mise fragments**: `mise/conf.d/` is split by domain and linked file by file,
