@@ -1,0 +1,19 @@
+# -> ~/.config/herdr/config.toml. herdr defaults, except the tmux-style prefix
+# and a split-down on prefix+s.
+onboarding = false
+
+[ui]
+status_indicators = "symbols"
+
+[ui.toast]
+delivery = "system"
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[keys]
+prefix = "ctrl+a"
+split_horizontal = ["prefix+s", "prefix+minus"]
+# prefix+s was settings
+settings = "prefix+alt+s"
