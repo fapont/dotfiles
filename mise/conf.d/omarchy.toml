@@ -27,3 +27,16 @@ marker="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/omarchy-theme-set"
 if omarchy-theme-set catppuccin; then mkdir -p "${marker%/*}" && touch "$marker"
 else echo "omarchy-theme-set failed, will retry on next bootstrap" >&2; fi
 '''
+
+# Closing the lid locks instead of suspending, so the laptop stays reachable
+# (SSH, herdr) when plugged in at home. Docked lids are already ignored. Applies
+# at next boot, or now with `sudo systemctl kill -s HUP systemd-logind` (never
+# restart logind: it can end the graphical session).
+[bootstrap.files."/etc/systemd/logind.conf.d/30-lid-lock.conf"]
+os = "linux"
+owner = "root"
+group = "root"
+content = """
+[Login]
+HandleLidSwitch=lock
+"""
