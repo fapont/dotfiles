@@ -11,6 +11,14 @@ if [[ $OSTYPE == darwin* ]]; then
   running() { pgrep -x Obsidian >/dev/null; }
   quit() { osascript -e 'quit app "Obsidian"' 2>/dev/null || true; }
 else
+  # Run outside the Hyprland session (SSH, TTY)? Target its Wayland socket, so
+  # wl-copy and xdg-open reach the desktop (Hyprland usually picks wayland-1).
+  if [ -z "${WAYLAND_DISPLAY:-}" ]; then
+    for s in "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"/wayland-[0-9]; do
+      [ -S "$s" ] && export WAYLAND_DISPLAY="${s##*/}" && break
+    done
+  fi
+  [ -n "${WAYLAND_DISPLAY:-}" ] || { echo "No Wayland session found: run this from the Omarchy desktop" >&2; exit 1; }
   registry="${XDG_CONFIG_HOME:-$HOME/.config}/obsidian/obsidian.json"
   copy() { wl-copy; }
   launch() { xdg-open "$@" >/dev/null 2>&1; }
