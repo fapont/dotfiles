@@ -1,11 +1,12 @@
 // Upstream's utils/setup/generate_setup_uri.ts forces E2EE; this only encrypts
 // when LIVESYNC_E2EE_PASSPHRASE is set. Prints the URI passphrase, then the URI.
+// Pinned published Commonlib (upstream's raw `main` helpers change without notice).
+import { encodeTimeBoundSetupURI } from "npm:@vrtmrz/livesync-commonlib@0.1.34/setup-uri";
+import { upsertRemoteConfigurationInPlace } from "npm:@vrtmrz/livesync-commonlib@0.1.34/remote-configurations";
 import {
   createNewVaultSettings,
-  encodeSettingsToSetupURI,
   PREFERRED_SETTING_SELF_HOSTED,
-  upsertRemoteConfigurationInPlace,
-} from "https://raw.githubusercontent.com/vrtmrz/obsidian-livesync/main/utils/setup/livesync-commonlib.ts";
+} from "npm:@vrtmrz/livesync-commonlib@0.1.34/settings";
 
 function env(name: string): string {
   const value = Deno.env.get(name)?.trim();
@@ -46,9 +47,13 @@ upsertRemoteConfigurationInPlace(settings, "couchdb", { activate: true });
 const bytes = crypto.getRandomValues(new Uint8Array(24));
 const uriPassphrase = btoa(String.fromCharCode(...bytes))
   .replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
-const uri = await encodeSettingsToSetupURI(settings, uriPassphrase, [
-  "pluginSyncExtendedSetting",
-  "doNotUseFixedRevisionForChunks",
-], true);
+// "persistent": no time window, the classic format every client opens. No
+// idDerivationKey either (upstream's new-vault default): this vault already
+// exists on the server, so its document IDs must stay the legacy ones.
+const { uri } = await encodeTimeBoundSetupURI(settings, uriPassphrase, {
+  mode: "persistent",
+  removeProperties: ["pluginSyncExtendedSetting", "doNotUseFixedRevisionForChunks"],
+  skipDefaultValue: true,
+});
 console.log(uriPassphrase);
 console.log(uri.trim());
