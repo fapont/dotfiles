@@ -1,0 +1,109 @@
+{
+  "version": 4,
+  "lines": [
+    [
+      {
+        "id": "1",
+        "type": "model",
+        "color": "cyan"
+      },
+      {
+        "id": "2d140023-5197-4ef2-b779-18b8cf47c11c",
+        "type": "separator"
+      },
+      {
+        "id": "3b",
+        "type": "context-percentage",
+        "color": "brightWhite",
+        "metadata": {
+          "inverse": "false",
+          "display": "slider"
+        }
+      },
+      {
+        "id": "b4235812-4a51-41df-87e8-8a03e41d4865",
+        "type": "separator"
+      },
+      {
+        "id": "5",
+        "type": "git-branch",
+        "color": "magenta",
+        "metadata": {
+          "hide": "no-git"
+        }
+      },
+      {
+        "id": "7",
+        "type": "git-changes",
+        "color": "red",
+        "metadata": {
+          "hide": "no-git,zero"
+        }
+      }
+    ],
+    [
+      {
+        "id": "8",
+        "type": "current-working-dir",
+        "color": "blue",
+        "metadata": {
+          "abbreviateHome": "true"
+        }
+      },
+      {
+        "id": "72473c60-6afc-4d89-8653-ef618011ca2d",
+        "type": "separator"
+      },
+      {
+        "id": "10",
+        "type": "session-cost",
+        "color": "green"
+      },
+      {
+        "id": "42a744cd-3457-473b-8043-fbd762e14dd6",
+        "type": "separator"
+      },
+      {
+        "id": "12",
+        "type": "session-clock",
+        "color": "brightBlack"
+      }
+    ],
+    [
+      {
+        "id": "d5329b69-623d-416a-9d9b-647e155f8384",
+        "type": "git-review",
+        "rawValue": false,
+        "metadata": {
+          "hide": "no-git,no-data,title"
+        },
+        "color": "brightYellow"
+      }
+    ]
+  ],
+  "flexMode": "full",
+  "compactThreshold": 60,
+  "colorLevel": 1,
+  "defaultPadding": " ",
+  "defaultPaddingSide": "both",
+  "inheritSeparatorColors": false,
+  "globalBold": true,
+  "gitCacheTtlSeconds": 5,
+  "terminalWidthCacheTtlSeconds": 5,
+  "customCommandCacheTtlSeconds": 0,
+  "minimalistMode": true,
+  "powerline": {
+    "enabled": false,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [],
+    "endCaps": [],
+    "theme": "nord-aurora",
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
+  }
+}
