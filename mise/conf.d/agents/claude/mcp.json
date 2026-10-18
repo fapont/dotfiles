@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "personnal-coding": {
+      "type": "http",
+      "url": "${PERSONNAL_CODING_MCP_URL}",
+      "headers": {
+        "x-litellm-api-key": "Bearer ${PERSONNAL_CODING_MCP_TOKEN}"
+      }
+    }
+  }
+}

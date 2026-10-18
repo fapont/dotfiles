@@ -82,6 +82,8 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
   Claude's `settings.json` isn't tracked; fragments in `agents/claude/settings.d/`
   are merged into it (`merge = true` enforces, `"missing"` only sets defaults;
   arrays are replaced, and removed keys stay live).
+  User-scope MCP servers (`agents/claude/mcp.json`) are merged into `.claude.json`
+  the same way, their URL and key as `${VAR}`s from fnox.
 - **Secrets**: `config/fnox/config.toml`, age-encrypted in the repo, decrypted locally.
 
 ## Day to day
