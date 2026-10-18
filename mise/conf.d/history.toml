@@ -16,6 +16,7 @@ source "$ZSH/oh-my-zsh.sh"
 "~/.zshrc/atuin-init" = { block = 'eval "$(atuin init zsh)"' }
 "~/.zshrc/fzf-init" = { block = 'eval "$(fzf --zsh)"' }
 "~/.zshrc/wt-init" = { block = 'eval "$(wt config shell init zsh)"' }
+"~/.zshrc/carapace-init" = { block = 'source <(carapace _carapace zsh)' }
 
 [history.origin]
 url = "https://github.com/fapont/dotfiles.git"
