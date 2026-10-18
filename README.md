@@ -84,6 +84,8 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
   arrays are replaced, and removed keys stay live).
   User-scope MCP servers (`agents/claude/mcp.json`) are merged into `.claude.json`
   the same way, their URL and key as `${VAR}`s from fnox.
+  Skills go in `~/.agents/skills/` (read by Codex, pi, Zed...), linked one by one
+  into Claude's; the herdr skill is regenerated from `herdr --skill` on bootstrap.
 - **Secrets**: `config/fnox/config.toml`, age-encrypted in the repo, decrypted locally.
 
 ## Day to day
