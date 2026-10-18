@@ -53,6 +53,9 @@ target = "~/.config"
 "~/.config/claude/settings.json/permissions" = { source = "mise/conf.d/agents/claude/settings.d/10-permissions.json", merge = true }
 "~/.config/claude/settings.json/ui"          = { source = "mise/conf.d/agents/claude/settings.d/20-ui.json", merge = "missing" }
 "~/.config/claude/settings.json/plugins"     = { source = "mise/conf.d/agents/claude/settings.d/30-plugins.json", merge = "missing" }
+# User-scope MCP servers live in .claude.json (also Claude's state file, never tracked).
+# Secrets are ${VAR}s from fnox, expanded by Claude at startup.
+"~/.config/claude/.claude.json/mcp"          = { source = "mise/conf.d/agents/claude/mcp.json", merge = "missing" }
 "~/.config/claude/CLAUDE.md"               = { source = "mise/conf.d/agents/AGENTS.md", mode = "symlink" }
 "~/.zprofile"                             = { source = "config/zsh/zprofile", mode = "symlink" }
 
