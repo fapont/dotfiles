@@ -326,7 +326,7 @@
 		<key>featureAvailable.spacesOrder</key>
 		<false/>
 		<key>featureAvailable.superKey</key>
-		<false/>
+		<true/>
 		<key>featureAvailable.switcher</key>
 		<true/>
 		<key>featureAvailable.textSnippets</key>
@@ -1376,11 +1376,11 @@
 		<key>spacesOrderEnabled</key>
 		<false/>
 		<key>superKeyEnabled</key>
-		<false/>
+		<true/>
 		<key>superKeyExceptions</key>
 		<array/>
 		<key>superKeyModifiers</key>
-		<string>control+option+shift+command</string>
+		<string>control+option+command</string>
 		<key>superKeySoloAction</key>
 		<string>none</string>
 		<key>superKeySource</key>

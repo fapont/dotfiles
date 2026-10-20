@@ -20,7 +20,7 @@ exclude = ["zsh/**"]
 # lazy.nvim rewrites lazy-lock.json, so the whole dir is linked
 "~/.config/nvim"   = { mode = "symlink" }
 
-# macOS-only apps (AeroSpace, Karabiner, Vorssaint, Colima)
+# macOS-only apps (AeroSpace, Vorssaint, Colima)
 [dotfile_groups.macos]
 root = "macos"
 target = "~/.config"

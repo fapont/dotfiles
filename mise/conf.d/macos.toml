@@ -12,7 +12,6 @@
 "brew-cask:vorssaint"       = { version = "latest", os = "macos" }
 "brew-cask:jordanbaird-ice" = { version = "latest", os = "macos" }
 "brew-cask:bitwarden"       = { version = "latest", os = "macos" }
-"brew-cask:karabiner-elements" = { version = "latest", os = "macos" }
 "brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
 "brew-cask:spotify" = { version = "latest", os = "macos" }
 "brew-cask:telegram" = { version = "latest", os = "macos" }
@@ -60,8 +59,7 @@ NSGlobalDomain = { NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashS
 run = "[ \"$(uname)\" != Darwin ] || killall Dock Finder ControlCenter SystemUIServer >/dev/null 2>&1 || true"
 
 # mise never launches what it installs: open these once so they finish first-run
-# setup and register their own login item (AeroSpace via start-at-login, Raycast,
-# Karabiner's LaunchDaemons).
+# setup and register their own login item (AeroSpace via start-at-login, Raycast).
 #
 # The menu-bar helpers below have no scriptable "Launch at Login", so they're
 # added as regular Login Items (System Settings > General > Login Items > "Open
@@ -71,7 +69,7 @@ run = "[ \"$(uname)\" != Darwin ] || killall Dock Finder ControlCenter SystemUIS
 [bootstrap.hooks.post-packages]
 run = '''
 [ "$(uname)" = Darwin ] || exit 0
-for app in AeroSpace Raycast Karabiner-Elements; do
+for app in AeroSpace Raycast; do
   pgrep -x "$app" >/dev/null 2>&1 || open -g -a "$app" 2>/dev/null || true
 done
 existing=$(osascript -e 'tell application "System Events" to get the name of every login item' 2>/dev/null || true)

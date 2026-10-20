@@ -46,7 +46,7 @@ mise/
     obsidian/               #    Obsidian app + setup-obsidian task
   tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh, setup-git-identity
 config/                     # group `config`: shared app configs (git, ghostty, nvim, btop, starship...)
-macos/                      # group `macos`: aerospace, karabiner, vorssaint, colima
+macos/                      # group `macos`: aerospace, vorssaint, colima
 omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
 work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
 ```
@@ -98,13 +98,11 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
 
 Not scriptable: grant in **System Settings > Privacy & Security**, then restart the app.
 
-- **Accessibility**: AeroSpace, Ice, Raycast, Karabiner-Elements, Vorssaint.
+- **Accessibility**: AeroSpace, Ice, Raycast, Vorssaint.
 - **Screen Recording**: Raycast, Ice (again after each update), Vorssaint.
 - **Vorssaint settings**: import `macos/vorssaint/settings.plist` by hand.
-- **Karabiner**: approve its driver in **Login Items & Extensions**, then reboot
-  for the hyper key to work.
-- **Login items**: Ice is added by bootstrap; AeroSpace, Raycast, Bitwarden and
-  Karabiner handle it themselves; Brave by hand.
+- **Login items**: Ice is added by bootstrap; AeroSpace, Raycast and Bitwarden
+  handle it themselves; Brave by hand.
 
 ## Known gaps
 
