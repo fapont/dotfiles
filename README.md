@@ -13,7 +13,7 @@ Same steps on macOS and Omarchy:
 ```sh
 command -v mise || curl https://mise.run | sh   # Omarchy already ships mise
 export PATH="$HOME/.local/bin:$PATH"
-MISE_AUTO_ENV=1 mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --yes --force-dotfiles
+MISE_AUTO_ENV=1 mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --yes --force-dotfiles --prompt-vars
 ```
 
 ```sh
@@ -31,12 +31,13 @@ the configs Omarchy pre-seeds. Afterwards, re-run a plain `mise bootstrap` from
 ## Layout
 
 ```
-mise.toml                   # repo clones, dotfile groups and the dotfiles map (what goes where)
-mise.macos.toml             # dotfile groups on macOS
-mise.linux.toml             # dotfile groups on Linux
+mise.toml                   # repo clones and bootstrap hooks
 mise/
   config.toml               # -> ~/.config/mise/config.toml
+  config.macos.toml         # -> ~/.config/mise/, dotfile groups on macOS
+  config.linux.toml         # -> ~/.config/mise/, dotfile groups on Linux
   conf.d/                   # -> ~/.config/mise/conf.d/, one fragment per domain
+    dotfiles.toml           #    dotfile groups and the dotfiles map (what goes where)
     tools.toml              #    CLI tools
     shell.toml              #    aliases, env, login shell
     history.toml            #    ~/.zshrc blocks
@@ -44,7 +45,7 @@ mise/
     omarchy.toml            #    Arch packages + Omarchy theme
     agents/                 #    AI agent CLIs, AGENTS.md, Claude settings fragments
     obsidian/               #    Obsidian app + setup-obsidian task
-  tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh, setup-git-identity
+  tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh
 config/                     # group `config`: shared app configs (git, ghostty, nvim, btop, starship...)
 macos/                      # group `macos`: aerospace, vorssaint, colima
 omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
@@ -54,8 +55,8 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
 ## How it works
 
 - **Dotfile groups**: `config/`, `macos/`, `omarchy/` and `work/` are linked file
-  by file into `~/.config`. `mise.macos.toml` picks `config` + `macos` + `work`,
-  `mise.linux.toml` picks `config` + `omarchy`, loaded through `MISE_AUTO_ENV=1`
+  by file into `~/.config`. `mise/config.macos.toml` picks `config` + `macos` + `work`,
+  `mise/config.linux.toml` picks `config` + `omarchy`, loaded through `MISE_AUTO_ENV=1`
   (exported by `shell.toml`). Without it, every group applies.
 - **Two OSes, one config**: `brew` entries are `os = "macos"`, `pacman`/`aur`
   ones are skipped where missing, and CLIs Omarchy already ships (jq, bat, eza,
@@ -75,8 +76,9 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
 ## Notable choices
 
 - **Git identity**: work email by default, personal one under `~/Perso/`, in this
-  repo or for `fapont/*` remotes. Emails stay out of the repo (asked once by
-  `setup-git-identity`). Commits are SSH-signed with the per-machine key.
+  repo or for `fapont/*` remotes. Emails stay out of the repo: asked once
+  per machine (`--prompt-vars`, or `mise vars prompt`) and rendered into
+  `~/.config/git/identity-*`. Commits are SSH-signed with the per-machine key.
 - **Supply-chain cooldown**: `minimum_release_age = "3d"`; pin a version to bypass.
 - **AI agents** (`mise/conf.d/agents/`): one `AGENTS.md` linked for each agent.
   Claude's `settings.json` isn't tracked; fragments in `agents/claude/settings.d/`

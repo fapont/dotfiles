@@ -37,12 +37,12 @@
 	process = git-lfs filter-process
 	required = true
 
-# Emails stay out of the repo: `mise run setup-git-identity` writes them to the
-# untracked ~/.config/git/identity-{work,perso} (git ignores a missing include).
+# Emails stay out of the repo: ~/.config/git/identity-{work,perso} are rendered
+# from identity-*.tera with per-machine [vars] (mise/conf.d/dotfiles.toml).
 # Work email by default, personal email when the repo lives under ~/Perso, is
 # this dotfiles checkout, or points at a fapont/* remote (so a personal repo
 # cloned anywhere still gets the right email). To add another context (new
-# employer, client...): one more identity file in the task and one includeIf here.
+# employer, client...): one more var + identity-*.tera and one includeIf here.
 [include]
 	path = ~/.config/git/identity-work
 [includeIf "gitdir:~/Perso/"]

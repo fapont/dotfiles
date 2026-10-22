@@ -1,0 +1,2 @@
+[user]
+	email = {{ vars.git_email_work }}
