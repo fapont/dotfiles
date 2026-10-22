@@ -2,6 +2,7 @@
 argocd      = 'latest'
 teleport-ent = '18.10.0'
 pre-commit  = 'latest'
+shellcheck  = 'latest'
 aws-cli     = { version = "latest", symlink_bins = true }
 aws-vault   = 'latest'
 gcloud      = 'latest'
