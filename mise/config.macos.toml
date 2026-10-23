@@ -1,3 +1,3 @@
-# Loaded on macOS only (MISE_AUTO_ENV, see shell.toml), from any directory: the Mac is the work laptop.
+# Loaded on macOS only (MISE_AUTO_ENV, see conf.d/shell/mise.toml), from any directory: the Mac is the work laptop.
 [bootstrap]
 dotfile_groups = ["config", "macos", "work"]

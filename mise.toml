@@ -1,7 +1,8 @@
-# Run `mise bootstrap` from a checkout. Everything else lives in
-# mise/config.toml + mise/conf.d/*.toml, symlinked into ~/.config/mise.
-# The dotfiles map is in mise/conf.d/dotfiles.toml: global once linked, so
-# `mise dot` (and --prune) sees every entry from any directory.
+# Run `mise bootstrap` from a checkout. Only bootstrap-time steps live here;
+# everything else is in mise/config.toml + mise/conf.d/ (and each group's
+# <group>/mise/conf.d/), symlinked into ~/.config/mise. The dotfiles map starts
+# in mise/conf.d/dotfiles.toml: global once linked, so `mise dot` (and --prune)
+# sees every entry from any directory.
 
 [bootstrap.repos]
 "~/.config/oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git" }
@@ -23,6 +24,6 @@ builtin = "history-watch"
 [bootstrap.hooks.post-tools]
 run = "bw status | grep -q '\"serverUrl\":\"https://vault.fapont.xyz\"' || bw config server https://vault.fapont.xyz"
 
-# Closes the global-config chicken-and-egg (history.toml needs the symlink first).
+# Closes the global-config chicken-and-egg (conf.d/shell/ needs the symlink first).
 [tasks.bootstrap]
 run = "mise bootstrap --only dotfiles --yes"

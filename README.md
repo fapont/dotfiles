@@ -31,35 +31,40 @@ the configs Omarchy pre-seeds. Afterwards, re-run a plain `mise bootstrap` from
 ## Layout
 
 ```
-mise.toml                   # repo clones and bootstrap hooks
-mise/
+mise.toml                   # bootstrap only: repo clones and hooks
+mise/                       # shared mise config, on every machine
   config.toml               # -> ~/.config/mise/config.toml
   config.macos.toml         # -> ~/.config/mise/, dotfile groups on macOS
   config.linux.toml         # -> ~/.config/mise/, dotfile groups on Linux
   conf.d/                   # -> ~/.config/mise/conf.d/, one fragment per domain
-    dotfiles.toml           #    dotfile groups and the dotfiles map (what goes where)
+    dotfiles.toml           #    dotfile groups, links for mise itself, git email vars
     tools.toml              #    CLI tools
-    shell.toml              #    aliases, env, login shell
-    history.toml            #    ~/.zshrc blocks
-    macos.toml              #    macOS packages + system defaults
-    omarchy.toml            #    Arch packages + Omarchy theme
-    agents/                 #    AI agent CLIs, AGENTS.md, Claude settings fragments
+    shell/                  #    aliases, env, login shell, ~/.zshrc, zsh functions, zprofile
+    agents/                 #    AI agent CLIs, AGENTS.md, Claude settings + MCP
     obsidian/               #    Obsidian app + setup-obsidian task
   tasks/                    # `mise run` tasks: restore-secrets, setup-github-ssh
-config/                     # group `config`: shared app configs (git, ghostty, nvim, btop, starship...)
-macos/                      # group `macos`: aerospace, vorssaint, colima
-omarchy/                    # group `omarchy`: Hyprland overrides, default terminal
-work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
+
+# Dotfile groups: one per machine role, each linked into ~/.config
+config/                     # shared app configs (git, ghostty, nvim, btop, starship...)
+macos/                      # aerospace, vorssaint, colima + mise/conf.d/macos.toml (brew, system defaults)
+omarchy/                    # Hyprland overrides, terminal + mise/conf.d/omarchy.toml (pacman, theme)
+work/                       # k9s + mise/conf.d/work.toml (k8s, Docker, AWS, GCloud)
 ```
+
+Where does X go? Something for one machine role → its group (an app config at
+`<group>/<app>/`, packages in `<group>/mise/conf.d/`). Something for every
+machine → `config/` (app config) or `mise/conf.d/` (tools, shell, agents). A
+domain that needs more than one file becomes a folder fragment, with its
+`[dotfiles]` links next to it.
 
 ## How it works
 
 - **Dotfile groups**: `config/`, `macos/`, `omarchy/` and `work/` are linked file
   by file into `~/.config`. `mise/config.macos.toml` picks `config` + `macos` + `work`,
   `mise/config.linux.toml` picks `config` + `omarchy`, loaded through `MISE_AUTO_ENV=1`
-  (exported by `shell.toml`). Without it, every group applies.
-- **Two OSes, one config**: `brew` entries are `os = "macos"`, `pacman`/`aur`
-  ones are skipped where missing, and CLIs Omarchy already ships (jq, bat, eza,
+  (exported by `conf.d/shell/`). Without it, every group applies.
+- **Two OSes, one config**: OS packages sit in the `macos`/`omarchy` groups
+  (`brew` entries also `os = "macos"`, `pacman`/`aur` skipped where missing), and CLIs Omarchy already ships (jq, bat, eza,
   fd, ripgrep...) are macOS-only in `tools.toml`.
 - **Omarchy extras**: missing Arch packages, Ghostty as default terminal (with
   a Linux-sized font, `omarchy/ghostty/omarchy.conf`),
@@ -92,7 +97,7 @@ work/                       # group `work`: k9s + mise/conf.d/work.toml (k8s, Do
 
 ## Day to day
 
-- New tool or package: edit the relevant `conf.d/*.toml`, `mise bootstrap`, commit.
+- New tool or package: edit the relevant `conf.d/` fragment (or `<group>/mise/conf.d/`), `mise bootstrap`, commit.
 - New file in a group or in `conf.d/`: `mise bootstrap --only dotfiles`.
 - Preview anything with `mise bootstrap --dry-run`.
 

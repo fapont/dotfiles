@@ -1,3 +1,5 @@
+# macOS packages + system defaults, linked by the `macos` group. The os = "macos"
+# guards still matter when no group is picked (every group applies then).
 [bootstrap.packages]
 "brew:git"          = { version = "latest", os = "macos" }
 "brew:tree"         = { version = "latest", os = "macos" }

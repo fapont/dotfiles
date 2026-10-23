@@ -1,11 +1,8 @@
-# Omarchy (Arch + Hyprland) counterpart of macos.toml. pacman/aur entries are
-# skipped on machines without those managers, so this file is safe everywhere.
-# Omarchy owns the desktop itself (Hyprland, Waybar, themes, ~/.local/share/omarchy):
-# only what it doesn't ship is declared here (v4 ships foot, not ghostty). The
-# CLIs it does ship (jq, bat, eza...) are macOS-only in tools.toml. On that
-# machine, pick the shared dotfiles only in ~/.config/mise/config.local.toml:
-#   [bootstrap]
-#   dotfile_groups = ["config", "omarchy"]
+# Omarchy (Arch + Hyprland) counterpart of macos/mise/conf.d/macos.toml, linked
+# by the `omarchy` group. Omarchy owns the desktop itself (Hyprland, Waybar,
+# themes, ~/.local/share/omarchy): only what it doesn't ship is declared here
+# (v4 ships foot, not ghostty). The CLIs it does ship (jq, bat, eza...) are
+# macOS-only in mise/conf.d/tools.toml.
 
 [bootstrap.packages]
 "pacman:zsh"                   = "latest"
