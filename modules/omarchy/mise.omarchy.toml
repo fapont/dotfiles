@@ -6,7 +6,9 @@
 [bootstrap.packages]
 "pacman:zed"              = "latest"
 "pacman:telegram-desktop" = "latest"
-"aur:brave-bin"           = "latest"
+# brave-bin comes from the omarchy pacman repo: as `aur:` it never counts as
+# installed (mise checks `pacman -Qm`) and is reinstalled on every bootstrap.
+"pacman:brave-bin"        = "latest"
 
 [dotfile_groups.omarchy]
 root = "omarchy/home"
