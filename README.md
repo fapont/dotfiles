@@ -36,9 +36,8 @@ Needs mise 2026.10.21+. Afterwards:
 ```
 machines/<machine>/       -> ~/.config/mise on that machine
   miserc.toml             its modules: env = ["shell", "git", ...]
-  config.toml -> ../../mise/config.toml
-  conf.d      -> ../../modules
-mise/config.toml          shared settings, `mise run update`
+  conf.d -> ../../modules
+modules/core/mise.toml    shared settings, `mise run update` (loads on every machine)
 modules/<name>/           one tool or domain, self-contained
   mise.<name>.toml        tools, packages, aliases, env, hooks, its dotfile group
   home/                   files linked into ~, at their path (home/.config/foo -> ~/.config/foo)
@@ -52,6 +51,7 @@ modules/<name>/           one tool or domain, self-contained
 
 | Module | Content |
 | --- | --- |
+| `core` | settings shared by every machine (cooldown, gh token, `dotfiles.root`), `mise run update`; always loaded |
 | `shell` | zsh, oh-my-zsh, env, login shell, `~/.zshrc` blocks, `.zprofile` |
 | `starship`, `eza`, `bat`, `btop`, `tealdeer`, `zoxide`, `fzf`, `atuin` | the tool, its config and aliases |
 | `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree...) |
@@ -114,7 +114,9 @@ sources every `*.zsh` there).
 
 - New tool or package: add it to its module, `mise bootstrap`, commit.
 - New module: `modules/<name>/mise.<name>.toml` (+ `home/`), add `<name>` to the machines that want it.
-- New machine: copy a `machines/<machine>/` folder (keep its two links), edit its module list, then the install steps above.
+- New machine: copy a `machines/<machine>/` folder (keep its `conf.d` link), edit its module list, then the install steps above.
+- `mise use -g <tool>` writes a `config.toml` in the machine's folder: fine for a
+  one-off, otherwise move the tool into its module.
 - Try a module for one run: `mise -E <machine's list>,<name> bootstrap` (`-E` replaces the list for that run).
 - Drop a module from a machine: remove it from the list, then `mise bootstrap --prune-dotfiles`
   (its dotfiles) and `mise bootstrap unapply <name>` (its system files and services);
