@@ -173,6 +173,7 @@ minus = 'equal'      # the `- _` key, right of `)`
     alt-cmd-ctrl-f = 'fullscreen'
     alt-cmd-ctrl-shift-f = 'macos-native-fullscreen'
     alt-cmd-ctrl-q = 'close'
+    alt-cmd-ctrl-a = 'close' # the Q keycap on an external QWERTY keyboard
 
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth

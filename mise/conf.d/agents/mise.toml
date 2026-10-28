@@ -54,6 +54,7 @@ mkdir -p "$claude_skills" && ln -sfn "$skill" "$claude_skills/herdr"
 "~/.config/claude/settings.json/permissions" = { source = "~/.dotfiles/mise/conf.d/agents/claude/settings.d/10-permissions.json", merge = true }
 "~/.config/claude/settings.json/ui"          = { source = "~/.dotfiles/mise/conf.d/agents/claude/settings.d/20-ui.json", merge = "missing" }
 "~/.config/claude/settings.json/plugins"     = { source = "~/.dotfiles/mise/conf.d/agents/claude/settings.d/30-plugins.json", merge = "missing" }
+"~/.config/claude/settings.json/hooks"       = { source = "~/.dotfiles/mise/conf.d/agents/claude/settings.d/40-hooks.json", merge = true }
 # User-scope MCP servers live in .claude.json (also Claude's state file, never tracked).
 # Secrets are ${VAR}s from fnox, expanded by Claude at startup.
 "~/.config/claude/.claude.json/mcp"          = { source = "~/.dotfiles/mise/conf.d/agents/claude/mcp.json", merge = "missing" }

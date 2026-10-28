@@ -6,6 +6,7 @@
 "brew:container"    = { version = "latest", os = "macos" }
 "brew:felixkratz/formulae/borders" = { version = "latest", os = "macos" }
 "brew:btop"         = { version = "latest", os = "macos" }
+"brew:terminal-notifier" = { version = "latest", os = "macos" }
 "brew-cask:ghostty"         = { version = "latest", os = "macos" }
 "brew-cask:raycast"         = { version = "latest", os = "macos" }
 "brew-cask:brave-browser"   = { version = "latest", os = "macos" }
