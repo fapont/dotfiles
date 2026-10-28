@@ -114,6 +114,10 @@ sources every `*.zsh` there).
 - New tool or package: add it to its module, `mise bootstrap`, commit.
 - New module: `modules/<name>/mise.<name>.toml` (+ `home/`), add `<name>` to the machines that want it.
 - New machine: copy a `machines/<machine>/` folder (keep its two links), edit its module list, then the install steps above.
+- Try a module for one run: `mise -E <machine's list>,<name> bootstrap` (`-E` replaces the list for that run).
+- Drop a module from a machine: remove it from the list, then `mise bootstrap --prune-dotfiles`
+  (its dotfiles) and `mise bootstrap unapply <name>` (its system files and services);
+  packages stay until `mise bootstrap packages prune`.
 - New file in a module's `home/`: `mise dot apply`. Removed one: `mise dot apply --prune`.
 - Pull and apply: `mise run update`. Preview anything with `mise bootstrap --dry-run`.
 

@@ -30,12 +30,13 @@ root = "agents/home"
 # only their keys). Arrays are replaced, not unioned: "always allow" entries added
 # in a session show up as drift (`mise dot diff`) until moved into a fragment.
 # "missing" = defaults only, an app-side change (/config, /plugin) is never overwritten.
+# Sources are relative to this folder.
 [dotfiles]
-"~/.config/claude/CLAUDE.md"                 = { source = "~/.dotfiles/modules/agents/AGENTS.md", mode = "symlink" }
-"~/.config/claude/settings.json/permissions" = { source = "~/.dotfiles/modules/agents/claude/settings.d/10-permissions.json", merge = true }
-"~/.config/claude/settings.json/ui"          = { source = "~/.dotfiles/modules/agents/claude/settings.d/20-ui.json", merge = "missing" }
-"~/.config/claude/settings.json/plugins"     = { source = "~/.dotfiles/modules/agents/claude/settings.d/30-plugins.json", merge = "missing" }
-"~/.config/claude/settings.json/hooks"       = { source = "~/.dotfiles/modules/agents/claude/settings.d/40-hooks.json", merge = true }
+"~/.config/claude/CLAUDE.md"                 = { source = "AGENTS.md", mode = "symlink" }
+"~/.config/claude/settings.json/permissions" = { source = "claude/settings.d/10-permissions.json", merge = true }
+"~/.config/claude/settings.json/ui"          = { source = "claude/settings.d/20-ui.json", merge = "missing" }
+"~/.config/claude/settings.json/plugins"     = { source = "claude/settings.d/30-plugins.json", merge = "missing" }
+"~/.config/claude/settings.json/hooks"       = { source = "claude/settings.d/40-hooks.json", merge = true }
 # User-scope MCP servers live in .claude.json (also Claude's state file, never tracked).
 # Secrets are ${VAR}s from fnox, expanded by Claude at startup.
-"~/.config/claude/.claude.json/mcp"          = { source = "~/.dotfiles/modules/agents/claude/mcp.json", merge = "missing" }
+"~/.config/claude/.claude.json/mcp"          = { source = "claude/mcp.json", merge = "missing" }
