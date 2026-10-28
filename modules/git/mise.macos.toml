@@ -1,0 +1,6 @@
+# Omarchy ships lazygit.
+[tools]
+lazygit = "latest"
+
+[bootstrap.packages]
+"brew:git" = "latest"

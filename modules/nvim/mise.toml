@@ -1,0 +1,7 @@
+# LazyVim.
+[dotfile_groups.nvim]
+root = "nvim/home"
+
+[dotfile_groups.nvim.entries]
+# lazy.nvim rewrites lazy-lock.json, so the whole dir is linked
+"~/.config/nvim" = { mode = "symlink" }

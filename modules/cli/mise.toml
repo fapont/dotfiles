@@ -1,0 +1,18 @@
+# Everyday CLIs and their configs (bat, btop, tealdeer).
+[tools]
+yq = "latest"
+usage = "latest"
+delta = "latest"
+tealdeer = "latest"
+glow = "latest"
+atuin = "latest"
+carapace = "latest"
+python = "latest"
+uv = "latest"
+
+[dotfile_groups.cli]
+root = "cli/home"
+
+[dotfile_groups.cli.entries]
+# btop rewrites its config, so the whole dir is linked
+"~/.config/btop" = { mode = "symlink" }

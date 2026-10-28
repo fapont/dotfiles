@@ -1,0 +1,15 @@
+# AWS, GCloud, Datadog, rclone. awsp (home/.config/oh-my-zsh/custom/awsp.zsh)
+# switches AWS profiles in the current shell.
+[tools]
+aws-cli   = { version = "latest", symlink_bins = true }
+aws-vault = "latest"
+gcloud    = "latest"
+rclone    = "latest"
+"github:DataDog/pup" = { version = "latest", asset_pattern = "pup_*_Darwin_arm64.tar.gz" }
+
+[env]
+# macOS system Python (3.9) is too old for gcloud's bundler
+CLOUDSDK_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/latest/bin/python"
+
+[dotfile_groups.cloud]
+root = "cloud/home"

@@ -1,3 +1,0 @@
-# Loaded on Linux only (MISE_AUTO_ENV, see conf.d/shell/mise.toml), from any directory: the Omarchy laptop.
-[bootstrap]
-dotfile_groups = ["config", "omarchy"]

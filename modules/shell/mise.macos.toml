@@ -1,0 +1,3 @@
+# Omarchy ships starship.
+[tools]
+starship = "latest"

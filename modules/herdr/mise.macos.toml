@@ -1,0 +1,3 @@
+# System toasts (config.toml [ui.toast]) bring Ghostty to the front on click.
+[bootstrap.packages]
+"brew:terminal-notifier" = "latest"

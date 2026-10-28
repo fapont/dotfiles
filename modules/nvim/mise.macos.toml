@@ -1,0 +1,3 @@
+# Omarchy ships neovim.
+[tools]
+neovim = "latest"

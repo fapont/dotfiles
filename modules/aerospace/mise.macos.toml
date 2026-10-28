@@ -1,0 +1,14 @@
+# AeroSpace tiling WM + JankyBorders (started by aerospace.toml).
+[bootstrap.packages]
+# Third-party cask (Ruby DSL, evaluable since mise 2026.9.12): also links the
+# `aerospace` CLI and its shell completions.
+"brew-cask:nikitabobko/tap/aerospace" = "latest"
+"brew:felixkratz/formulae/borders" = "latest"
+
+[dotfile_groups.aerospace]
+root = "aerospace/home"
+
+# mise never launches what it installs: open it once so it finishes first-run
+# setup and registers its own login item (start-at-login).
+[bootstrap.hooks.post-packages]
+run = 'pgrep -x AeroSpace >/dev/null 2>&1 || open -g -a AeroSpace 2>/dev/null || true'

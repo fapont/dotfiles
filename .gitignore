@@ -5,9 +5,13 @@ fnox.local.toml
 
 # colima runtime state (VM disk/store, sockets, tunnel ssh config) --
 # lands here only because ~/.config/colima is symlinked into the repo.
-macos/colima/_lima/
-macos/colima/_store/
-macos/colima/default/daemon/
-macos/colima/ssh_config
-macos/colima/*.sock
-macos/colima/default/*.sock
+modules/docker/home/.config/colima/_lima/
+modules/docker/home/.config/colima/_store/
+modules/docker/home/.config/colima/default/daemon/
+modules/docker/home/.config/colima/ssh_config
+modules/docker/home/.config/colima/*.sock
+modules/docker/home/.config/colima/default/*.sock
+
+# Machine-local mise config (e.g. doctolib.local.toml), next to the modules
+# through the ~/.config/mise/conf.d link.
+*.local.toml

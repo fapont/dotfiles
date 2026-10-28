@@ -1,0 +1,3 @@
+# Read before the config files. auto_env loads every mise.<os>.toml of
+# modules/ on its OS only (mise.macos.toml on the Mac, mise.linux.toml on Omarchy).
+auto_env = true

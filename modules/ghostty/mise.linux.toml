@@ -1,0 +1,8 @@
+# Omarchy v4 ships foot, not ghostty. home.linux/ adds a Linux-sized font
+# (omarchy.conf, loaded by the shared config) and makes Ghostty the terminal
+# SUPER+RETURN launches (xdg-terminals.list).
+[bootstrap.packages]
+"pacman:ghostty" = "latest"
+
+[dotfile_groups.ghostty-linux]
+root = "ghostty/home.linux"
