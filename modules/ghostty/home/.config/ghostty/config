@@ -2,7 +2,8 @@
 font-size = 14
 font-style = medium
 bold-is-bright = true
-theme = "Catppuccin Macchiato"
+# Official catppuccin/ghostty theme: the built-in one has washed-out bright colors.
+theme = catppuccin-macchiato.conf
 font-family = "JetBrainsMono Nerd Font Mono"
 background-opacity = 0.8
 background-blur = macos-glass-regular
