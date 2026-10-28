@@ -1,0 +1,6 @@
+[tools]
+python = "latest"
+uv = "latest"
+
+[shell_alias]
+python = 'python3'

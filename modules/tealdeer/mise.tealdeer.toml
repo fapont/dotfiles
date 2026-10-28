@@ -1,0 +1,5 @@
+[tools]
+tealdeer = "latest"
+
+[dotfile_groups.tealdeer]
+root = "tealdeer/home"

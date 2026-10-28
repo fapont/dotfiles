@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$HERDR_ENV\" = 1 ] || exit 0; herdr pane report-metadata \"$HERDR_PANE_ID\" --source user:claude-notify --agent claude --state-label blocked=\"$(jq -r .message)\" >/dev/null",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

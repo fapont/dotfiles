@@ -1,0 +1,6 @@
+[tools]
+eza = { version = "latest", os = "macos" } # Omarchy ships it
+
+[shell_alias]
+ls = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+la = 'eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions -a'

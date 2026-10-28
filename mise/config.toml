@@ -1,8 +1,31 @@
+# Shared by every machine: ~/.config/mise links to machines/<machine>/, whose
+# config.toml links here (so `mise use -g` writes here) and whose miserc.toml
+# lists the modules to load. Files named *.local.toml stay on the machine.
+min_version = "2026.10.21"
+
 [settings]
 # Supply-chain cooldown: `latest` resolves to releases at least this old (mise's
-# default is 24h). Explicit pins (teleport-ent, aerospace...) are not affected.
+# default is 24h). Explicit pins (teleport-ent...) are not affected.
 minimum_release_age = "3d"
 trusted_config_paths = ["~/.config/mise", "~/Doctolib", "~/Perso"]
+# A module's dotfile group root is relative to this: root = "<name>/home".
+dotfiles.root = "~/.dotfiles/modules"
 
 [settings.pypi]
 uvx = true
+
+# The GitHub API allows 60 requests/hour without a token, for every machine
+# behind the same IP (VPN): borrow gh's.
+[settings.github]
+credential_command = 'gh auth token --hostname "$MISE_CREDENTIAL_HOST" 2>/dev/null'
+
+# `mise run --skip-tools update`: skip the tool installs mise runs before a task
+# (a failing one would stop it). Tasks get MISE_ENV = the module list read at
+# start, so bootstrap drops it to read the list the pull may have changed.
+# --update also refreshes package metadata and pulls [bootstrap.repos].
+[tasks.update]
+description = "Pull this repository, then apply it"
+run = [
+  "git -C ~/.dotfiles pull --ff-only",
+  "env -u MISE_ENV mise bootstrap --update --prune-dotfiles",
+]

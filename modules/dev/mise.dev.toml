@@ -1,0 +1,8 @@
+# Work dev tooling with no config of its own.
+[tools]
+pre-commit = "latest"
+shellcheck = "latest"
+copier     = "latest"
+just       = "latest"
+trivy      = "latest"
+git-lfs    = "latest"

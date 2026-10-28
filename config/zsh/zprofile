@@ -1,5 +1,0 @@
-# -> ~/.zprofile. macOS: packages from mise/conf.d/macos.toml are poured by
-# mise's own brew/brew-cask backend into /opt/homebrew, without a real `brew`
-# (no `brew shellenv` to eval), so just put the prefix on PATH. No-op on Linux,
-# where Arch's /etc/zsh/zprofile already sources /etc/profile (Omarchy's PATH).
-[ -d /opt/homebrew ] && export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"

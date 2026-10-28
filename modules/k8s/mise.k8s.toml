@@ -1,0 +1,20 @@
+# Kubernetes tooling + k9s config.
+[tools]
+argocd       = "latest"
+teleport-ent = "18.10.0"
+kubectl      = "latest"
+kubectx      = "latest"
+kubens       = "latest"
+kubeconform  = "latest"
+minikube     = "latest"
+k9s          = "latest"
+helm         = "latest"
+
+[shell_alias]
+k   = 'kubectl'
+ktx = 'kubectx'
+kns = 'kubens'
+kgp = 'kubectl get pods'
+
+[dotfile_groups.k8s]
+root = "k8s/home"

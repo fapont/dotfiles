@@ -1,0 +1,3 @@
+# `cd` is zoxide (init block in shell/mise.shell.toml).
+[tools]
+zoxide = { version = "latest", os = "macos" } # Omarchy ships it

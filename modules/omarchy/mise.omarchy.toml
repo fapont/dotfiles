@@ -1,0 +1,36 @@
+# Omarchy (Arch + Hyprland) desktop, counterpart of the macos module.
+# Omarchy owns the desktop itself (Hyprland, Waybar, themes): only what it
+# doesn't ship is declared here. home/: Hyprland overrides, Ghostty as the
+# SUPER+RETURN terminal (xdg-terminals.list) with a Linux-sized font
+# (ghostty/omarchy.conf, loaded by the shared ghostty config).
+[bootstrap.packages]
+"pacman:zed"              = "latest"
+"pacman:telegram-desktop" = "latest"
+"aur:brave-bin"           = "latest"
+
+[dotfile_groups.omarchy]
+root = "omarchy/home"
+
+# Catppuccin like the rest of the configs, applied once: a theme picked later
+# from the Omarchy menu is never overridden. Retried until it succeeds (needs
+# the Hyprland session).
+[bootstrap.hooks.post-dotfiles]
+run = '''
+command -v omarchy-theme-set >/dev/null || exit 0
+marker="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/omarchy-theme-set"
+[ -e "$marker" ] && exit 0
+if omarchy-theme-set catppuccin; then mkdir -p "${marker%/*}" && touch "$marker"
+else echo "omarchy-theme-set failed, will retry on next bootstrap" >&2; fi
+'''
+
+# Closing the lid locks instead of suspending, so the laptop stays reachable
+# (SSH, herdr) when plugged in at home. Docked lids are already ignored. Applies
+# at next boot, or now with `sudo systemctl kill -s HUP systemd-logind` (never
+# restart logind: it can end the graphical session).
+[bootstrap.files."/etc/systemd/logind.conf.d/30-lid-lock.conf"]
+owner = "root"
+group = "root"
+content = """
+[Login]
+HandleLidSwitch=lock
+"""
