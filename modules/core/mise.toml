@@ -1,13 +1,14 @@
-# Shared by every machine: ~/.config/mise links to machines/<machine>/, whose
-# config.toml links here (so `mise use -g` writes here) and whose miserc.toml
-# lists the modules to load. Files named *.local.toml stay on the machine.
+# Settings and tasks for every machine. Named mise.toml, not mise.core.toml: a
+# conf.d folder's mise.toml always loads, whatever the machine's module list.
 min_version = "2026.10.21"
 
 [settings]
 # Supply-chain cooldown: `latest` resolves to releases at least this old (mise's
 # default is 24h). Explicit pins (teleport-ent...) are not affected.
 minimum_release_age = "3d"
-trusted_config_paths = ["~/.config/mise", "~/Doctolib", "~/Perso"]
+# ~/.dotfiles: the modules resolve there through the conf.d link, and some
+# commands (`mise use -g`, nested `mise` in hooks) only trust the real path.
+trusted_config_paths = ["~/.config/mise", "~/.dotfiles", "~/Doctolib", "~/Perso"]
 # A module's dotfile group root is relative to this: root = "<name>/home".
 dotfiles.root = "~/.dotfiles/modules"
 

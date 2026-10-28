@@ -1,7 +1,7 @@
 # The Omarchy (Arch + Hyprland) personal laptop. This folder is ~/.config/mise on that machine
-# (`mise bootstrap --config-dir machines/omarchy`): config.toml is the shared one,
-# conf.d holds every module, and this file, read before any config, picks the
-# modules: each name loads modules/<name>/mise.<name>.toml.
+# (`mise bootstrap --config-dir machines/omarchy`): conf.d holds every module, and
+# this file, read before any config, picks them: each name loads
+# modules/<name>/mise.<name>.toml (modules/core/mise.toml always loads).
 # auto_env stays off: modules/macos/mise.macos.toml loads only when listed.
 auto_env = false
 env = [
