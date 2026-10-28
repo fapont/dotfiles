@@ -19,9 +19,13 @@ uvx = true
 [settings.github]
 credential_command = 'gh auth token --hostname "$MISE_CREDENTIAL_HOST" 2>/dev/null'
 
+# `mise run --skip-tools update`: skip the tool installs mise runs before a task
+# (a failing one would stop it). Tasks get MISE_ENV = the module list read at
+# start, so bootstrap drops it to read the list the pull may have changed.
+# --update also refreshes package metadata and pulls [bootstrap.repos].
 [tasks.update]
 description = "Pull this repository, then apply it"
 run = [
   "git -C ~/.dotfiles pull --ff-only",
-  "mise bootstrap --update --prune-dotfiles",
+  "env -u MISE_ENV mise bootstrap --update --prune-dotfiles",
 ]

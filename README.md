@@ -28,7 +28,7 @@ mise run setup-obsidian      # Obsidian vault + LiveSync
 missing or empty: move an existing one aside), so the machine's modules apply
 from the first run. `--force-dotfiles` replaces the configs Omarchy pre-seeds.
 Needs mise 2026.10.21+. Afterwards:
-`mise run update` (pull + bootstrap). On macOS, a few
+`mise run --skip-tools update` (pull + bootstrap). On macOS, a few
 [permissions](#macos-permissions) stay manual.
 
 ## Layout
@@ -119,7 +119,7 @@ sources every `*.zsh` there).
   (its dotfiles) and `mise bootstrap unapply <name>` (its system files and services);
   packages stay until `mise bootstrap packages prune`.
 - New file in a module's `home/`: `mise dot apply`. Removed one: `mise dot apply --prune`.
-- Pull and apply: `mise run update`. Preview anything with `mise bootstrap --dry-run`.
+- Pull and apply: `mise run --skip-tools update`. Preview anything with `mise bootstrap --dry-run`.
 
 ## Migrating a machine from the old layout
 
