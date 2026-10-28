@@ -82,7 +82,8 @@ sources every `*.zsh` there).
 - **Dotfile groups**: each module declares `[dotfile_groups.<name>] root =
   "<name>/home"` (relative to `dotfiles.root`, `~/.dotfiles/modules`), linked file
   by file into `~`. Dirs that hold runtime state or are rewritten by their app
-  (nvim, btop, colima) are whole-dir links.
+  (nvim, btop) are whole-dir links. Colima keeps its VM state in a real
+  `~/.config/colima`; only `default/colima.yaml` is linked.
 - **Machine-local config**: `*.local.toml` files (e.g. `modules/doctolib.local.toml`)
   are loaded on every machine they sit on, and gitignored.
 - **Symlinks**: app configs are symlinked, so edits are live and show up in
@@ -129,7 +130,9 @@ mise self-update                           # 2026.10.21+
 git -C ~/.dotfiles pull
 mv ~/.config/mise ~/.config/mise.old       # keep machine-local fragments:
 cp ~/.config/mise.old/conf.d/doctolib.toml ~/.dotfiles/modules/doctolib.local.toml
-rsync -a ~/.dotfiles/macos/colima/ ~/.dotfiles/modules/docker/home/.config/colima/   # gitignored VM state
+rm ~/.config/colima && mkdir -p ~/.config/colima/default   # VM state leaves the repo
+mv ~/.dotfiles/macos/colima/{_lima,_store,ssh_config} ~/.config/colima/
+mv ~/.dotfiles/macos/colima/default/daemon ~/.config/colima/default/
 /bin/rm -rf ~/.dotfiles/macos ~/.dotfiles/config ~/.dotfiles/omarchy ~/.dotfiles/work   # leftovers, untracked
 ln -s ~/.dotfiles/machines/work-mac ~/.config/mise
 unset MISE_AUTO_ENV                        # set by the old config, it would load macos/ on any Mac; new shells drop it
@@ -150,6 +153,5 @@ Not scriptable: grant in **System Settings > Privacy & Security**, then restart 
 
 - Omarchy's `mise use -g` wrappers and `omarchy-reinstall-configs` write through
   the symlinks into this repo: check `git status`.
-- Colima's VM state lives (gitignored) in `modules/docker/home/.config/colima/`: stop the VM before moving it.
 - A past `sudo mise` can leave root-owned files in `/opt/homebrew`:
   `sudo chown -R "$(whoami)":admin /opt/homebrew`.
