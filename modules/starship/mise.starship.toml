@@ -1,0 +1,5 @@
+[tools]
+starship = { version = "latest", os = "macos" } # Omarchy ships it
+
+[dotfile_groups.starship]
+root = "starship/home"

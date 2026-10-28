@@ -1,0 +1,18 @@
+# Small CLIs with no config or shell init of their own.
+[tools]
+yq = "latest"
+usage = "latest"
+delta = "latest"
+glow = "latest"
+carapace = "latest"
+# Omarchy ships these with pacman
+jq = { version = "latest", os = "macos" }
+fd = { version = "latest", os = "macos" }
+ripgrep = { version = "latest", os = "macos" }
+
+[bootstrap.packages]
+"brew:tree" = { version = "latest", os = "macos" }
+"pacman:tree" = { version = "latest", os = "linux" }
+
+[shell_alias]
+diff = 'delta'

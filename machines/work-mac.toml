@@ -1,0 +1,8 @@
+# The macOS work laptop. Selected by linking this file as mise/miserc.local.toml.
+# Each name loads modules/<name>/mise.<name>.toml.
+env = [
+  "shell", "starship", "eza", "bat", "btop", "tealdeer", "zoxide", "fzf", "atuin", "cli", "python",
+  "git", "secrets", "agents", "herdr", "nvim", "ghostty", "obsidian",
+  "macos", "aerospace",
+  "docker", "k8s", "cloud", "dev",
+]

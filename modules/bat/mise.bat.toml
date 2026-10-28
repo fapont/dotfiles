@@ -1,0 +1,8 @@
+[tools]
+bat = { version = "latest", os = "macos" } # Omarchy ships it
+
+[shell_alias]
+cat = 'bat'
+
+[dotfile_groups.bat]
+root = "bat/home"

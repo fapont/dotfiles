@@ -1,0 +1,2 @@
+[tools]
+fzf = { version = "latest", os = "macos" } # Omarchy ships it

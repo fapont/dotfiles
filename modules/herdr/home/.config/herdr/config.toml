@@ -23,7 +23,7 @@ claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["sta
 rows = [["state_icon", "workspace"], ["branch", "git_status"]]
 
 [ui.toast]
-# macOS: needs terminal-notifier (herdr/mise.macos.toml) to bring Ghostty to
+# macOS: needs terminal-notifier (herdr/mise.herdr.toml) to bring Ghostty to
 # the front on click; the pane itself is then one ctrl+alt+o away.
 delivery = "system"
 

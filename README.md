@@ -8,12 +8,15 @@ Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org)
 
 ## Install
 
-Same steps on macOS and Omarchy:
+Same steps on macOS and Omarchy, `<machine>` being a file of [`machines/`](machines/):
 
 ```sh
 command -v mise || curl https://mise.run | sh   # Omarchy already ships mise
 export PATH="$HOME/.local/bin:$PATH"
-mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --config-dir mise --yes --force-dotfiles --prompt-vars
+git clone https://github.com/fapont/dotfiles.git ~/.dotfiles
+ln -s ../machines/<machine>.toml ~/.dotfiles/mise/miserc.local.toml
+mkdir -p ~/.config && mv ~/.config/mise ~/.config/mise.bak 2>/dev/null; ln -s ~/.dotfiles/mise ~/.config/mise
+mise bootstrap --yes --force-dotfiles --prompt-vars
 ```
 
 ```sh
@@ -24,58 +27,65 @@ mise run restore-secrets     # fnox age key from Bitwarden
 mise run setup-obsidian      # Obsidian vault + LiveSync
 ```
 
-`--config-dir mise` links `~/.config/mise` to `~/.dotfiles/mise`, so the whole
-config applies from the first run. `--force-dotfiles` replaces the configs
-Omarchy pre-seeds. Afterwards: `mise run update` (pull + bootstrap). On macOS, a
-few [permissions](#macos-permissions) stay manual. Needs mise 2026.10.21+.
+`--force-dotfiles` replaces the configs Omarchy pre-seeds. Afterwards:
+`mise run update` (pull + bootstrap). On macOS, a few
+[permissions](#macos-permissions) stay manual.
 
 ## Layout
 
 ```
-mise/                 -> ~/.config/mise
-  miserc.toml         auto_env: load mise.<os>.toml files on their OS only
-  config.toml         settings, `mise run update`
+machines/<machine>.toml   the modules of a machine: env = ["shell", "git", ...]
+mise/                     -> ~/.config/mise
+  miserc.toml             auto_env = false
+  miserc.local.toml       -> ../machines/<machine>.toml (untracked, one per machine)
+  config.toml             settings, `mise run update`
   conf.d -> ../modules
-modules/<name>/       one tool or domain, self-contained
-  mise.toml           tools, packages, aliases, env, hooks, its dotfile group (every machine)
-  mise.macos.toml     same, macOS only
-  mise.linux.toml     same, Omarchy only
-  home/               files linked into ~, at their path (home/.config/foo -> ~/.config/foo)
-  home.linux/         same, Omarchy only (a group declared in mise.linux.toml)
-  tasks/              `mise run` tasks
+modules/<name>/           one tool or domain, self-contained
+  mise.<name>.toml        tools, packages, aliases, env, hooks, its dotfile group
+  home/                   files linked into ~, at their path (home/.config/foo -> ~/.config/foo)
+  tasks/                  `mise run` tasks
 ```
+
+| Machine | Modules |
+| --- | --- |
+| `work-mac` | the shared ones + `macos`, `aerospace`, `docker`, `k8s`, `cloud`, `dev` |
+| `omarchy` | the shared ones + `omarchy` |
 
 | Module | Content |
 | --- | --- |
-| `shell` | zsh, oh-my-zsh, aliases, env, `~/.zshrc` blocks, `.zprofile`, starship |
-| `cli` | everyday CLIs (bat, eza, fd, rg, fzf, delta, atuin...) and bat/btop/tealdeer configs |
+| `shell` | zsh, oh-my-zsh, env, login shell, `~/.zshrc` blocks, `.zprofile` |
+| `starship`, `eza`, `bat`, `btop`, `tealdeer`, `zoxide`, `fzf`, `atuin` | the tool, its config and aliases |
+| `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree...) |
+| `python` | python, uv |
 | `git` | git, gh, worktrunk, lazygit, per-machine identities, `setup-github-ssh` |
 | `secrets` | fnox, age, Bitwarden, `restore-secrets` |
 | `agents` | Claude Code, AGENTS.md, settings fragments, MCP servers, ccstatusline |
 | `herdr` | herdr, its skill, `herdr-perso` |
-| `nvim`, `ghostty`, `obsidian` | the app and its config, on both OSes |
+| `nvim`, `ghostty`, `obsidian` | the app and its config |
 | `macos`, `aerospace` | macOS apps, system defaults, login items; AeroSpace + borders |
-| `omarchy` | missing Arch packages, Catppuccin, Hyprland overrides, lid lock |
-| `docker`, `k8s`, `cloud`, `dev` | work tooling (macOS): Colima, kubectl/k9s, AWS/GCloud (`awsp`), linters |
+| `omarchy` | missing Arch packages, Catppuccin, Hyprland overrides, Ghostty as default terminal, lid lock |
+| `docker`, `k8s`, `cloud`, `dev` | work tooling: Colima, kubectl/k9s, AWS/GCloud (`awsp`), linters |
 
-Where does X go? In the module of its tool, or a new `modules/<name>/`.
-Something for one OS only → that module's `mise.<os>.toml`. A zsh function that
-belongs to a tool → `home/.config/oh-my-zsh/custom/<name>.zsh` in its module
-(oh-my-zsh sources every `*.zsh` there).
+Where does X go? In the module of its tool, or a new `modules/<name>/` listed by
+the machines that want it. A shared module that differs per OS uses
+`os = "macos"` / `os = "linux"` on the entry. A zsh function that belongs to a
+tool → `home/.config/oh-my-zsh/custom/<name>.zsh` in its module (oh-my-zsh
+sources every `*.zsh` there).
 
 ## How it works
 
-- **Modules**: `~/.config/mise/conf.d` points at `modules/`, so mise loads every
-  `modules/<name>/mise.toml` as global config. `auto_env` (`miserc.toml`) adds the
-  OS to the config environments: `mise.macos.toml` loads on the Mac,
-  `mise.linux.toml` on Omarchy. `mise config ls` shows what a machine loads.
+- **Machines and modules**: mise reads `miserc.local.toml` before any config, and
+  its `env` list selects config environments. `~/.config/mise/conf.d` points at
+  `modules/`, and `modules/<name>/mise.<name>.toml` is the config of environment
+  `<name>`: it loads only when the machine lists it. `mise config ls` shows what
+  a machine loads. `auto_env` stays off so `macos/mise.macos.toml` never loads
+  just because the OS is macOS.
 - **Dotfile groups**: each module declares `[dotfile_groups.<name>] root =
   "<name>/home"` (relative to `dotfiles.root`, `~/.dotfiles/modules`), linked file
-  by file into `~`. A group declared in a `mise.<os>.toml` only exists on that OS.
-  Dirs that hold runtime state or are rewritten by their app (nvim, btop,
-  colima) are whole-dir links.
-- **Machine-local config**: `*.local.toml` files (e.g. `conf.d/doctolib.local.toml`)
-  are loaded like the others and gitignored.
+  by file into `~`. Dirs that hold runtime state or are rewritten by their app
+  (nvim, btop, colima) are whole-dir links.
+- **Machine-local config**: `*.local.toml` files (e.g. `modules/doctolib.local.toml`)
+  are loaded on every machine they sit on, and gitignored.
 - **Symlinks**: app configs are symlinked, so edits are live and show up in
   `git status`. `~/.gitconfig` stays untracked for `git config --global` writes.
   `~/.zshrc` is tracked by mise through marker blocks (`mise dot status`/`diff`/`save`).
@@ -102,7 +112,9 @@ belongs to a tool → `home/.config/oh-my-zsh/custom/<name>.zsh` in its module
 
 ## Day to day
 
-- New tool or package: add it to its module (or a new `modules/<name>/mise.toml`), `mise bootstrap`, commit.
+- New tool or package: add it to its module, `mise bootstrap`, commit.
+- New module: `modules/<name>/mise.<name>.toml` (+ `home/`), add `<name>` to the machines that want it.
+- New machine: `machines/<machine>.toml`, then the install steps above.
 - New file in a module's `home/`: `mise dot apply`. Removed one: `mise dot apply --prune`.
 - Pull and apply: `mise run update`. Preview anything with `mise bootstrap --dry-run`.
 
@@ -110,13 +122,14 @@ belongs to a tool → `home/.config/oh-my-zsh/custom/<name>.zsh` in its module
 
 ```sh
 colima stop                                # its VM state moves with ~/.config/colima
-mise self-update                           # 2026.10.21+
 git -C ~/.dotfiles pull
 mv ~/.config/mise ~/.config/mise.old       # keep machine-local fragments:
 cp ~/.config/mise.old/conf.d/doctolib.toml ~/.dotfiles/modules/doctolib.local.toml
 rsync -a ~/.dotfiles/macos/colima/ ~/.dotfiles/modules/docker/home/.config/colima/   # gitignored VM state
 /bin/rm -rf ~/.dotfiles/macos ~/.dotfiles/config ~/.dotfiles/omarchy ~/.dotfiles/work   # leftovers, untracked
+ln -s ../machines/work-mac.toml ~/.dotfiles/mise/miserc.local.toml
 ln -s ~/.dotfiles/mise ~/.config/mise
+unset MISE_AUTO_ENV                        # set by the old config, it would load macos/ on any Mac; new shells drop it
 mise bootstrap --force-dotfiles --prune-dotfiles
 ```
 

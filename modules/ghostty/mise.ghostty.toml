@@ -1,0 +1,9 @@
+# Omarchy v4 ships foot, not ghostty. Its Linux font size and default-terminal
+# entry live in the omarchy module.
+[bootstrap.packages]
+"brew-cask:ghostty" = { version = "latest", os = "macos" }
+"brew-cask:font-jetbrains-mono-nerd-font" = { version = "latest", os = "macos" }
+"pacman:ghostty" = { version = "latest", os = "linux" }
+
+[dotfile_groups.ghostty]
+root = "ghostty/home"

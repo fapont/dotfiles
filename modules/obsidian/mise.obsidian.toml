@@ -1,0 +1,8 @@
+# Obsidian + the setup-obsidian task (vault + self-hosted LiveSync).
+# setup-obsidian.ts is the helper the task runs ($MISE_CONFIG_ROOT is this folder).
+[task_config]
+includes = ["tasks"]
+
+[bootstrap.packages]
+"brew-cask:obsidian" = { version = "latest", os = "macos" }
+"pacman:obsidian"    = { version = "latest", os = "linux" }

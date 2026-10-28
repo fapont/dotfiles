@@ -1,4 +1,4 @@
-# -> ~/.zprofile. macOS: packages from mise.macos.toml files are poured by
+# -> ~/.zprofile. macOS: brew packages from the modules are poured by
 # mise's own brew/brew-cask backend into /opt/homebrew, without a real `brew`
 # (no `brew shellenv` to eval), so just put the prefix on PATH. No-op on Linux,
 # where Arch's /etc/zsh/zprofile already sources /etc/profile (Omarchy's PATH).

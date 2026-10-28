@@ -1,3 +1,5 @@
-# Read before the config files. auto_env loads every mise.<os>.toml of
-# modules/ on its OS only (mise.macos.toml on the Mac, mise.linux.toml on Omarchy).
-auto_env = true
+# Read before the config files. The machine's module list comes from
+# miserc.local.toml, a link to machines/<machine>.toml (untracked).
+# auto_env stays off: no platform env, so modules/macos/mise.macos.toml loads
+# only on a machine that lists `macos`.
+auto_env = false

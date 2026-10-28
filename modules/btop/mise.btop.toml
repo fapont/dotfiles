@@ -1,0 +1,9 @@
+[bootstrap.packages]
+"brew:btop" = { version = "latest", os = "macos" } # Omarchy ships it
+
+[dotfile_groups.btop]
+root = "btop/home"
+
+[dotfile_groups.btop.entries]
+# btop rewrites its config, so the whole dir is linked
+"~/.config/btop" = { mode = "symlink" }
