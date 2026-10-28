@@ -8,15 +8,12 @@ Personal dotfiles for a macOS work laptop and an [Omarchy](https://omarchy.org)
 
 ## Install
 
-Same steps on macOS and Omarchy, `<machine>` being a file of [`machines/`](machines/):
+Same steps on macOS and Omarchy, `<machine>` being a folder of [`machines/`](machines/):
 
 ```sh
 command -v mise || curl https://mise.run | sh   # Omarchy already ships mise
 export PATH="$HOME/.local/bin:$PATH"
-git clone https://github.com/fapont/dotfiles.git ~/.dotfiles
-ln -s ../machines/<machine>.toml ~/.dotfiles/mise/miserc.local.toml
-mkdir -p ~/.config && mv ~/.config/mise ~/.config/mise.bak 2>/dev/null; ln -s ~/.dotfiles/mise ~/.config/mise
-mise bootstrap --yes --force-dotfiles --prompt-vars
+mise bootstrap --from https://github.com/fapont/dotfiles.git --from-dir ~/.dotfiles --config-dir machines/<machine> --yes --force-dotfiles --prompt-vars
 ```
 
 ```sh
@@ -27,19 +24,21 @@ mise run restore-secrets     # fnox age key from Bitwarden
 mise run setup-obsidian      # Obsidian vault + LiveSync
 ```
 
-`--force-dotfiles` replaces the configs Omarchy pre-seeds. Afterwards:
+`--config-dir` links `~/.config/mise` to `machines/<machine>/` (it must be
+missing or empty: move an existing one aside), so the machine's modules apply
+from the first run. `--force-dotfiles` replaces the configs Omarchy pre-seeds.
+Needs mise 2026.10.21+. Afterwards:
 `mise run update` (pull + bootstrap). On macOS, a few
 [permissions](#macos-permissions) stay manual.
 
 ## Layout
 
 ```
-machines/<machine>.toml   the modules of a machine: env = ["shell", "git", ...]
-mise/                     -> ~/.config/mise
-  miserc.toml             auto_env = false
-  miserc.local.toml       -> ../machines/<machine>.toml (untracked, one per machine)
-  config.toml             settings, `mise run update`
-  conf.d -> ../modules
+machines/<machine>/       -> ~/.config/mise on that machine
+  miserc.toml             its modules: env = ["shell", "git", ...]
+  config.toml -> ../../mise/config.toml
+  conf.d      -> ../../modules
+mise/config.toml          shared settings, `mise run update`
 modules/<name>/           one tool or domain, self-contained
   mise.<name>.toml        tools, packages, aliases, env, hooks, its dotfile group
   home/                   files linked into ~, at their path (home/.config/foo -> ~/.config/foo)
@@ -74,9 +73,9 @@ sources every `*.zsh` there).
 
 ## How it works
 
-- **Machines and modules**: mise reads `miserc.local.toml` before any config, and
-  its `env` list selects config environments. `~/.config/mise/conf.d` points at
-  `modules/`, and `modules/<name>/mise.<name>.toml` is the config of environment
+- **Machines and modules**: `~/.config/mise` is `machines/<machine>/`. mise reads
+  its `miserc.toml` before any config, and the `env` list selects config
+  environments. `~/.config/mise/conf.d` points at `modules/`, and `modules/<name>/mise.<name>.toml` is the config of environment
   `<name>`: it loads only when the machine lists it. `mise config ls` shows what
   a machine loads. `auto_env` stays off so `macos/mise.macos.toml` never loads
   just because the OS is macOS.
@@ -114,7 +113,7 @@ sources every `*.zsh` there).
 
 - New tool or package: add it to its module, `mise bootstrap`, commit.
 - New module: `modules/<name>/mise.<name>.toml` (+ `home/`), add `<name>` to the machines that want it.
-- New machine: `machines/<machine>.toml`, then the install steps above.
+- New machine: copy a `machines/<machine>/` folder (keep its two links), edit its module list, then the install steps above.
 - New file in a module's `home/`: `mise dot apply`. Removed one: `mise dot apply --prune`.
 - Pull and apply: `mise run update`. Preview anything with `mise bootstrap --dry-run`.
 
@@ -122,13 +121,13 @@ sources every `*.zsh` there).
 
 ```sh
 colima stop                                # its VM state moves with ~/.config/colima
+mise self-update                           # 2026.10.21+
 git -C ~/.dotfiles pull
 mv ~/.config/mise ~/.config/mise.old       # keep machine-local fragments:
 cp ~/.config/mise.old/conf.d/doctolib.toml ~/.dotfiles/modules/doctolib.local.toml
 rsync -a ~/.dotfiles/macos/colima/ ~/.dotfiles/modules/docker/home/.config/colima/   # gitignored VM state
 /bin/rm -rf ~/.dotfiles/macos ~/.dotfiles/config ~/.dotfiles/omarchy ~/.dotfiles/work   # leftovers, untracked
-ln -s ../machines/work-mac.toml ~/.dotfiles/mise/miserc.local.toml
-ln -s ~/.dotfiles/mise ~/.config/mise
+ln -s ~/.dotfiles/machines/work-mac ~/.config/mise
 unset MISE_AUTO_ENV                        # set by the old config, it would load macos/ on any Mac; new shells drop it
 mise bootstrap --force-dotfiles --prune-dotfiles
 ```

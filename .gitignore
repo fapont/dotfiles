@@ -12,6 +12,6 @@ modules/docker/home/.config/colima/ssh_config
 modules/docker/home/.config/colima/*.sock
 modules/docker/home/.config/colima/default/*.sock
 
-# Machine-local mise config (e.g. doctolib.local.toml), next to the modules
-# through the ~/.config/mise/conf.d link.
+# Machine-local mise config (e.g. modules/doctolib.local.toml, miserc.local.toml)
+# loaded through ~/.config/mise.
 *.local.toml

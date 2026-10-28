@@ -1,7 +1,7 @@
-# ~/.config/mise is a link to this folder, so `mise use -g` and `mise dot add`
-# write here. conf.d links to ../modules: mise loads modules/<name>/mise.<name>.toml
-# for each module the machine lists (machines/<machine>.toml, via miserc.local.toml).
-# Files named *.local.toml stay on the machine.
+# Shared by every machine: ~/.config/mise links to machines/<machine>/, whose
+# config.toml links here (so `mise use -g` writes here) and whose miserc.toml
+# lists the modules to load. Files named *.local.toml stay on the machine.
+min_version = "2026.10.21"
 
 [settings]
 # Supply-chain cooldown: `latest` resolves to releases at least this old (mise's

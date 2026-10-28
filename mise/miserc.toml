@@ -1,5 +1,0 @@
-# Read before the config files. The machine's module list comes from
-# miserc.local.toml, a link to machines/<machine>.toml (untracked).
-# auto_env stays off: no platform env, so modules/macos/mise.macos.toml loads
-# only on a machine that lists `macos`.
-auto_env = false
