@@ -4,10 +4,8 @@ font-style = medium
 bold-is-bright = true
 theme = "Catppuccin Macchiato"
 font-family = "JetBrainsMono Nerd Font Mono"
-background-opacity = 0.9
+background-opacity = 0.8
 background-blur = macos-glass-regular
-# Read theme colors as Display P3: more vivid than the default sRGB.
-window-colorspace = display-p3
 window-decoration = true
 
 # cursor
