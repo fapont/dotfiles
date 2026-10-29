@@ -22,6 +22,7 @@ mise run setup-github-ssh    # SSH key for GitHub auth + commit signing
 bw login
 mise run restore-secrets     # fnox age key from Bitwarden
 mise run setup-obsidian      # Obsidian vault + LiveSync
+mise run setup-netbird       # join the NetBird mesh (SSO)
 ```
 
 `--config-dir` links `~/.config/mise` to `machines/<machine>/` (it must be
@@ -61,6 +62,7 @@ modules/<name>/           one tool or domain, self-contained
 | `agents` | Claude Code, AGENTS.md, settings fragments, MCP servers, ccstatusline |
 | `herdr` | herdr, its skill, `herdr-perso` |
 | `nvim`, `ghostty`, `obsidian` | the app and its config |
+| `netbird` | NetBird CLI + root daemon, `setup-netbird` (joins mesh.fapont.xyz) |
 | `macos`, `aerospace` | macOS apps, system defaults, login items; AeroSpace + borders |
 | `omarchy` | missing Arch packages, Catppuccin, Hyprland overrides, Ghostty as default terminal, lid lock |
 | `docker`, `k8s`, `cloud`, `dev` | work tooling: Colima, kubectl/k9s, AWS/GCloud (`awsp`), linters |

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Enroll this machine in the NetBird mesh (SSO in the browser)"
+set -euo pipefail
+if netbird status | grep -q '^Management: Connected'; then
+  echo "Already enrolled"
+  exit 0
+fi
+netbird up --management-url https://mesh.fapont.xyz

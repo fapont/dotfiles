@@ -6,6 +6,6 @@
 auto_env = false
 env = [
   "shell", "starship", "eza", "bat", "btop", "tealdeer", "zoxide", "fzf", "atuin", "cli", "python",
-  "git", "secrets", "agents", "herdr", "nvim", "ghostty", "obsidian",
+  "git", "secrets", "agents", "herdr", "nvim", "ghostty", "obsidian", "netbird",
   "omarchy",
 ]
