@@ -1,0 +1,33 @@
+# NetBird client (the CLI, no UI) and its root daemon. `mise run setup-netbird`
+# enrolls the machine in the mesh, once per machine (SSO in the browser).
+
+# macOS: the tap's formula uses a download strategy mise's brew can't evaluate,
+# so the release binary comes from GitHub (the formula does the same).
+[tools]
+"github:netbirdio/netbird" = { version = "latest", os = ["macos"] }
+
+[bootstrap.packages]
+"aur:netbird-bin" = { version = "latest", os = "linux" }
+
+# Linux: the package's template unit. The CLI finds its socket
+# (/var/run/netbird/wt0.sock) on its own. mise ignores system services on macOS.
+[bootstrap.services."netbird@wt0"]
+enabled = true
+
+# macOS: mise has no LaunchDaemons. The root daemon must not run a binary from
+# ~ (user-writable), so the mise copy goes to /usr/local/bin, then the CLI
+# installs its own LaunchDaemon. Reruns only when the version changed.
+[bootstrap.hooks.post-tools]
+run = '''
+[ "$(uname)" = Darwin ] || exit 0
+src=$(mise which netbird) || exit 0
+cmp -s "$src" /usr/local/bin/netbird && exit 0
+sudo mkdir -p /usr/local/bin
+sudo install -m 755 "$src" /usr/local/bin/netbird
+sudo /usr/local/bin/netbird service install 2>/dev/null && sudo /usr/local/bin/netbird service start \
+  || sudo /usr/local/bin/netbird service restart
+'''
+
+# setup-netbird
+[task_config]
+includes = ["tasks"]
