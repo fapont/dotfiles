@@ -1,0 +1,20 @@
+# Ovis, the browser and phone client for herdr, as a herdr plugin: this
+# machine's agents from the phone at https://ovis.internal.fapont.xyz (NPM on
+# the NAS proxies it, AdGuard resolves the name, both over NetBird).
+[tools]
+bun = "latest" # builds and runs the plugin
+
+# Installs the plugin once (it then starts with herdr) and fills its env file:
+# listen on the NetBird IP only, a token generated here and never printed
+# (`grep OVIS_TOKEN` the file to sign a device in), no usage counts.
+[bootstrap.hooks.post-tools]
+run = '''
+herdr status server 2>/dev/null | grep -q '^status: running' || exit 0
+herdr plugin list | grep -q devswha.ovis || herdr plugin install devswha/ovis --yes
+env="$(herdr plugin config-dir devswha.ovis)/env"
+touch "$env" && chmod 600 "$env"
+ip=$(netbird status --json 2>/dev/null | jq -r '.netbirdIp // empty' | cut -d/ -f1)
+if [ -n "$ip" ] && ! grep -q '^HOST=' "$env"; then echo "HOST=$ip" >> "$env"; fi
+grep -q '^OVIS_TOKEN=' "$env" || printf 'OVIS_TOKEN=%s\n' "$(openssl rand -hex 32)" >> "$env"
+grep -q '^OVIS_TELEMETRY=' "$env" || echo 'OVIS_TELEMETRY=0' >> "$env"
+'''

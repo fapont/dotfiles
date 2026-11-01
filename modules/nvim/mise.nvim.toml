@@ -1,6 +1,9 @@
 # LazyVim.
 [tools]
-neovim = { version = "latest", os = "macos" } # Omarchy ships it
+# Omarchy ships it. aqua, not the registry's default vfox: mise resolves the
+# version even where `os` skips the tool, and vfox's listing timed out there on
+# every new shell.
+"aqua:neovim/neovim" = { version = "latest", os = "macos" }
 
 [shell_alias]
 vim = 'nvim'
