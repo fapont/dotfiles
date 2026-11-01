@@ -2,7 +2,7 @@
   "mcpServers": {
     "personnal-coding": {
       "type": "http",
-      "url": "https://litellm.fapont.xyz/toolset/coding/mcp",
+      "url": "https://litellm.internal.fapont.xyz/toolset/coding/mcp",
       "headersHelper": "printf '{\"x-litellm-api-key\":\"Bearer %s\"}' \"$(\"$HOME\"/.local/share/mise/shims/fnox get AI_PROVIDER_TOKEN 2>/dev/null)\""
     }
   }
