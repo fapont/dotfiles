@@ -2,10 +2,8 @@
   "mcpServers": {
     "personnal-coding": {
       "type": "http",
-      "url": "${PERSONNAL_CODING_MCP_URL}",
-      "headers": {
-        "x-litellm-api-key": "Bearer ${PERSONNAL_CODING_MCP_TOKEN}"
-      }
+      "url": "https://litellm.fapont.xyz/toolset/coding/mcp",
+      "headersHelper": "printf '{\"x-litellm-api-key\":\"Bearer %s\"}' \"$(\"$HOME\"/.local/share/mise/shims/fnox get AI_PROVIDER_TOKEN 2>/dev/null)\""
     }
   }
 }

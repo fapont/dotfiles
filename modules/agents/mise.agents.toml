@@ -38,5 +38,7 @@ root = "agents/home"
 "~/.config/claude/settings.json/plugins"     = { source = "claude/settings.d/30-plugins.json", merge = "missing" }
 "~/.config/claude/settings.json/hooks"       = { source = "claude/settings.d/40-hooks.json", merge = true }
 # User-scope MCP servers live in .claude.json (also Claude's state file, never tracked).
-# Secrets are ${VAR}s from fnox, expanded by Claude at startup.
-"~/.config/claude/.claude.json/mcp"          = { source = "claude/mcp.json", merge = "missing" }
+# Secrets come from fnox through a headersHelper run at connect time, not ${VAR}s:
+# the desktop app doesn't start through `fnox exec`, so it has none of them.
+# Enforced (servers added by hand are left alone), so edits here reach Claude.
+"~/.config/claude/.claude.json/mcp"          = { source = "claude/mcp.json", merge = true }
