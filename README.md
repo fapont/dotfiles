@@ -107,7 +107,8 @@ sources every `*.zsh` there).
   are merged into it (`merge = true` enforces, `"missing"` only sets defaults;
   arrays are replaced, and removed keys stay live).
   User-scope MCP servers (`agents/claude/mcp.json`) are merged into `.claude.json`
-  the same way, their URL and key as `${VAR}`s from fnox.
+  the same way, their key fetched from fnox by a `headersHelper` at connect time
+  (the desktop app has no fnox env, so no `${VAR}`s).
   Skills go in `~/.agents/skills/` (read by Codex, pi, Zed...), linked one by one
   into Claude's; the herdr skill is regenerated from `herdr --skill` on bootstrap.
 - **Secrets**: `modules/secrets/home/.config/fnox/config.toml`, age-encrypted in
