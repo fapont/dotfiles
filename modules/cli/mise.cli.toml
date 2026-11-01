@@ -13,9 +13,6 @@ ripgrep = { version = "latest", os = "macos" }
 [bootstrap.packages]
 "brew:tree" = { version = "latest", os = "macos" }
 "pacman:tree" = { version = "latest", os = "linux" }
-# SSH that survives sleep and network changes (UDP 60000-61000, over NetBird).
-"brew:mosh" = { version = "latest", os = "macos" }
-"pacman:mosh" = { version = "latest", os = "linux" }
 
 [shell_alias]
 diff = 'delta'

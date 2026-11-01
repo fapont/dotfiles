@@ -55,7 +55,7 @@ modules/<name>/           one tool or domain, self-contained
 | `core` | settings shared by every machine (cooldown, gh token, `dotfiles.root`), `mise run update`; always loaded |
 | `shell` | zsh, oh-my-zsh, env, login shell, `~/.zshrc` blocks, `.zprofile` |
 | `starship`, `eza`, `bat`, `btop`, `tealdeer`, `zoxide`, `fzf`, `atuin` | the tool, its config and aliases |
-| `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree, mosh...) |
+| `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree...) |
 | `python` | python, uv |
 | `git` | git, gh, worktrunk, lazygit, per-machine identities, `setup-github-ssh` |
 | `secrets` | fnox, age, Bitwarden, `restore-secrets` |
