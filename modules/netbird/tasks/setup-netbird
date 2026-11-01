@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
-#MISE description="Enroll this machine in the NetBird mesh (SSO in the browser)"
+#MISE description="Join the NetBird mesh (SSO in the browser) and apply this machine's settings"
 set -euo pipefail
-if netbird status | grep -q '^Management: Connected'; then
-  echo "Already enrolled"
-  exit 0
+# NetBird SSH: sessions authenticate through SSO, the JWT is cached 8h so herdr
+# reconnects don't reopen the browser.
+flags=(--management-url https://mesh.fapont.xyz --ssh-jwt-cache-ttl 28800)
+sudo=""
+# Linux is Omarchy, the only machine here that takes SSH sessions (the work Mac
+# is client-only). Enabling the SSH server needs root.
+if [ "$(uname)" = Linux ]; then
+  flags+=(--allow-server-ssh --enable-ssh-sftp)
+  sudo=sudo
 fi
-netbird up --management-url https://mesh.fapont.xyz
+# `up` ignores its flags while connected: reconnect to apply them. Over an SSH
+# session through the mesh, the down cuts it before the up: run it locally, or
+# detached (`sudo systemd-run --setenv=SUDO_USER=$USER ...`; without SUDO_USER,
+# root's empty profile is used).
+netbird down >/dev/null 2>&1 || true
+$sudo netbird up "${flags[@]}"
