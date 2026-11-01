@@ -19,7 +19,7 @@ enabled = true
 # installs its own LaunchDaemon. Reruns only when the version changed.
 # NB_DISABLE_CUSTOM_ROUTING: the daemon dials through the system routes, so
 # through Cloudflare WARP on the work Mac. Its default binds to the physical
-# interface, which WARP refuses: the SSH JWT login then hangs.
+# interface, which WARP refuses: its new management connections (SSO) hang.
 [bootstrap.hooks.post-tools]
 run = '''
 [ "$(uname)" = Darwin ] || exit 0
