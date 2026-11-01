@@ -48,14 +48,14 @@ modules/<name>/           one tool or domain, self-contained
 | Machine | Modules |
 | --- | --- |
 | `work-mac` | the shared ones + `macos`, `aerospace`, `docker`, `k8s`, `cloud`, `dev` |
-| `omarchy` | the shared ones + `omarchy` |
+| `omarchy` | the shared ones + `omarchy`, `ovis` |
 
 | Module | Content |
 | --- | --- |
 | `core` | settings shared by every machine (cooldown, gh token, `dotfiles.root`), `mise run update`; always loaded |
 | `shell` | zsh, oh-my-zsh, env, login shell, `~/.zshrc` blocks, `.zprofile` |
 | `starship`, `eza`, `bat`, `btop`, `tealdeer`, `zoxide`, `fzf`, `atuin` | the tool, its config and aliases |
-| `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree...) |
+| `cli` | small CLIs with no config (jq, yq, fd, rg, delta, glow, tree, mosh...) |
 | `python` | python, uv |
 | `git` | git, gh, worktrunk, lazygit, per-machine identities, `setup-github-ssh` |
 | `secrets` | fnox, age, Bitwarden, `restore-secrets` |
@@ -63,6 +63,7 @@ modules/<name>/           one tool or domain, self-contained
 | `herdr` | herdr, its skill, `herdr-perso` |
 | `nvim`, `ghostty`, `obsidian` | the app and its config |
 | `netbird` | NetBird CLI + root daemon, `setup-netbird` (joins mesh.fapont.xyz) |
+| `ovis` | Ovis (herdr plugin, phone client) on Omarchy, behind NPM at ovis.internal.fapont.xyz |
 | `macos`, `aerospace` | macOS apps, system defaults, login items; AeroSpace + borders |
 | `omarchy` | missing Arch packages, Catppuccin, Hyprland overrides, Ghostty as default terminal, lid lock |
 | `docker`, `k8s`, `cloud`, `dev` | work tooling: Colima, kubectl/k9s, AWS/GCloud (`awsp`), linters |
