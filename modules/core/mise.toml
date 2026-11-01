@@ -16,9 +16,11 @@ dotfiles.root = "~/.dotfiles/modules"
 uvx = true
 
 # The GitHub API allows 60 requests/hour without a token, for every machine
-# behind the same IP (VPN): borrow gh's.
+# behind the same IP (VPN): borrow gh's. gh is itself a mise tool: through a
+# shim it can need GitHub again and call this command, endlessly (shims hang).
+# The nested call goes anonymous instead.
 [settings.github]
-credential_command = 'gh auth token --hostname "$MISE_CREDENTIAL_HOST" 2>/dev/null'
+credential_command = '[ -z "$MISE_GH_CREDENTIAL" ] && MISE_GH_CREDENTIAL=1 gh auth token --hostname "$MISE_CREDENTIAL_HOST" 2>/dev/null'
 
 # `mise run --skip-tools update`: skip the tool installs mise runs before a task
 # (a failing one would stop it). Tasks get MISE_ENV = the module list read at
