@@ -62,7 +62,7 @@ modules/<name>/           one tool or domain, self-contained
 | `agents` | Claude Code, AGENTS.md, settings fragments, MCP servers, ccstatusline |
 | `herdr` | herdr, its skill, `herdr-perso` |
 | `nvim`, `ghostty`, `obsidian` | the app and its config |
-| `netbird` | NetBird CLI + root daemon, `setup-netbird` (joins mesh.fapont.xyz, NetBird SSH server on Omarchy) |
+| `netbird` | NetBird CLI + root daemon, `setup-netbird` (joins mesh.fapont.xyz) |
 | `macos`, `aerospace` | macOS apps, system defaults, login items; AeroSpace + borders |
 | `omarchy` | missing Arch packages, Catppuccin, Hyprland overrides, Ghostty as default terminal, lid lock |
 | `docker`, `k8s`, `cloud`, `dev` | work tooling: Colima, kubectl/k9s, AWS/GCloud (`awsp`), linters |

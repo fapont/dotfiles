@@ -1,6 +1,5 @@
 # NetBird client (the CLI, no UI) and its root daemon. `mise run setup-netbird`
-# joins the mesh (SSO in the browser) and applies its settings, NetBird SSH
-# included (server on Omarchy only); rerun it after changing them.
+# enrolls the machine in the mesh, once per machine (SSO in the browser).
 
 # macOS: the tap's formula uses a download strategy mise's brew can't evaluate,
 # so the release binary comes from GitHub (the formula does the same).
