@@ -49,7 +49,8 @@ root = "agents/home"
 run = '''
 claude_skills="${CLAUDE_CONFIG_DIR:-$HOME/.config/claude}/skills"
 mkdir -p "$claude_skills"
-for spec in mattpocock/skills:grill-me; do
+# grill-me only calls grilling, so both are needed.
+for spec in mattpocock/skills:grill-me mattpocock/skills:grilling; do
   name="${spec#*:}"
   [ -d "$HOME/.agents/skills/$name" ] || npx --yes skills@latest add "${spec%%:*}" --skill="$name" -g -y </dev/null
   ln -sfn "$HOME/.agents/skills/$name" "$claude_skills/$name"
