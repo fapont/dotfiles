@@ -42,3 +42,16 @@ root = "agents/home"
 # the desktop app doesn't start through `fnox exec`, so it has none of them.
 # Enforced (servers added by hand are left alone), so edits here reach Claude.
 "~/.config/claude/.claude.json/mcp"          = { source = "claude/mcp.json", merge = true }
+
+# Third-party skills (skills.sh), installed once into the shared dir and linked
+# into Claude's. Update with `npx skills@latest update -g`.
+[bootstrap.hooks.post-tools]
+run = '''
+claude_skills="${CLAUDE_CONFIG_DIR:-$HOME/.config/claude}/skills"
+mkdir -p "$claude_skills"
+for spec in mattpocock/skills:grill-me; do
+  name="${spec#*:}"
+  [ -d "$HOME/.agents/skills/$name" ] || npx --yes skills@latest add "${spec%%:*}" --skill="$name" -g -y </dev/null
+  ln -sfn "$HOME/.agents/skills/$name" "$claude_skills/$name"
+done
+'''
