@@ -9,10 +9,14 @@ herdr = "latest"
 [dotfile_groups.herdr]
 root = "herdr/home"
 
+# herdr-core: Herdr Mobile runs it over SSH and looks only on PATH and in
+# ~/.local/bin. Published outside GitHub releases (no mise backend), installed
+# once by its official script, then kept current by `hc update`.
 # herdr skill, release-matched: regenerated from the installed binary on every
 # bootstrap, so it follows herdr updates.
 [bootstrap.hooks.post-tools]
 run = '''
+[ -x "$HOME/.local/bin/herdr-core" ] || curl -fsSL https://releases.herdr.dev/core/install.sh | sh
 command -v herdr >/dev/null || exit 0
 skill="$HOME/.agents/skills/herdr"
 mkdir -p "$skill" && herdr --skill > "$skill/SKILL.md"
